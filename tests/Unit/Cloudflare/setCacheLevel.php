@@ -8,15 +8,15 @@ use WPMedia\Cloudflare\CloudflareFacade;
 use WPMedia\Cloudflare\Tests\Unit\TestCase;
 
 /**
- * @covers WPMedia\Cloudflare\Cloudflare::purge_by_url
+ * @covers WPMedia\Cloudflare\Cloudflare::set_cache_level
  * @group  Addon
  */
-class TestPurgeByUrl extends TestCase {
+class Test_SetCacheLevel extends TestCase {
 
 	/**
-	 * Test purge by url Cloudflare with cached invalid transient.
+	 * Test set cache level with cached invalid transient.
 	 */
-	public function testPurgeCloudflareByUrlWithInvalidCredentials() {
+	public function testSetCacheLevelWithInvalidCredentials() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
@@ -33,14 +33,14 @@ class TestPurgeByUrl extends TestCase {
 
 		$this->assertEquals(
 			$wp_error,
-			$cloudflare->purge_by_url( null, [ '/purge-url' ], null )
+			$cloudflare->set_cache_level( 'aggressive' )
 		);
 	}
 
 	/**
-	 * Test purge by url Cloudflare with exception.
+	 * Test set cache level with exception.
 	 */
-	public function testPurgeCloudflareByUrlWithException() {
+	public function testSetCacheLevelWithException() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
@@ -53,19 +53,19 @@ class TestPurgeByUrl extends TestCase {
 		$cloudflare_facade_mock->shouldReceive('set_api_credentials');
 
 		$cloudflare = new Cloudflare( $mocks['options'], $cloudflare_facade_mock );
-		$cloudflare_facade_mock->shouldReceive('purge_files')->andThrow( new \Exception() );
+		$cloudflare_facade_mock->shouldReceive('change_cache_level')->andThrow( new \Exception() );
 
 		$this->assertEquals(
 			new \WP_Error(),
-			$cloudflare->purge_by_url( null, [ '/purge-url' ], null )
+			$cloudflare->set_cache_level( 'aggressive' )
 		);
 	}
 
 
 	/**
-	 * Test purge by url Cloudflare with no success.
+	 * Test set cache level with no success.
 	 */
-	public function testPurgeCloudflareByUrlWithNoSuccess() {
+	public function testSetCacheLevelWithNoSuccess() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
@@ -79,19 +79,19 @@ class TestPurgeByUrl extends TestCase {
 
 		Functions\when( 'wp_sprintf_l' )->justReturn( '' );
 		$cloudflare = new Cloudflare( $mocks['options'], $cloudflare_facade_mock );
-		$cf_purge   = json_decode('{"success":false,"errors":[{"code":7001,"message":"Method GET not available for that URI."}],"messages":[],"result":null}');
-		$cloudflare_facade_mock->shouldReceive('purge_files')->andReturn( $cf_purge );
+		$cf_reply   = json_decode('{"success":false,"errors":[{"code":1007,"message":"Invalid value for zone setting cache_level"}],"messages":[],"result":null}');
+		$cloudflare_facade_mock->shouldReceive('change_cache_level')->andReturn( $cf_reply );
 
 		$this->assertEquals(
 			new \WP_Error(),
-			$cloudflare->purge_by_url( null, [ '/purge-url' ], null )
+			$cloudflare->set_cache_level( 'aggressive' )
 		);
 	}
 
 	/**
-	 * Test purge by url Cloudflare with success.
+	 * Test set cache level with success.
 	 */
-	public function testPurgeCloudflareByUrlWithSuccess() {
+	public function testSetCacheLevelWithSuccess() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
@@ -104,12 +104,12 @@ class TestPurgeByUrl extends TestCase {
 		$cloudflare_facade_mock->shouldReceive('set_api_credentials');
 
 		$cloudflare = new Cloudflare( $mocks['options'], $cloudflare_facade_mock );
-		$cf_purge = json_decode('{"success": true,"errors": [],"messages": [],"result": {"id": ""}}');
-		$cloudflare_facade_mock->shouldReceive('purge_files')->andReturn( $cf_purge );
+		$cf_reply = json_decode('{"result":{"id":"cache_level","value":"aggressive","modified_on":"","editable":true},"success":true,"errors":[],"messages":[]}');
+		$cloudflare_facade_mock->shouldReceive('change_cache_level')->andReturn( $cf_reply );
 
 		$this->assertEquals(
-			true,
-			$cloudflare->purge_by_url( null, [ '/purge-url' ], null )
+			'aggressive',
+			$cloudflare->set_cache_level( 'aggressive' )
 		);
 	}
 

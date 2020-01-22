@@ -11,7 +11,7 @@ use WPMedia\Cloudflare\Cloudflare;
  * @covers WPMedia\Cloudflare\Cloudflare::get_settings
  * @group  Addon
  */
-class TestGetSettings extends TestCase {
+class Test_GetSettings extends TestCase {
 
 	/**
 	 * Test get settings with cached invalid transient.

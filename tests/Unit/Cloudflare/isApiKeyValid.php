@@ -12,7 +12,7 @@ use WP_Error;
  * @covers WPMedia\Cloudflare\Cloudflare::is_api_keys_valid
  * @group  Addon
  */
-class TestIsApiKeyValid extends TestCase {
+class Test_IsApiKeyValid extends TestCase {
 
 	/**
 	 * Test Cloudflare API valid keys with empty values.

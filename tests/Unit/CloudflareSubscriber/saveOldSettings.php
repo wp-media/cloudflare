@@ -12,7 +12,7 @@ use WPMedia\Cloudflare\Tests\Unit\TestCase;
  * @covers WPMedia\Cloudflare\CloudflareSubscriber::save_cloudflare_old_settings
  * @group  Subscriber
  */
-class TestSaveOldSettings extends TestCase {
+class Test_SaveOldSettings extends TestCase {
 
 	/**
 	 * Test should not save old cloudflare settings.

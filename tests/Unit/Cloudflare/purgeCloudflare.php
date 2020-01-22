@@ -8,15 +8,15 @@ use WPMedia\Cloudflare\CloudflareFacade;
 use WPMedia\Cloudflare\Tests\Unit\TestCase;
 
 /**
- * @covers WPMedia\Cloudflare\Cloudflare::set_minify
+ * @covers WPMedia\Cloudflare\Cloudflare::purge_cloudflare
  * @group  Addon
  */
-class TestSetMinify extends TestCase {
+class Test_PurgeCloudflare extends TestCase {
 
 	/**
-	 * Test set minify with cached invalid transient.
+	 * Test purge Cloudflare with cached invalid transient.
 	 */
-	public function testSetMinifyWithInvalidCredentials() {
+	public function testPurgeCloudflareWithInvalidCredentials() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
@@ -33,14 +33,14 @@ class TestSetMinify extends TestCase {
 
 		$this->assertEquals(
 			$wp_error,
-			$cloudflare->set_minify( 'on' )
+			$cloudflare->purge_cloudflare()
 		);
 	}
 
 	/**
-	 * Test set minify with exception.
+	 * Test purge Cloudflare with exception.
 	 */
-	public function testSetMinifyWithException() {
+	public function testPurgeCloudflareWithException() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
@@ -53,19 +53,19 @@ class TestSetMinify extends TestCase {
 		$cloudflare_facade_mock->shouldReceive('set_api_credentials');
 
 		$cloudflare = new Cloudflare( $mocks['options'], $cloudflare_facade_mock );
-		$cloudflare_facade_mock->shouldReceive('change_minify')->andThrow( new \Exception() );
+		$cloudflare_facade_mock->shouldReceive('purge')->andThrow( new \Exception() );
 
 		$this->assertEquals(
 			new \WP_Error(),
-			$cloudflare->set_minify( 'on' )
+			$cloudflare->purge_cloudflare()
 		);
 	}
 
 
 	/**
-	 * Test set minify with no success.
+	 * Test purge Cloudflare with no success.
 	 */
-	public function testSetMinifyWithNoSuccess() {
+	public function testPurgeCloudflareWithNoSuccess() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
@@ -79,19 +79,19 @@ class TestSetMinify extends TestCase {
 
 		Functions\when( 'wp_sprintf_l' )->justReturn( '' );
 		$cloudflare = new Cloudflare( $mocks['options'], $cloudflare_facade_mock );
-		$cf_reply   = json_decode('{"success":false,"errors":[{"code":1007,"message":"Invalid value for zone setting minify"}],"messages":[],"result":null}');
-		$cloudflare_facade_mock->shouldReceive('change_minify')->andReturn( $cf_reply );
+		$cf_purge   = json_decode('{"success":false,"errors":[{"code":7001,"message":"Method GET not available for that URI."}],"messages":[],"result":null}');
+		$cloudflare_facade_mock->shouldReceive('purge')->andReturn( $cf_purge );
 
 		$this->assertEquals(
 			new \WP_Error(),
-			$cloudflare->set_minify( 'on' )
+			$cloudflare->purge_cloudflare()
 		);
 	}
 
 	/**
-	 * Test set minify with success.
+	 * Test purge Cloudflare with success.
 	 */
-	public function testSetMinifyWithSuccess() {
+	public function testPurgeCloudflareWithSuccess() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
@@ -104,12 +104,12 @@ class TestSetMinify extends TestCase {
 		$cloudflare_facade_mock->shouldReceive('set_api_credentials');
 
 		$cloudflare = new Cloudflare( $mocks['options'], $cloudflare_facade_mock );
-		$cf_reply = json_decode('{"result":{"id":"minify","value":{"js":"on","css":"on","html":"on"},"modified_on":"","editable":true},"success":true,"errors":[],"messages":[]}');
-		$cloudflare_facade_mock->shouldReceive('change_minify')->andReturn( $cf_reply );
+		$cf_purge = json_decode('{"success": true,"errors": [],"messages": [],"result": {"id": ""}}');
+		$cloudflare_facade_mock->shouldReceive('purge')->andReturn( $cf_purge );
 
 		$this->assertEquals(
-			'on',
-			$cloudflare->set_minify( 'on' )
+			true,
+			$cloudflare->purge_cloudflare()
 		);
 	}
 

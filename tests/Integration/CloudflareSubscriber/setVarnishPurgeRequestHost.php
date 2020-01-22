@@ -8,7 +8,8 @@ use WPMedia\Cloudflare\CloudflareFacade;
 use WP_Rocket\Admin\Options;
 use WP_Rocket\Admin\Options_Data;
 
-class TestSetVarnishPurgeRequestHost extends TestCase {
+class Test_SetVarnishPurgeRequestHost extends TestCase {
+
 	public function testShouldReturnDefaultWhenCloudflareDisabled() {
 		update_option(
 			'wp_rocket_settings',

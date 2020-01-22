@@ -11,7 +11,7 @@ use WPMedia\Cloudflare\Tests\Unit\TestCase;
  * @covers WPMedia\Cloudflare\CloudflareSubscriber::purge_cache
  * @group  Subscriber
  */
-class TestPurgeCache extends TestCase {
+class Test_PurgeCache extends TestCase {
 
 	/**
 	 * Test should not Purge Cloudflare if Cloudflare addon is disabled.

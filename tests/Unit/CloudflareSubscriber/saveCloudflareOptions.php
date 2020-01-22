@@ -13,7 +13,7 @@ use WP_Error;
  * @covers WPMedia\Cloudflare\CloudflareSubscriber::save_cloudflare_options
  * @group  Subscriber
  */
-class TestSaveCloudflareOptions extends TestCase {
+class Tes_SaveCloudflareOptions extends TestCase {
 
 	/**
 	 * Test should clean transient when Cloudflare Addons is enabled / disabled.

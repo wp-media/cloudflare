@@ -8,7 +8,8 @@ use WPMedia\Cloudflare\CloudflareFacade;
 use WP_Rocket\Admin\Options;
 use WP_Rocket\Admin\Options_Data;
 
-class TestDeactivateDevMode extends TestCase {
+class Test_DeactivateDevMode extends TestCase {
+
 	/**
 	 * Test should not deactivate cloudflare dev mode when cloudflare addon is off.
 	 */

@@ -12,7 +12,7 @@ use WPMedia\Cloudflare\Tests\Unit\TestCase;
  * @covers WPMedia\Cloudflare\CloudflareSubscriber::set_real_ip
  * @group  Subscriber
  */
-class TestSetRealIp extends TestCase {
+class Test_SetRealIp extends TestCase {
 
 	/**
 	 * Test should not set real IP.

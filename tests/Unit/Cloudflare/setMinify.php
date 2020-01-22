@@ -8,15 +8,15 @@ use WPMedia\Cloudflare\CloudflareFacade;
 use WPMedia\Cloudflare\Tests\Unit\TestCase;
 
 /**
- * @covers WPMedia\Cloudflare\Cloudflare::set_rocket_loader
+ * @covers WPMedia\Cloudflare\Cloudflare::set_minify
  * @group  Addon
  */
-class TestSetRocketLoader extends TestCase {
+class Test_SetMinify extends TestCase {
 
 	/**
-	 * Test set rocket loader with cached invalid transient.
+	 * Test set minify with cached invalid transient.
 	 */
-	public function testSetRocketLoaderWithInvalidCredentials() {
+	public function testSetMinifyWithInvalidCredentials() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
@@ -33,14 +33,14 @@ class TestSetRocketLoader extends TestCase {
 
 		$this->assertEquals(
 			$wp_error,
-			$cloudflare->set_rocket_loader( 'off' )
+			$cloudflare->set_minify( 'on' )
 		);
 	}
 
 	/**
-	 * Test set rocket loader with exception.
+	 * Test set minify with exception.
 	 */
-	public function testSetRocketLoaderWithException() {
+	public function testSetMinifyWithException() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
@@ -53,19 +53,19 @@ class TestSetRocketLoader extends TestCase {
 		$cloudflare_facade_mock->shouldReceive('set_api_credentials');
 
 		$cloudflare = new Cloudflare( $mocks['options'], $cloudflare_facade_mock );
-		$cloudflare_facade_mock->shouldReceive('change_rocket_loader')->andThrow( new \Exception() );
+		$cloudflare_facade_mock->shouldReceive('change_minify')->andThrow( new \Exception() );
 
 		$this->assertEquals(
 			new \WP_Error(),
-			$cloudflare->set_rocket_loader( 'off' )
+			$cloudflare->set_minify( 'on' )
 		);
 	}
 
 
 	/**
-	 * Test set rocket loader with no success.
+	 * Test set minify with no success.
 	 */
-	public function testSetRocketLoaderWithNoSuccess() {
+	public function testSetMinifyWithNoSuccess() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
@@ -79,19 +79,19 @@ class TestSetRocketLoader extends TestCase {
 
 		Functions\when( 'wp_sprintf_l' )->justReturn( '' );
 		$cloudflare = new Cloudflare( $mocks['options'], $cloudflare_facade_mock );
-		$cf_reply   = json_decode('{"success":false,"errors":[{"code":1007,"message":"Invalid value for zone setting rocket_loader"}],"messages":[],"result":null}');
-		$cloudflare_facade_mock->shouldReceive('change_rocket_loader')->andReturn( $cf_reply );
+		$cf_reply   = json_decode('{"success":false,"errors":[{"code":1007,"message":"Invalid value for zone setting minify"}],"messages":[],"result":null}');
+		$cloudflare_facade_mock->shouldReceive('change_minify')->andReturn( $cf_reply );
 
 		$this->assertEquals(
 			new \WP_Error(),
-			$cloudflare->set_rocket_loader( 'off' )
+			$cloudflare->set_minify( 'on' )
 		);
 	}
 
 	/**
-	 * Test set rocket loader with success.
+	 * Test set minify with success.
 	 */
-	public function testSetRocketLoaderWithSuccess() {
+	public function testSetMinifyWithSuccess() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
@@ -104,12 +104,12 @@ class TestSetRocketLoader extends TestCase {
 		$cloudflare_facade_mock->shouldReceive('set_api_credentials');
 
 		$cloudflare = new Cloudflare( $mocks['options'], $cloudflare_facade_mock );
-		$cf_reply = json_decode('{"result":{"id":"rocket_loader","value":"off","modified_on":"","editable":true},"success":true,"errors":[],"messages":[]}');
-		$cloudflare_facade_mock->shouldReceive('change_rocket_loader')->andReturn( $cf_reply );
+		$cf_reply = json_decode('{"result":{"id":"minify","value":{"js":"on","css":"on","html":"on"},"modified_on":"","editable":true},"success":true,"errors":[],"messages":[]}');
+		$cloudflare_facade_mock->shouldReceive('change_minify')->andReturn( $cf_reply );
 
 		$this->assertEquals(
-			'off',
-			$cloudflare->set_rocket_loader( 'off' )
+			'on',
+			$cloudflare->set_minify( 'on' )
 		);
 	}
 

@@ -4,7 +4,7 @@ namespace WPMedia\Cloudflare\Tests\Integration\CloudflareSubscriber;
 use WPMedia\Cloudflare\Tests\Integration\TestCase;
 use WPMedia\Cloudflare\CloudflareSubscriber;
 
-class TestGetSubscribedEvents extends TestCase {
+class Test_GetSubscribedEvents extends TestCase {
 
 	/**
 	 * Setup constants required by Cloudflare

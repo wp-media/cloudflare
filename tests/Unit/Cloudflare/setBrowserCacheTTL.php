@@ -11,7 +11,7 @@ use WPMedia\Cloudflare\Tests\Unit\TestCase;
  * @covers WPMedia\Cloudflare\Cloudflare::set_browser_cache_ttl
  * @group  Addon
  */
-class TestSetBrowserCacheTTL extends TestCase {
+class Test_SetBrowserCacheTTL extends TestCase {
 
 	/**
 	 * Test purge by url Cloudflare with cached invalid transient.

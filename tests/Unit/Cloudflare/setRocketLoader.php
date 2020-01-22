@@ -8,15 +8,15 @@ use WPMedia\Cloudflare\CloudflareFacade;
 use WPMedia\Cloudflare\Tests\Unit\TestCase;
 
 /**
- * @covers WPMedia\Cloudflare\Cloudflare::has_page_rule
+ * @covers WPMedia\Cloudflare\Cloudflare::set_rocket_loader
  * @group  Addon
  */
-class TestHasPageRule extends TestCase {
+class Test_SetRocketLoader extends TestCase {
 
 	/**
-	 * Test Cloudflare has page rules with cached invalid transient.
+	 * Test set rocket loader with cached invalid transient.
 	 */
-	public function testHasRuleWithInvalidCredentials() {
+	public function testSetRocketLoaderWithInvalidCredentials() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
@@ -30,22 +30,20 @@ class TestHasPageRule extends TestCase {
 		$cloudflare_facade_mock->shouldNotReceive('set_api_credentials');
 
 		$cloudflare = new Cloudflare( $mocks['options'], $cloudflare_facade_mock );
-		$has_page_rule = $cloudflare->has_page_rule( 'cache_everything' );
 
 		$this->assertEquals(
 			$wp_error,
-			$has_page_rule
+			$cloudflare->set_rocket_loader( 'off' )
 		);
 	}
 
 	/**
-	 * Test Cloudflare has page rules with exception.
+	 * Test set rocket loader with exception.
 	 */
-	public function testHasRuleWithException() {
+	public function testSetRocketLoaderWithException() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
-		$wp_error               = $mocks['wp_error'];
 
 		// The Cloudflare constructor run with transient set as WP_Error.
 		Functions\when( 'get_transient' )->justReturn( true );
@@ -55,24 +53,22 @@ class TestHasPageRule extends TestCase {
 		$cloudflare_facade_mock->shouldReceive('set_api_credentials');
 
 		$cloudflare = new Cloudflare( $mocks['options'], $cloudflare_facade_mock );
-		$cloudflare_facade_mock->shouldReceive('list_pagerules')->andThrow( new \Exception() );
-		$has_page_rule = $cloudflare->has_page_rule( 'cache_everything' );
+		$cloudflare_facade_mock->shouldReceive('change_rocket_loader')->andThrow( new \Exception() );
 
 		$this->assertEquals(
 			new \WP_Error(),
-			$has_page_rule
+			$cloudflare->set_rocket_loader( 'off' )
 		);
 	}
 
 
 	/**
-	 * Test Cloudflare has page rules with no success.
+	 * Test set rocket loader with no success.
 	 */
-	public function testHasRuleWithNoSuccess() {
+	public function testSetRocketLoaderWithNoSuccess() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
-		$wp_error               = $mocks['wp_error'];
 
 		// The Cloudflare constructor run with transient set as WP_Error.
 		Functions\when( 'get_transient' )->justReturn( true );
@@ -83,53 +79,22 @@ class TestHasPageRule extends TestCase {
 
 		Functions\when( 'wp_sprintf_l' )->justReturn( '' );
 		$cloudflare = new Cloudflare( $mocks['options'], $cloudflare_facade_mock );
-		$cf_page_rule = json_decode('{"success":false,"errors":[{"code":7003,"message":"Could not route to \/zones\/ZONE_ID, perhaps your object identifier is invalid?"},{"code":7000,"message":"No route for that URI"}],"messages":[],"result":null}');
-		$cloudflare_facade_mock->shouldReceive('list_pagerules')->andReturn( $cf_page_rule );
-		$has_page_rule = $cloudflare->has_page_rule( 'cache_everything' );
+		$cf_reply   = json_decode('{"success":false,"errors":[{"code":1007,"message":"Invalid value for zone setting rocket_loader"}],"messages":[],"result":null}');
+		$cloudflare_facade_mock->shouldReceive('change_rocket_loader')->andReturn( $cf_reply );
 
 		$this->assertEquals(
 			new \WP_Error(),
-			$has_page_rule
+			$cloudflare->set_rocket_loader( 'off' )
 		);
 	}
 
 	/**
-	 * Test Cloudflare has page rules with success but no page rule.
+	 * Test set rocket loader with success.
 	 */
-	public function testHasRuleWithSuccessButNoPageRule() {
+	public function testSetRocketLoaderWithSuccess() {
 		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
 
 		$cloudflare_facade_mock = $mocks['facade'];
-		$wp_error               = $mocks['wp_error'];
-
-		// The Cloudflare constructor run with transient set as WP_Error.
-		Functions\when( 'get_transient' )->justReturn( true );
-		$cloudflare_facade_mock->shouldNotReceive('is_api_keys_valid');
-		Functions\expect( 'set_transient' )->never();
-		Functions\when( 'is_wp_error' )->justReturn( false );
-
-		$cloudflare_facade_mock->shouldReceive('set_api_credentials');
-
-		$cloudflare = new Cloudflare( $mocks['options'], $cloudflare_facade_mock );
-		$cf_page_rule = json_decode('{"result":[{"id":"","targets":[{"target":"url","constraint":{"operator":"matches","value":""}}],"actions":[{"id":"cache_level","value":"bypass"}],"priority":3,"status":"active","created_on":"","modified_on":""},{"id":"","targets":[{"target":"url","constraint":{"operator":"matches","value":""}}],"actions":[{"id":"cache_level","value":""}],"priority":2,"status":"active","created_on":"","modified_on":""}],"success":true,"errors":[],"messages":[]}');
-		Functions\when( 'wp_json_encode' )->justReturn( json_encode( $cf_page_rule ) );
-		$cloudflare_facade_mock->shouldReceive('list_pagerules')->andReturn( $cf_page_rule );
-		$has_page_rule = $cloudflare->has_page_rule( 'cache_everything' );
-
-		$this->assertEquals(
-			false,
-			$has_page_rule
-		);
-	}
-
-	/**
-	 * Test Cloudflare has page rules with success and page rule.
-	 */
-	public function testHasRuleWithSuccessAndPageRule() {
-		$mocks = $this->getConstructorMocks( 1,  '',  '', '');
-
-		$cloudflare_facade_mock = $mocks['facade'];
-		$wp_error               = $mocks['wp_error'];
 
 		// The Cloudflare constructor run with transient set as WP_Error.
 		Functions\when( 'get_transient' )->justReturn( true );
@@ -139,14 +104,12 @@ class TestHasPageRule extends TestCase {
 		$cloudflare_facade_mock->shouldReceive('set_api_credentials');
 
 		$cloudflare = new Cloudflare( $mocks['options'], $cloudflare_facade_mock );
-		$cf_page_rule = json_decode('{"result":[{"id":"","targets":[{"target":"url","constraint":{"operator":"matches","value":""}}],"actions":[{"id":"cache_level","value":"bypass"}],"priority":3,"status":"active","created_on":"","modified_on":""},{"id":"","targets":[{"target":"url","constraint":{"operator":"matches","value":""}}],"actions":[{"id":"cache_level","value":"cache_everything"}],"priority":2,"status":"active","created_on":"","modified_on":""}],"success":true,"errors":[],"messages":[]}');
-		Functions\when( 'wp_json_encode' )->justReturn( json_encode( $cf_page_rule ) );
-		$cloudflare_facade_mock->shouldReceive('list_pagerules')->andReturn( $cf_page_rule );
-		$has_page_rule = $cloudflare->has_page_rule( 'cache_everything' );
+		$cf_reply = json_decode('{"result":{"id":"rocket_loader","value":"off","modified_on":"","editable":true},"success":true,"errors":[],"messages":[]}');
+		$cloudflare_facade_mock->shouldReceive('change_rocket_loader')->andReturn( $cf_reply );
 
 		$this->assertEquals(
-			true,
-			$has_page_rule
+			'off',
+			$cloudflare->set_rocket_loader( 'off' )
 		);
 	}
 

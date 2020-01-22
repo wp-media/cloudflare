@@ -13,7 +13,7 @@ use WP_Error;
  * @covers WPMedia\Cloudflare\CloudflareSubscriber::auto_purge_by_url
  * @group  Subscriber
  */
-class TestAutoPurgeByUrl extends TestCase {
+class Test_AutoPurgeByUrl extends TestCase {
 
 	/**
 	 * Test should not AutoPurge Cloudflare if Cloudflare Addon is disabled.
