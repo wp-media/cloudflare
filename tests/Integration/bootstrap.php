@@ -47,12 +47,22 @@ function bootstrap_integration_suite( $wp_tests_dir ) {
 	tests_add_filter(
 		'muplugins_loaded',
 		function() {
-
+			getFactory();
 		}
 	);
 
 	// Start up the WP testing environment.
 	require_once $wp_tests_dir . '/includes/bootstrap.php';
+}
+
+function getFactory() {
+	static $factory;
+
+	if ( ! $factory ) {
+		$factory = new Factory();
+	}
+
+	return $factory;
 }
 
 bootstrap_integration_suite( get_wp_tests_dir() );

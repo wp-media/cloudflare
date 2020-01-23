@@ -1,58 +1,50 @@
 <?php
+
 namespace WPMedia\Cloudflare\Tests\Integration\CloudflareSubscriber;
 
 use WPMedia\Cloudflare\Tests\Integration\TestCase;
-use WPMedia\Cloudflare\CloudflareSubscriber;
-use WPMedia\Cloudflare\Cloudflare;
-use WPMedia\Cloudflare\CloudflareFacade;
-use WP_Rocket\Admin\Options;
-use WP_Rocket\Admin\Options_Data;
+use function WPMedia\Cloudflare\Tests\Integration\getFactory;
 
+/**
+ * @covers WPMedia\Cloudflare\CloudflareSubscriber::deactivate_devmode
+ * @group  Subscriber
+ */
 class Test_DeactivateDevMode extends TestCase {
 
 	/**
 	 * Test should not deactivate cloudflare dev mode when cloudflare addon is off.
 	 */
 	public function testShouldNotDeactivateDevMode() {
-		$options      = new Options( 'wp_rocket_');
-		$options_data = new Options_Data( $options->get( 'settings' ) );
-		$settings     = [
+		$data = [
 			'do_cloudflare'      => 0,
 			'cloudflare_devmode' => 'on',
 		];
-		$options_data->set_values( $settings );
-		$options->set( 'settings', $options_data->get_options() );
+		update_option( 'wp_rocket_settings', $data );
+		$options = getFactory()->getContainer( 'options' );
+		$options->set_values( $data );
 
-		$cloudflare_facade = new CloudflareFacade();
-		$cf_subscriber     = new CloudflareSubscriber( new Cloudflare( $options_data, $cloudflare_facade ), $options_data, $options );
-		$cf_subscriber->deactivate_devmode();
+		do_action( 'rocket_cron_deactivate_cloudflare_devmode' );
 
-		$this->assertSame(
-			'on',
-			$options_data->get( 'cloudflare_devmode' )
-		);
+		$settings = get_option( 'wp_rocket_settings' );
+		$this->assertSame( 'on', $settings['cloudflare_devmode'] );
 	}
 
 	/**
 	 * Test should deactivate cloudflare dev mode.
 	 */
 	public function testShouldDeactivateDevMode() {
-		$options      = new Options( 'wp_rocket_');
-		$options_data = new Options_Data( $options->get( 'settings' ) );
-		$settings     = [
+		$data = [
 			'do_cloudflare'      => 1,
 			'cloudflare_devmode' => 'on',
 		];
-		$options_data->set_values( $settings );
-		$options->set( 'settings', $options_data->get_options() );
+		update_option( 'wp_rocket_settings', $data );
+		$options = getFactory()->getContainer( 'options' );
+		$options->set_values( $data );
 
-		$cloudflare_facade = new CloudflareFacade();
-		$cf_subscriber     = new CloudflareSubscriber( new Cloudflare( $options_data, $cloudflare_facade ), $options_data, $options );
-		$cf_subscriber->deactivate_devmode();
+		do_action( 'rocket_cron_deactivate_cloudflare_devmode' );
 
-		$this->assertSame(
-			'off',
-			$options_data->get( 'cloudflare_devmode' )
-		);
+		$this->assertSame( 'off', $options->get( 'cloudflare_devmode' ) );
+		$settings = get_option( 'wp_rocket_settings' );
+		$this->assertSame( 'off', $settings['cloudflare_devmode'] );
 	}
 }

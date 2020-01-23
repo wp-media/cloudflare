@@ -25,8 +25,6 @@ abstract class TestCase extends WP_UnitTestCase {
 	public static function setUpBeforeClass() {
 		parent::setUpBeforeClass();
 
-		self::stubRocketFunctions();
-
 		// Set up the Cloudflare API's credentials.
 		self::$api_credentials_config_file = 'cloudflare.php';
 		self::$email                       = self::getApiCredential( 'ROCKET_CLOUDFLARE_EMAIL' );
@@ -40,6 +38,8 @@ abstract class TestCase extends WP_UnitTestCase {
 	public function setUp() {
 		parent::setUp();
 		Monkey\setUp();
+
+		getFactory()->restoreState();
 	}
 
 	/**
