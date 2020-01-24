@@ -3,6 +3,8 @@
 namespace WPMedia\Cloudflare\Tests\Unit;
 
 use Brain\Monkey;
+use Brain\Monkey\Functions;
+use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use WPMedia\Cloudflare\Tests\TestCaseTrait;
@@ -41,7 +43,7 @@ abstract class TestCase extends PHPUnitTestCase {
 	 * Mock common WP functions.
 	 */
 	protected function mockCommonWpFunctions() {
-		Monkey\Functions\stubs(
+		Functions\stubs(
 			[
 				'__',
 				'esc_attr__',
@@ -66,7 +68,14 @@ abstract class TestCase extends PHPUnitTestCase {
 		];
 
 		foreach ( $functions as $function ) {
-			Monkey\Functions\when( $function )->echoArg();
+			Functions\when( $function )->echoArg();
 		}
+	}
+
+	protected function getFacade( $api_mock ) {
+		$mock = Mockery::mock( 'WPMedia\Cloudflare\CloudflareFacade[init_api_objects]', [ $api_mock ] )->shouldAllowMockingProtectedMethods();
+		$mock->shouldReceive( 'init_api_objects' )->andReturnNull();
+
+		return $mock;
 	}
 }

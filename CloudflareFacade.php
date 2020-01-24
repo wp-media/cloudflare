@@ -74,13 +74,12 @@ class CloudflareFacade {
 	protected $zone_id;
 
 	/**
-	 * Constructor
+	 * Instantiate the facade.
 	 *
-	 * @since 3.5
-	 * @author Soponar Cristina
+	 * @param Api $api Instance of the Cloudflare API.
 	 */
-	public function __construct() {
-		$this->api = new Api();
+	public function __construct( Api $api ) {
+		$this->api = $api;
 	}
 
 	/**
@@ -97,10 +96,19 @@ class CloudflareFacade {
 	public function set_api_credentials( $email, $api_key, $zone_id ) {
 		$this->api->setEmail( $email );
 		$this->api->setAuthKey( $api_key );
-		$this->api->setCurlOption( CURLOPT_USERAGENT, 'wp-rocket/' . WP_ROCKET_VERSION );
+		$this->api->setCurlOption( CURLOPT_USERAGENT, 'wp-rocket/' . rocket_get_constant( 'WP_ROCKET_VERSION', '3.5' ) );
 
 		$this->zone_id = $zone_id;
 		// Loading with Valid API Credentials.
+		$this->init_api_objects();
+	}
+
+	/**
+	 * Initialize the API's objects, i.e. page rules, cache, settings, and IPs.
+	 *
+	 * @since 3.5
+	 */
+	protected function init_api_objects() {
 		$this->page_rules = new Pagerules( $this->api );
 		$this->cache      = new Cache( $this->api );
 		$this->settings   = new Settings( $this->api );
