@@ -21,6 +21,10 @@
 	"repositories": [
 		{
 			"type": "vcs",
+			"url": "git@github.com:wp-media/event-manager.git"
+		},
+		{
+			"type": "vcs",
 			"url": "git@github.com:wp-media/options.git"
 		}
 	],
@@ -35,6 +39,7 @@
 		"phpcompatibility/phpcompatibility-wp": "^2.0",
 		"phpunit/phpunit": "^5.7 || ^7",
 		"wp-coding-standards/wpcs": "^2",
+		"wp-media/event-manager": "^3.0",
 		"wp-media/options": "^3.0"
 	},
 	"autoload": {
@@ -51,10 +56,7 @@
 		"psr-4": {
 			"WPMedia\\Cloudflare\\Tests\\Unit\\": "tests/Unit",
 			"WPMedia\\Cloudflare\\Tests\\Integration\\": "tests/Integration"
-		},
-		"classmap": [
-			"tests/Fixtures"
-		]
+		}
 	},
 	"scripts": {
 		"test-unit":"\"vendor/bin/phpunit\" --testsuite unit --colors=always --configuration tests/Unit/phpunit.xml.dist",
