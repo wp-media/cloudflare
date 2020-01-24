@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "51a83d86ad70ba511dfd4b3ac04d4af3",
+    "content-hash": "e769a01893216732de7fd05ca4c34bc3",
     "packages": [
         {
             "name": "jamesryanbell/cloudflare",
@@ -2061,6 +2061,171 @@
                 "wordpress"
             ],
             "time": "2019-11-11T12:34:03+00:00"
+        },
+        {
+            "name": "wp-media/event-manager",
+            "version": "3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wp-media/event-manager.git",
+                "reference": "655b5146106399085471e95132077d6470dd09d7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wp-media/event-manager/zipball/655b5146106399085471e95132077d6470dd09d7",
+                "reference": "655b5146106399085471e95132077d6470dd09d7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "brain/monkey": "^2.0",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
+                "php": "^5.6 || ^7",
+                "phpcompatibility/phpcompatibility-wp": "^2.0",
+                "phpunit/phpunit": "^5.7 || ^7",
+                "wp-coding-standards/wpcs": "^2"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "class-event-manager.php",
+                    "event-manager-aware-subscriber-interface.php",
+                    "subscriber-interface.php"
+                ],
+                "psr4": {
+                    "WP_Rocket\\Event_Management\\": "."
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "WPMedia\\EventManager\\Tests\\Unit\\": "tests/Unit",
+                    "WPMedia\\EventManager\\Tests\\Integration\\": "tests/Integration"
+                }
+            },
+            "scripts": {
+                "test-unit": [
+                    "\"vendor/bin/phpunit\" --testsuite unit --colors=always --configuration tests/Unit/phpunit.xml.dist"
+                ],
+                "test-integration": [
+                    "\"vendor/bin/phpunit\" --testsuite integration --colors=always --configuration tests/Integration/phpunit.xml.dist"
+                ],
+                "run-tests": [
+                    "@test-unit",
+                    "@test-integration"
+                ],
+                "install-codestandards": [
+                    "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
+                ],
+                "phpcs": [
+                    "phpcs --basepath=."
+                ],
+                "phpcs-changed": [
+                    "./bin/phpcs-changed.sh"
+                ],
+                "phpcs:fix": [
+                    "phpcbf"
+                ]
+            },
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "WP Media",
+                    "email": "contact@wp-media.me",
+                    "homepage": "https://wp-media.me"
+                }
+            ],
+            "description": "Cloudflare Addon",
+            "homepage": "https://github.com/wp-media/event-manager",
+            "support": {
+                "issues": "https://github.com/wp-media/event-manager/issues",
+                "source": "https://github.com/wp-media/event-manager"
+            },
+            "time": "2020-01-24T14:09:20+00:00"
+        },
+        {
+            "name": "wp-media/options",
+            "version": "3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wp-media/options.git",
+                "reference": "9e9f109b774e5b08d8d7ee01c8d041e533d88177"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wp-media/options/zipball/9e9f109b774e5b08d8d7ee01c8d041e533d88177",
+                "reference": "9e9f109b774e5b08d8d7ee01c8d041e533d88177",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "brain/monkey": "^2.0",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
+                "php": "^5.6 || ^7",
+                "phpcompatibility/phpcompatibility-wp": "^2.0",
+                "phpunit/phpunit": "^5.7 || ^7",
+                "wp-coding-standards/wpcs": "^2"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "class-abstract-options.php",
+                    "class-options.php",
+                    "class-options-data.php"
+                ]
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "WPMedia\\Options\\Tests\\Unit\\": "tests/Unit",
+                    "WPMedia\\Options\\Tests\\Integration\\": "tests/Integration"
+                }
+            },
+            "scripts": {
+                "test-unit": [
+                    "\"vendor/bin/phpunit\" --testsuite unit --colors=always --configuration tests/Unit/phpunit.xml.dist"
+                ],
+                "test-integration": [
+                    "\"vendor/bin/phpunit\" --testsuite integration --colors=always --configuration tests/Integration/phpunit.xml.dist"
+                ],
+                "run-tests": [
+                    "@test-unit",
+                    "@test-integration"
+                ],
+                "install-codestandards": [
+                    "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
+                ],
+                "phpcs": [
+                    "phpcs --basepath=."
+                ],
+                "phpcs-changed": [
+                    "./bin/phpcs-changed.sh"
+                ],
+                "phpcs:fix": [
+                    "phpcbf"
+                ]
+            },
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "WP Media",
+                    "email": "contact@wp-media.me",
+                    "homepage": "https://wp-media.me"
+                }
+            ],
+            "description": "Options Handler for WordPress Options API Addon",
+            "homepage": "https://github.com/wp-media/cloudflare",
+            "support": {
+                "issues": "https://github.com/wp-media/cloudflare/issues",
+                "source": "https://github.com/wp-media/cloudflare"
+            },
+            "time": "2020-01-23T20:12:16+00:00"
         }
     ],
     "aliases": [],

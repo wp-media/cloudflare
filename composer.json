@@ -18,6 +18,16 @@
 		"issues": "https://github.com/wp-media/cloudflare/issues",
 		"source": "https://github.com/wp-media/cloudflare"
 	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "git@github.com:wp-media/event-manager.git"
+		},
+		{
+			"type": "vcs",
+			"url": "git@github.com:wp-media/options.git"
+		}
+	],
     "require": {
 		"php": ">=5.6.0",
 		"jamesryanbell/cloudflare": "^1.11"
@@ -28,30 +38,20 @@
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
 		"phpcompatibility/phpcompatibility-wp": "^2.0",
 		"phpunit/phpunit": "^5.7 || ^7",
-		"wp-coding-standards/wpcs": "^2"
+		"wp-coding-standards/wpcs": "^2",
+		"wp-media/event-manager": "^3.0",
+		"wp-media/options": "^3.0"
 	},
 	"autoload": {
-		"classmap": [
-			"Cloudflare.php",
-			"CloudflareFacade.php",
-			"CloudflareSubscriber.php"
-		],
-		"psr4": {
-			"WPMedia\\Cloudflare\\": "."
-		}
+		"psr-4": { "WPMedia\\Cloudflare\\": "." },
+		"exclude-from-classmap": [ "/Tests/" ]
 	},
 	"autoload-dev": {
-		"psr-4": {
-			"WPMedia\\Cloudflare\\Tests\\Unit\\": "tests/Unit",
-			"WPMedia\\Cloudflare\\Tests\\Integration\\": "tests/Integration"
-		},
-		"classmap": [
-			"tests/Fixtures"
-		]
+		"psr-4": { "WPMedia\\Cloudflare\\Tests\\": "Tests/"	}
 	},
 	"scripts": {
-		"test-unit":"\"vendor/bin/phpunit\" --testsuite unit --colors=always --configuration tests/Unit/phpunit.xml.dist",
-		"test-integration": "\"vendor/bin/phpunit\" --testsuite integration --colors=always --configuration tests/Integration/phpunit.xml.dist",
+		"test-unit":"\"vendor/bin/phpunit\" --testsuite unit --colors=always --configuration Tests/Unit/phpunit.xml.dist",
+		"test-integration": "\"vendor/bin/phpunit\" --testsuite integration --colors=always --configuration Tests/Integration/phpunit.xml.dist",
 		"run-tests": [
 			"@test-unit",
 			"@test-integration"

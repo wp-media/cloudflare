@@ -6,6 +6,7 @@ vendor export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore
 .github export-ignore
+composer.lock
 LICENSE.md export-ignore
 phpcs.xml export-ignore
 .prettyci.composer.json export-ignore

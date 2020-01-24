@@ -8,10 +8,8 @@ use Cloudflare\Zone\Settings;
 use Cloudflare\IPs;
 
 /**
- * CloudflareFacade
- *
- * @since 3.5
- * @author Soponar Cristina
+ * Class CloudflareFacade
+ * @package WPMedia\Cloudflare
  */
 class CloudflareFacade {
 
