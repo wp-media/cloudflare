@@ -25,9 +25,6 @@ class Test_Settings extends TestCase {
 		$response = self::$cf->settings();
 		$this->assertTrue( $response->success );
 		$this->assertEmpty( $response->errors );
-		$settings = array_column( $response->result, 'id' );
-
-		$this->assertContains( 'browser_cache_ttl', $settings );
-		$this->assertContains( 'cache_level', $settings );
+		$this->assertGreaterThan( 10, $response->result );
 	}
 }
