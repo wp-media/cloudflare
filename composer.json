@@ -43,24 +43,15 @@
 		"wp-media/options": "^3.0"
 	},
 	"autoload": {
-		"classmap": [
-			"Cloudflare.php",
-			"CloudflareFacade.php",
-			"CloudflareSubscriber.php"
-		],
-		"psr4": {
-			"WPMedia\\Cloudflare\\": "."
-		}
+		"psr-4": { "WPMedia\\Cloudflare\\": "." },
+		"exclude-from-classmap": [ "/Tests/" ]
 	},
 	"autoload-dev": {
-		"psr-4": {
-			"WPMedia\\Cloudflare\\Tests\\Unit\\": "tests/Unit",
-			"WPMedia\\Cloudflare\\Tests\\Integration\\": "tests/Integration"
-		}
+		"psr-4": { "WPMedia\\Cloudflare\\Tests\\": "Tests/"	}
 	},
 	"scripts": {
-		"test-unit":"\"vendor/bin/phpunit\" --testsuite unit --colors=always --configuration tests/Unit/phpunit.xml.dist",
-		"test-integration": "\"vendor/bin/phpunit\" --testsuite integration --colors=always --configuration tests/Integration/phpunit.xml.dist",
+		"test-unit":"\"vendor/bin/phpunit\" --testsuite unit --colors=always --configuration Tests/Unit/phpunit.xml.dist",
+		"test-integration": "\"vendor/bin/phpunit\" --testsuite integration --colors=always --configuration Tests/Integration/phpunit.xml.dist",
 		"run-tests": [
 			"@test-unit",
 			"@test-integration"
