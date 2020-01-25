@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e769a01893216732de7fd05ca4c34bc3",
+    "content-hash": "d36db3f1ef032d1d33961caa586b5a35",
     "packages": [
         {
             "name": "jamesryanbell/cloudflare",
@@ -2068,66 +2068,26 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-media/event-manager.git",
-                "reference": "655b5146106399085471e95132077d6470dd09d7"
+                "reference": "dfc8b34397ea22fd92d0d98ce077479e3f20c597"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-media/event-manager/zipball/655b5146106399085471e95132077d6470dd09d7",
-                "reference": "655b5146106399085471e95132077d6470dd09d7",
+                "url": "https://api.github.com/repos/wp-media/event-manager/zipball/dfc8b34397ea22fd92d0d98ce077479e3f20c597",
+                "reference": "dfc8b34397ea22fd92d0d98ce077479e3f20c597",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.6.0"
             },
-            "require-dev": {
-                "brain/monkey": "^2.0",
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
-                "php": "^5.6 || ^7",
-                "phpcompatibility/phpcompatibility-wp": "^2.0",
-                "phpunit/phpunit": "^5.7 || ^7",
-                "wp-coding-standards/wpcs": "^2"
-            },
             "type": "library",
             "autoload": {
                 "classmap": [
-                    "class-event-manager.php",
+                    "subscriber-interface.php",
                     "event-manager-aware-subscriber-interface.php",
-                    "subscriber-interface.php"
-                ],
-                "psr4": {
-                    "WP_Rocket\\Event_Management\\": "."
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "WPMedia\\EventManager\\Tests\\Unit\\": "tests/Unit",
-                    "WPMedia\\EventManager\\Tests\\Integration\\": "tests/Integration"
-                }
-            },
-            "scripts": {
-                "test-unit": [
-                    "\"vendor/bin/phpunit\" --testsuite unit --colors=always --configuration tests/Unit/phpunit.xml.dist"
-                ],
-                "test-integration": [
-                    "\"vendor/bin/phpunit\" --testsuite integration --colors=always --configuration tests/Integration/phpunit.xml.dist"
-                ],
-                "run-tests": [
-                    "@test-unit",
-                    "@test-integration"
-                ],
-                "install-codestandards": [
-                    "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
-                ],
-                "phpcs": [
-                    "phpcs --basepath=."
-                ],
-                "phpcs-changed": [
-                    "./bin/phpcs-changed.sh"
-                ],
-                "phpcs:fix": [
-                    "phpcbf"
+                    "class-event-manager.php"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GPL-2.0+"
             ],
@@ -2140,11 +2100,7 @@
             ],
             "description": "Cloudflare Addon",
             "homepage": "https://github.com/wp-media/event-manager",
-            "support": {
-                "issues": "https://github.com/wp-media/event-manager/issues",
-                "source": "https://github.com/wp-media/event-manager"
-            },
-            "time": "2020-01-24T14:09:20+00:00"
+            "time": "2020-01-25T22:18:46+00:00"
         },
         {
             "name": "wp-media/options",
@@ -2179,36 +2135,7 @@
                     "class-options-data.php"
                 ]
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "WPMedia\\Options\\Tests\\Unit\\": "tests/Unit",
-                    "WPMedia\\Options\\Tests\\Integration\\": "tests/Integration"
-                }
-            },
-            "scripts": {
-                "test-unit": [
-                    "\"vendor/bin/phpunit\" --testsuite unit --colors=always --configuration tests/Unit/phpunit.xml.dist"
-                ],
-                "test-integration": [
-                    "\"vendor/bin/phpunit\" --testsuite integration --colors=always --configuration tests/Integration/phpunit.xml.dist"
-                ],
-                "run-tests": [
-                    "@test-unit",
-                    "@test-integration"
-                ],
-                "install-codestandards": [
-                    "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
-                ],
-                "phpcs": [
-                    "phpcs --basepath=."
-                ],
-                "phpcs-changed": [
-                    "./bin/phpcs-changed.sh"
-                ],
-                "phpcs:fix": [
-                    "phpcbf"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GPL-2.0+"
             ],
@@ -2221,10 +2148,6 @@
             ],
             "description": "Options Handler for WordPress Options API Addon",
             "homepage": "https://github.com/wp-media/cloudflare",
-            "support": {
-                "issues": "https://github.com/wp-media/cloudflare/issues",
-                "source": "https://github.com/wp-media/cloudflare"
-            },
             "time": "2020-01-23T20:12:16+00:00"
         }
     ],
