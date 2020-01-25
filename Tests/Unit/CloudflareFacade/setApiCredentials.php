@@ -2,13 +2,6 @@
 
 namespace WPMedia\Cloudflare\Tests\Unit\CloudflareFacade;
 
-use Brain\Monkey\Functions;
-use Cloudflare\Api;
-use Mockery;
-use WPMedia\Cloudflare\CloudflareFacade;
-use WPMedia\Cloudflare\Cloudflare\Imagify_Data;
-use WPMedia\Cloudflare\Tests\Unit\TestCase;
-
 /**
  * @covers WPMedia\Cloudflare\CloudflareFacade::set_api_credentials
  * @group  Cloudflare
@@ -16,23 +9,11 @@ use WPMedia\Cloudflare\Tests\Unit\TestCase;
  */
 class Test_SetApiCredentials extends TestCase {
 
-	private function getMocks() {
-		$api = Mockery::mock( Api::class, [
-			'setEmail'      => null,
-			'setAuthKey'    => null,
-			'setCurlOption' => null,
-		] );
-
-		$cf = $this->getFacade( $api );
-
-		return [ $cf, $api ];
-	}
-
 	/**
 	 * Test should set the email on the API.
 	 */
 	public function testShouldSetEmail() {
-		list( $cf, $api ) = $this->getMocks();
+		list( $api, $cf ) = $this->getMocks();
 
 		$api->shouldReceive( 'setEmail' )->with( null );
 		$cf->set_api_credentials( null, null, null );
@@ -45,7 +26,7 @@ class Test_SetApiCredentials extends TestCase {
 	 * Test should set the API key on the API.
 	 */
 	public function testShouldSetApiKeyWhenGiven() {
-		list( $cf, $api ) = $this->getMocks();
+		list( $api, $cf ) = $this->getMocks();
 
 		$api->shouldReceive( 'setAuthKey' )->with( null );
 		$cf->set_api_credentials( null, null, null );
@@ -58,7 +39,7 @@ class Test_SetApiCredentials extends TestCase {
 	 * Test should set the curl option with the current version Rocket.
 	 */
 	public function testShouldSetCurlOptionWithCurrentVersionOfRocket() {
-		list( $cf, $api ) = $this->getMocks();
+		list( $api, $cf ) = $this->getMocks();
 
 		$api->shouldReceive( 'setCurlOption' )
 		    ->once()
@@ -71,7 +52,7 @@ class Test_SetApiCredentials extends TestCase {
 	 * Test should set the API key on the API.
 	 */
 	public function testShouldSetZoneId() {
-		list( $cf, $api ) = $this->getMocks();
+		list( $api, $cf ) = $this->getMocks();
 		$zone_id = $this->get_reflective_property( 'zone_id', $cf );
 
 		$cf->set_api_credentials( null, null, 'zone1' );
