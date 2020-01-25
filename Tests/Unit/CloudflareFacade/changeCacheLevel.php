@@ -2,38 +2,17 @@
 
 namespace WPMedia\Cloudflare\Tests\Unit\CloudflareFacade;
 
-use Cloudflare\Api;
 use Cloudflare\Exception\AuthenticationException;
-use Cloudflare\Zone\Settings;
-use Mockery;
-use WPMedia\Cloudflare\Tests\Unit\TestCase;
 
 /**
  * @covers WPMedia\Cloudflare\CloudflareFacade::change_cache_level
- * @group  Facade
+ * @group  Cloudflare
+ * @group  CloudflareFacade
  */
 class Test_ChangeCacheLevel extends TestCase {
 
-	private function getMocks( $setApiExpects = true ) {
-		if ( $setApiExpects ) {
-			$api = Mockery::mock( Api::class, [
-				'setEmail'      => null,
-				'setAuthKey'    => null,
-				'setCurlOption' => null,
-			] );
-		} else {
-			$api = Mockery::mock( Api::class );
-		}
-
-		$cf       = $this->getFacade( $api );
-		$settings = Mockery::mock( Settings::class, [ $api ] );
-		$this->set_reflective_property( $settings, 'settings', $cf );
-
-		return [ $cf, $settings ];
-	}
-
 	public function testShouldThrowErrorWhenInvalidCredentials() {
-		list( $cf, $settings ) = $this->getMocks( false );
+		list( $cf, $settings ) = $this->getMocksWithDep( 'settings', false );
 
 		$settings->shouldReceive( 'change_cache_level' )
 		         ->once()
@@ -47,18 +26,44 @@ class Test_ChangeCacheLevel extends TestCase {
 		$cf->change_cache_level( 'aggressive' );
 	}
 
-	public function testShouldReturnIps() {
-		list( $cf, $settings ) = $this->getMocks();
+	public function testShouldFailWhenInvalidLevelGiven() {
+		list( $cf, $settings ) = $this->getMocksWithDep( 'settings' );
 
 		$cf->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
 
 		$settings->shouldReceive( 'change_cache_level' )
 		         ->once()
-		         ->with( 'zone1234', 'aggressive' )
+		         ->with( 'zone1234', 'invalid' )
+		         ->andReturnUsing( function() {
+			         return (object) [
+				         'result'  => [],
+				         'success' => false,
+				         'errors'  => [
+					         (object) [
+						         'message' => 'Invalid value for zone setting change_cache_level',
+					         ],
+				         ],
+			         ];
+		         } );
+
+		$response = $cf->change_cache_level( 'invalid' );
+		$this->assertFalse( $response->success );
+		$error = $response->errors[0];
+		$this->assertSame( 'Invalid value for zone setting change_cache_level', $error->message );
+	}
+
+	public function testShouldReturnIps() {
+		list( $cf, $settings ) = $this->getMocksWithDep( 'settings' );
+
+		$cf->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
+
+		$settings->shouldReceive( 'change_cache_level' )
+		         ->once()
+		         ->with( 'zone1234', 'simplified' )
 		         ->andReturnUsing( function() {
 			         return (object) [
 				         'result'   => (object) [
-					         'value' => 'aggressive',
+					         'value' => 'simplified',
 				         ],
 				         'success'  => true,
 				         'errors'   => [],
@@ -66,8 +71,8 @@ class Test_ChangeCacheLevel extends TestCase {
 			         ];
 		         } );
 
-		$response = $cf->change_cache_level( 'aggressive' );
+		$response = $cf->change_cache_level( 'simplified' );
 		$this->assertTrue( $response->success );
-		$this->assertSame( 'aggressive', $response->result->value );
+		$this->assertSame( 'simplified', $response->result->value );
 	}
 }

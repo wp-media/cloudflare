@@ -2,11 +2,7 @@
 
 namespace WPMedia\Cloudflare\Tests\Unit\CloudflareFacade;
 
-use Cloudflare\Api;
 use Cloudflare\Exception\AuthenticationException;
-use Cloudflare\Zone\Settings;
-use Mockery;
-use WPMedia\Cloudflare\Tests\Unit\TestCase;
 
 /**
  * @covers WPMedia\Cloudflare\CloudflareFacade::change_browser_cache_ttl
@@ -15,18 +11,8 @@ use WPMedia\Cloudflare\Tests\Unit\TestCase;
  */
 class Test_ChangeBrowserCacheTtl extends TestCase {
 
-	protected function getFacade( $api_mock ) {
-		$mock = Mockery::mock( 'WPMedia\Cloudflare\CloudflareFacade[init_api_objects]', [ $api_mock ] )->shouldAllowMockingProtectedMethods();
-		$mock->shouldReceive( 'init_api_objects' )->andReturnNull();
-
-		return $mock;
-	}
-
 	public function testShouldThrowErrorWhenInvalidCredentials() {
-		$api      = Mockery::mock( Api::class );
-		$cf       = $this->getFacade( $api );
-		$settings = Mockery::mock( Settings::class, [ $api ] );
-		$this->set_reflective_property( $settings, 'settings', $cf );
+		list( $cf, $settings ) = $this->getMocksWithDep( 'settings', false );
 
 		$settings->shouldReceive( 'change_browser_cache_ttl' )
 		         ->once()
@@ -40,25 +26,44 @@ class Test_ChangeBrowserCacheTtl extends TestCase {
 		$cf->change_browser_cache_ttl( 31536000 );
 	}
 
-	public function testShouldChangeBrowserCacheTtlWhenTTLGiven() {
-		$api      = Mockery::mock( Api::class, [
-			'setEmail'      => null,
-			'setAuthKey'    => null,
-			'setCurlOption' => null,
-		] );
-		$cf       = $this->getFacade( $api );
-		$settings = Mockery::mock( Settings::class, [ $api ] );
-		$this->set_reflective_property( $settings, 'settings', $cf );
+	public function testShouldFailWhenInvalidSettingGiven() {
+		list( $cf, $settings ) = $this->getMocksWithDep( 'settings' );
 
 		$cf->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
 
 		$settings->shouldReceive( 'change_browser_cache_ttl' )
 		         ->once()
-		         ->with( 'zone1234', 31536000 )
+		         ->with( 'zone1234', 'invalid' )
+		         ->andReturnUsing( function() {
+			         return (object) [
+				         'result'  => [],
+				         'success' => false,
+				         'errors'  => [
+					         (object) [
+						         'message' => 'Invalid value for zone setting browser_cache_ttl',
+					         ],
+				         ],
+			         ];
+		         } );
+
+		$response = $cf->change_browser_cache_ttl( 'invalid' );
+		$this->assertFalse( $response->success );
+		$error = $response->errors[0];
+		$this->assertSame( 'Invalid value for zone setting browser_cache_ttl', $error->message );
+	}
+
+	public function testShouldChangeBrowserCacheTtlWhenTTLGiven() {
+		list( $cf, $settings ) = $this->getMocksWithDep( 'settings' );
+
+		$cf->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
+
+		$settings->shouldReceive( 'change_browser_cache_ttl' )
+		         ->once()
+		         ->with( 'zone1234', 3600 )
 		         ->andReturnUsing( function() {
 			         return (object) [
 				         'result'   => (object) [
-					         'value' => 31536000,
+					         'value' => 3600,
 				         ],
 				         'success'  => true,
 				         'errors'   => [],
@@ -66,8 +71,8 @@ class Test_ChangeBrowserCacheTtl extends TestCase {
 			         ];
 		         } );
 
-		$response = $cf->change_browser_cache_ttl( 31536000 );
+		$response = $cf->change_browser_cache_ttl( 3600 );
 		$this->assertTrue( $response->success );
-		$this->assertSame( 31536000, $response->result->value );
+		$this->assertSame( 3600, $response->result->value );
 	}
 }

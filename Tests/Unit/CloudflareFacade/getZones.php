@@ -2,11 +2,7 @@
 
 namespace WPMedia\Cloudflare\Tests\Unit\CloudflareFacade;
 
-use Cloudflare\Api;
 use Cloudflare\Exception\AuthenticationException;
-use Mockery;
-use WPMedia\Cloudflare\CloudflareFacade;
-use WPMedia\Cloudflare\Tests\Unit\TestCase;
 
 /**
  * @covers WPMedia\Cloudflare\CloudflareFacade::get_zones
@@ -16,38 +12,69 @@ use WPMedia\Cloudflare\Tests\Unit\TestCase;
 class Test_GetZones extends TestCase {
 
 	public function testShouldFailWhenZoneIdInvalid() {
-		$api_mock = Mockery::mock( Api::class );
-		$cf       = new CloudflareFacade( $api_mock );
+		list( $api, $cf ) = $this->getMocks();
 
-		$api_mock->shouldReceive( 'get' )
-		         ->once()
-		         ->with( 'zones/' )
-		         ->andReturnUsing( function() {
-			         throw new AuthenticationException( 'Authentication information must be provided' );
-		         } );
+		$api->shouldReceive( 'get' )
+		    ->once()
+		    ->with( 'zones/' )
+		    ->andReturnUsing( function() {
+			    throw new AuthenticationException( 'Authentication information must be provided' );
+		    } );
 
 		$this->expectException( AuthenticationException::class );
 		$this->expectExceptionMessage( 'Authentication information must be provided' );
 		$cf->get_zones();
 	}
 
-	public function testShouldSucceedWhenZoneExists() {
-		$api_mock = Mockery::mock( Api::class );
-		$cf       = new CloudflareFacade( $api_mock );
+	public function testShouldFailWhenInvalid() {
+		list( $api, $cf ) = $this->getMocks();
 
-		$api_mock->shouldReceive( 'get' )
-		         ->once()
-		         ->with( 'zones/' )
-		         ->andReturnUsing( function() {
-			         return (object) [
-				         'result'   => (object) [],
-				         'success'  => true,
-				         'errors'   => [],
-				         'messages' => [],
-			         ];
-		         } );
+		$cf->set_api_credentials( 'test@example.com', 'API_KEY', 'invalid' );
+
+		$api->shouldReceive( 'get' )
+		    ->once()
+		    ->with( 'zones/invalid' )
+		    ->andReturnUsing( function() {
+			    return (object) [
+				    'result'  => [],
+				    'success' => false,
+				    'errors'  => [
+					    (object) [
+						    'code'    => 7003,
+						    'message' => 'Could not route to /zones/invalid, perhaps your object identifier is invalid?',
+					    ],
+				    ],
+			    ];
+		    } );
+
+		$response = $cf->get_zones();
+		$this->assertFalse( $response->success );
+		$zone_error = $response->errors[0];
+		$this->assertSame( 7003, $zone_error->code );
+		$this->assertSame( 'Could not route to /zones/invalid, perhaps your object identifier is invalid?', $zone_error->message );
+	}
+
+	public function testShouldSucceedWhenZoneExists() {
+		list( $api, $cf ) = $this->getMocks();
+
+		$cf->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
+
+		$api->shouldReceive( 'get' )
+		    ->once()
+		    ->with( 'zones/zone1234' )
+		    ->andReturnUsing( function() {
+			    return (object) [
+				    'result'  => (object) [
+					    'id' => 'zone1234',
+				    ],
+				    'success' => true,
+				    'errors'  => [],
+			    ];
+		    } );
+
 		$response = $cf->get_zones();
 		$this->assertTrue( $response->success );
 		$this->assertEmpty( $response->errors );
+		$this->assertSame( 'zone1234', $response->result->id );
 	}
 }

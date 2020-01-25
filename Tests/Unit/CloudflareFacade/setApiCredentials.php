@@ -17,13 +17,13 @@ use WPMedia\Cloudflare\Tests\Unit\TestCase;
 class Test_SetApiCredentials extends TestCase {
 
 	private function getMocks() {
-			$api = Mockery::mock( Api::class, [
-				'setEmail'      => null,
-				'setAuthKey'    => null,
-				'setCurlOption' => null,
-			] );
+		$api = Mockery::mock( Api::class, [
+			'setEmail'      => null,
+			'setAuthKey'    => null,
+			'setCurlOption' => null,
+		] );
 
-		$cf       = $this->getFacade( $api );
+		$cf = $this->getFacade( $api );
 
 		return [ $cf, $api ];
 	}

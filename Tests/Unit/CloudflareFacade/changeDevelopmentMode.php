@@ -2,11 +2,7 @@
 
 namespace WPMedia\Cloudflare\Tests\Unit\CloudflareFacade;
 
-use Cloudflare\Api;
 use Cloudflare\Exception\AuthenticationException;
-use Cloudflare\Zone\Settings;
-use Mockery;
-use WPMedia\Cloudflare\Tests\Unit\TestCase;
 
 /**
  * @covers WPMedia\Cloudflare\CloudflareFacade::change_development_mode
@@ -15,26 +11,8 @@ use WPMedia\Cloudflare\Tests\Unit\TestCase;
  */
 class Test_ChangeDevelopmentMode extends TestCase {
 
-	private function getMocks( $setApiExpects = true ) {
-		if ( $setApiExpects ) {
-			$api = Mockery::mock( Api::class, [
-				'setEmail'      => null,
-				'setAuthKey'    => null,
-				'setCurlOption' => null,
-			] );
-		} else {
-			$api = Mockery::mock( Api::class );
-		}
-
-		$cf       = $this->getFacade( $api );
-		$settings = Mockery::mock( Settings::class, [ $api ] );
-		$this->set_reflective_property( $settings, 'settings', $cf );
-
-		return [ $cf, $settings ];
-	}
-
 	public function testShouldThrowErrorWhenInvalidCredentials() {
-		list( $cf, $settings ) = $this->getMocks( false );
+		list( $cf, $settings ) = $this->getMocksWithDep( 'settings', false );
 
 		$settings->shouldReceive( 'change_development_mode' )
 		         ->once()
@@ -49,7 +27,7 @@ class Test_ChangeDevelopmentMode extends TestCase {
 	}
 
 	public function testShouldFailWhenInvalidSettingGiven() {
-		list( $cf, $settings ) = $this->getMocks();
+		list( $cf, $settings ) = $this->getMocksWithDep( 'settings' );
 
 		$cf->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
 
@@ -58,14 +36,13 @@ class Test_ChangeDevelopmentMode extends TestCase {
 		         ->with( 'zone1234', 'invalid' )
 		         ->andReturnUsing( function() {
 			         return (object) [
-				         'result'   => null,
-				         'success'  => false,
-				         'errors'   => [
+				         'result'  => null,
+				         'success' => false,
+				         'errors'  => [
 					         (object) [
 						         'message' => 'Invalid value for zone setting development_mode',
 					         ],
 				         ],
-				         'messages' => [],
 			         ];
 		         } );
 
@@ -76,7 +53,7 @@ class Test_ChangeDevelopmentMode extends TestCase {
 	}
 
 	public function testShouldSucceedWhenValidSettingGiven() {
-		list( $cf, $settings ) = $this->getMocks();
+		list( $cf, $settings ) = $this->getMocksWithDep( 'settings' );
 
 		$cf->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
 
@@ -85,13 +62,12 @@ class Test_ChangeDevelopmentMode extends TestCase {
 		         ->with( 'zone1234', 'invalid' )
 		         ->andReturnUsing( function() {
 			         return (object) [
-				         'result'   => (object) [
+				         'result'  => (object) [
 					         'id'    => 'development_mode',
 					         'value' => 'off',
 				         ],
-				         'success'  => true,
-				         'errors'   => [],
-				         'messages' => [],
+				         'success' => true,
+				         'errors'  => [],
 			         ];
 		         } );
 

@@ -25,6 +25,6 @@ class Test_Settings extends TestCase {
 		$response = self::$cf->settings();
 		$this->assertTrue( $response->success );
 		$this->assertEmpty( $response->errors );
-		$this->assertGreaterThan( 10, $response->result );
+		$this->assertGreaterThan( 4, $response->result );
 	}
 }

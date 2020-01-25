@@ -26,4 +26,8 @@ class Test_PurgeFiles extends TestCase {
 		$this->assertFalse( $response->success );
 		$this->assertSame( 'Unable to purge /invalid/URL, which is an invalid URL.', $response->errors[0]->message );
 	}
+
+	public function testShouldSucceedWhenUrlsGiven() {
+		$this->assertTrue( true );
+	}
 }

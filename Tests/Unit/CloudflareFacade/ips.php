@@ -2,11 +2,7 @@
 
 namespace WPMedia\Cloudflare\Tests\Unit\CloudflareFacade;
 
-use Cloudflare\Api;
 use Cloudflare\Exception\AuthenticationException;
-use Cloudflare\IPs;
-use Mockery;
-use WPMedia\Cloudflare\Tests\Unit\TestCase;
 
 /**
  * @covers WPMedia\Cloudflare\CloudflareFacade::ips
@@ -15,26 +11,8 @@ use WPMedia\Cloudflare\Tests\Unit\TestCase;
  */
 class Test_Ips extends TestCase {
 
-	private function getMocks( $setApiExpects = true ) {
-		if ( $setApiExpects ) {
-			$api = Mockery::mock( Api::class, [
-				'setEmail'      => null,
-				'setAuthKey'    => null,
-				'setCurlOption' => null,
-			] );
-		} else {
-			$api = Mockery::mock( Api::class );
-		}
-
-		$cf       = $this->getFacade( $api );
-		$ips = Mockery::mock( IPs::class, [ $api ] );
-		$this->set_reflective_property( $ips, 'ips', $cf );
-
-		return [ $cf, $ips ];
-	}
-
 	public function testShouldThrowErrorWhenInvalidCredentials() {
-		list( $cf, $ips ) = $this->getMocks( false );
+		list( $cf, $ips ) = $this->getMocksWithDep( 'ips', false );
 
 		$ips->shouldReceive( 'ips' )
 		    ->once()
@@ -48,7 +26,7 @@ class Test_Ips extends TestCase {
 	}
 
 	public function testShouldReturnIps() {
-		list( $cf, $ips ) = $this->getMocks();
+		list( $cf, $ips ) = $this->getMocksWithDep( 'ips' );
 
 		$cf->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
 
@@ -62,7 +40,6 @@ class Test_Ips extends TestCase {
 				    ],
 				    'success'  => true,
 				    'errors'   => [],
-				    'messages' => [],
 			    ];
 		    } );
 
