@@ -10,6 +10,13 @@ use function WPMedia\Cloudflare\Tests\Integration\getFactory;
  * @group  Subscriber
  */
 class Test_DeactivateDevMode extends TestCase {
+	private static $options;
+
+	public static function setUpBeforeClass() {
+		parent::setUpBeforeClass();
+
+		self::$options = getFactory()->getContainer( 'options' );
+	}
 
 	/**
 	 * Test should not deactivate cloudflare dev mode when cloudflare addon is off.
@@ -20,8 +27,7 @@ class Test_DeactivateDevMode extends TestCase {
 			'cloudflare_devmode' => 'on',
 		];
 		update_option( 'wp_rocket_settings', $data );
-		$options = getFactory()->getContainer( 'options' );
-		$options->set_values( $data );
+		self::$options->set_values( $data );
 
 		do_action( 'rocket_cron_deactivate_cloudflare_devmode' );
 
@@ -38,12 +44,11 @@ class Test_DeactivateDevMode extends TestCase {
 			'cloudflare_devmode' => 'on',
 		];
 		update_option( 'wp_rocket_settings', $data );
-		$options = getFactory()->getContainer( 'options' );
-		$options->set_values( $data );
+		self::$options->set_values( $data );
 
 		do_action( 'rocket_cron_deactivate_cloudflare_devmode' );
 
-		$this->assertSame( 'off', $options->get( 'cloudflare_devmode' ) );
+		$this->assertSame( 'off', self::$options->get( 'cloudflare_devmode' ) );
 		$settings = get_option( 'wp_rocket_settings' );
 		$this->assertSame( 'off', $settings['cloudflare_devmode'] );
 	}

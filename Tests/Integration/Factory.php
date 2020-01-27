@@ -2,6 +2,7 @@
 
 namespace WPMedia\Cloudflare\Tests\Integration;
 
+use Cloudflare\Api;
 use WP_Rocket\Admin\Options;
 use WP_Rocket\Admin\Options_Data;
 use WP_Rocket\Event_Management\Event_Manager;
@@ -48,7 +49,8 @@ class Factory {
 		$this->container['options']           = new Options_Data(
 			$this->container['options_api']->get( 'settings', [] )
 		);
-		$this->container['cloudflare_facade'] = new CloudflareFacade();
+		$this->container['cloudflare_api']    = new Api();
+		$this->container['cloudflare_facade'] = new CloudflareFacade( $this->container['cloudflare_api'] );
 		$this->container['cloudflare']        = new Cloudflare( $this->container['options'], $this->container['cloudflare_facade'] );
 
 		$this->container['cloudflare_subscriber'] = new CloudflareSubscriber(
