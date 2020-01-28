@@ -1,4 +1,5 @@
 <?php
+
 namespace WPMedia\Cloudflare\Tests\Integration\Cloudflare;
 
 use WPMedia\Cloudflare\Cloudflare;
@@ -19,10 +20,10 @@ class Test_GetSettings extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		self::$cf     = new Cloudflare( self::$options, self::$cf_facade );
-		$get_settings = self::$cf->get_settings();
+		self::$cf = new Cloudflare( self::$options, self::$cf_facade );
+		$response = self::$cf->get_settings();
 
-		$this->assertTrue( is_wp_error( $get_settings ) );
+		$this->assertTrue( is_wp_error( $response ) );
 	}
 
 
@@ -36,27 +37,18 @@ class Test_GetSettings extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		$callback = function() { return self::$site_url; };
-		add_filter('site_url', $callback );
+		$callback = function() {
+			return self::$site_url;
+		};
+		add_filter( 'site_url', $callback );
 
-		self::$cf        = new Cloudflare( self::$options, self::$cf_facade );
-		$minify          = $this->getSetting( 'minify' );
-		$cf_minify_value = 'on';
+		self::$cf = new Cloudflare( self::$options, self::$cf_facade );
+		$response = self::$cf->get_settings();
 
-		if ( 'off' === $minify->js || 'off' === $minify->css || 'off' === $minify->html ) {
-			$cf_minify_value = 'off';
-		}
+		$this->assertSame( [ 'cache_level', 'minify', 'rocket_loader', 'browser_cache_ttl' ], array_keys( $response ) );
+		$this->assertTrue( 'on' === $response['minify'] || 'off' === $response['minify'] );
+		$this->assertContains( $response['browser_cache_ttl'], $this->getTTLValidValues() );
 
-		$orig_cf_settings_array = [
-			'cache_level'       => $this->getSetting( 'cache_level' ),
-			'minify'            => $cf_minify_value,
-			'rocket_loader'     => $this->getSetting( 'rocket_loader' ),
-			'browser_cache_ttl' => $this->getSetting( 'browser_cache_ttl' ),
-		];
-
-		$get_settings = self::$cf->get_settings();
-
-		$this->assertSame( $orig_cf_settings_array, $get_settings );
-		remove_filter('site_url', $callback );
+		remove_filter( 'site_url', $callback );
 	}
 }

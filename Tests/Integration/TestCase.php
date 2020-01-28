@@ -82,7 +82,14 @@ abstract class TestCase extends WP_UnitTestCase {
 	}
 
 	protected function getNewTTL( $value ) {
-		static $valid_ttls = [
+		$valid_ttls = $this->getTTLValidValues();
+		$without_given_ttl = array_values( array_diff( $valid_ttls, [ $value ] ) );
+
+		return $without_given_ttl[ rand( 0, count( $without_given_ttl ) - 1 ) ];
+	}
+
+	protected function getTTLValidValues() {
+		return [
 			0,
 			30,
 			60,
@@ -111,9 +118,5 @@ abstract class TestCase extends WP_UnitTestCase {
 			16070400,
 			31536000,
 		];
-
-		$without_given_ttl = array_values( array_diff( $valid_ttls, [ $value ] ) );
-
-		return $without_given_ttl[ rand( 0, count( $without_given_ttl ) - 1 ) ];
 	}
 }
