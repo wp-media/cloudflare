@@ -12,6 +12,7 @@ abstract class TestCase extends WP_UnitTestCase {
 	protected static $api_key;
 	protected static $email;
 	protected static $zone_id;
+	protected static $site_url;
 
 	/**
 	 * Name of the API credentials config file, if applicable. Set in the test or new TestCase.
@@ -30,6 +31,7 @@ abstract class TestCase extends WP_UnitTestCase {
 		self::$email                       = self::getApiCredential( 'ROCKET_CLOUDFLARE_EMAIL' );
 		self::$api_key                     = self::getApiCredential( 'ROCKET_CLOUDFLARE_API_KEY' );
 		self::$zone_id                     = self::getApiCredential( 'ROCKET_CLOUDFLARE_ZONE_ID' );
+		self::$site_url                    = self::getApiCredential( 'ROCKET_CLOUDFLARE_SITE_URL' );
 	}
 
 	/**
