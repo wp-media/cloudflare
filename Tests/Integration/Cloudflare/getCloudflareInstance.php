@@ -102,7 +102,8 @@ class Test_GetCloudflareInstance extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		add_filter('site_url', function() { return 'https://example.org'; } );
+		$callback = function() { return 'https://example.org'; };
+		add_filter('site_url', $callback );
 
 		self::$cf             = new Cloudflare( self::$options, self::$cf_facade );
 		$is_api_keys_valid_cf = get_transient( 'rocket_cloudflare_is_api_keys_valid' );
@@ -110,7 +111,7 @@ class Test_GetCloudflareInstance extends TestCase {
 		$this->assertTrue( is_wp_error( $is_api_keys_valid_cf ) );
 		$this->assertSame( 'cloudflare_wrong_zone_id', $is_api_keys_valid_cf->get_error_code() );
 
-		remove_filter('site_url', function() { return 'https://example.org'; } );
+		remove_filter('site_url', $callback );
 	}
 
 	public function testShouldValidateCredentials() {
@@ -123,12 +124,13 @@ class Test_GetCloudflareInstance extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		add_filter('site_url', function() { return self::$site_url; } );
+		$callback = function() { return self::$site_url; };
+		add_filter('site_url', $callback );
 
 		self::$cf             = new Cloudflare( self::$options, self::$cf_facade );
 		$is_api_keys_valid_cf = get_transient( 'rocket_cloudflare_is_api_keys_valid' );
 
 		$this->assertTrue( $is_api_keys_valid_cf );
-		remove_filter('site_url', function() { return self::$site_url; } );
+		remove_filter('site_url', $callback );
 	}
 }

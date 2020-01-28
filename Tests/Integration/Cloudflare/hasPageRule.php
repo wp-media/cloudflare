@@ -35,12 +35,13 @@ class Test_HasPageRule extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		add_filter('site_url', function() { return self::$site_url; } );
+		$callback = function() { return self::$site_url; };
+		add_filter('site_url', $callback );
 
 		self::$cf      = new Cloudflare( self::$options, self::$cf_facade );
 		$has_page_rule = self::$cf->has_page_rule( 'cache_everything' );
 
 		$this->assertEquals( 0, $has_page_rule );
-		remove_filter('site_url', function() { return self::$site_url; } );
+		remove_filter('site_url', $callback );
 	}
 }

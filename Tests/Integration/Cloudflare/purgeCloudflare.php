@@ -35,12 +35,13 @@ class Test_PurgeCloudflare extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		add_filter('site_url', function() { return self::$site_url; } );
+		$callback = function() { return self::$site_url; };
+		add_filter('site_url', $callback );
 
 		self::$cf         = new Cloudflare( self::$options, self::$cf_facade );
 		$purge_cloudflare = self::$cf->purge_cloudflare();
 
 		$this->assertTrue( $purge_cloudflare );
-		remove_filter('site_url', function() { return self::$site_url; } );
+		remove_filter('site_url', $callback );
 	}
 }

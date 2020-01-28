@@ -36,7 +36,8 @@ class Test_SetRocketLoader extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		add_filter('site_url', function() { return self::$site_url; } );
+		$callback = function() { return self::$site_url; };
+		add_filter('site_url', $callback );
 
 		self::$cf          = new Cloudflare( self::$options, self::$cf_facade );
 		$orig              = $this->getSetting( 'rocket_loader' );
@@ -45,6 +46,6 @@ class Test_SetRocketLoader extends TestCase {
 		$new_val           = $this->getSetting( 'rocket_loader' );
 
 		$this->assertSame( $new, $new_val );
-		remove_filter('site_url', function() { return self::$site_url; } );
+		remove_filter('site_url', $callback );
 	}
 }

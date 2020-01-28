@@ -36,7 +36,8 @@ class Test_GetSettings extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		add_filter('site_url', function() { return self::$site_url; } );
+		$callback = function() { return self::$site_url; };
+		add_filter('site_url', $callback );
 
 		self::$cf        = new Cloudflare( self::$options, self::$cf_facade );
 		$minify          = $this->getSetting( 'minify' );
@@ -56,6 +57,6 @@ class Test_GetSettings extends TestCase {
 		$get_settings = self::$cf->get_settings();
 
 		$this->assertSame( $orig_cf_settings_array, $get_settings );
-		remove_filter('site_url', function() { return self::$site_url; } );
+		remove_filter('site_url', $callback );
 	}
 }

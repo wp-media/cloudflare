@@ -39,7 +39,8 @@ class Test_PurgeByUrl extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		add_filter('site_url', function() { return self::$site_url; } );
+		$callback = function() { return self::$site_url; };
+		add_filter('site_url', $callback );
 
 		self::$cf         = new Cloudflare( self::$options, self::$cf_facade );
 		$purge_urls       = [
@@ -50,6 +51,6 @@ class Test_PurgeByUrl extends TestCase {
 
 		$this->assertTrue( is_wp_error( $purge_cloudflare ) );
 		$this->assertSame( 'cloudflare_purge_failed', $purge_cloudflare->get_error_code() );
-		remove_filter('site_url', function() { return self::$site_url; } );
+		remove_filter('site_url', $callback );
 	}
 }

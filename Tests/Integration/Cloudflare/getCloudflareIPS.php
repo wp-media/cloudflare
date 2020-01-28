@@ -39,7 +39,8 @@ class Test_GetCloudflareIPS extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		add_filter('site_url', function() { return self::$site_url; } );
+		$callback = function() { return self::$site_url; };
+		add_filter('site_url', $callback );
 
 		$orig_cf_ips        = get_transient( 'rocket_cloudflare_ips' );
 		self::$cf           = new Cloudflare( self::$options, self::$cf_facade );
@@ -47,7 +48,7 @@ class Test_GetCloudflareIPS extends TestCase {
 		$new_cf_ips         = get_transient( 'rocket_cloudflare_ips' );
 
 		$this->assertEquals( $get_cloudflare_ips, $new_cf_ips );
-		remove_filter('site_url', function() { return self::$site_url; } );
+		remove_filter('site_url', $callback );
 	}
 
 }

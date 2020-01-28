@@ -36,7 +36,8 @@ class Test_SetMinify extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		add_filter('site_url', function() { return self::$site_url; } );
+		$callback = function() { return self::$site_url; };
+		add_filter('site_url', $callback );
 
 		self::$cf   = new Cloudflare( self::$options, self::$cf_facade );
 		$new        = 'invalid';
@@ -44,7 +45,7 @@ class Test_SetMinify extends TestCase {
 
 		$this->assertTrue( is_wp_error( $set_minify ) );
 		$this->assertSame( 'cloudflare_minification', $set_minify->get_error_code() );
-		remove_filter('site_url', function() { return self::$site_url; } );
+		remove_filter('site_url', $callback );
 	}
 
 	public function testSetMinifyWithSuccess() {
@@ -57,7 +58,8 @@ class Test_SetMinify extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		add_filter('site_url', function() { return self::$site_url; } );
+		$callback = function() { return self::$site_url; };
+		add_filter('site_url', $callback );
 
 		self::$cf   = new Cloudflare( self::$options, self::$cf_facade );
 		$orig       = $this->getSetting( 'minify' );
@@ -66,6 +68,6 @@ class Test_SetMinify extends TestCase {
 		$new_val    = $this->getSetting( 'minify' );
 
 		$this->assertSame( $new, $new_val->js );
-		remove_filter('site_url', function() { return self::$site_url; } );
+		remove_filter('site_url', $callback );
 	}
 }

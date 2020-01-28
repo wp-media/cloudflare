@@ -37,7 +37,8 @@ class Test_SetBrowserCacheTTL extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		add_filter('site_url', function() { return self::$site_url; } );
+		$callback = function() { return self::$site_url; };
+		add_filter('site_url', $callback );
 
 		self::$cf              = new Cloudflare( self::$options, self::$cf_facade );
 		$new                   = 29;
@@ -46,7 +47,7 @@ class Test_SetBrowserCacheTTL extends TestCase {
 
 		$this->assertTrue( is_wp_error( $set_browser_cache_ttl ) );
 		$this->assertSame( 'cloudflare_browser_cache', $set_browser_cache_ttl->get_error_code() );
-		remove_filter('site_url', function() { return self::$site_url; } );
+		remove_filter('site_url', $callback );
 	}
 
 	public function testSetBrowserCacheTTLWithValidValue() {
@@ -59,7 +60,8 @@ class Test_SetBrowserCacheTTL extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		add_filter('site_url', function() { return self::$site_url; } );
+		$callback = function() { return self::$site_url; };
+		add_filter('site_url', $callback );
 
 		self::$cf              = new Cloudflare( self::$options, self::$cf_facade );
 		$orig                  = (int) $this->getSetting( 'browser_cache_ttl' );
@@ -70,6 +72,6 @@ class Test_SetBrowserCacheTTL extends TestCase {
 		$new                   = (int) $this->getSetting( 'browser_cache_ttl' );
 
 		$this->assertSame( $new, $set_browser_cache_ttl );
-		remove_filter('site_url', function() { return self::$site_url; } );
+		remove_filter('site_url', $callback );
 	}
 }

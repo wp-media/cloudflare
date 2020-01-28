@@ -36,7 +36,8 @@ class Test_SetCacheLevel extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		add_filter('site_url', function() { return self::$site_url; } );
+		$callback = function() { return self::$site_url; };
+		add_filter('site_url', $callback );
 
 		self::$cf        = new Cloudflare( self::$options, self::$cf_facade );
 		$mode            = 'invalid';
@@ -44,7 +45,7 @@ class Test_SetCacheLevel extends TestCase {
 
 		$this->assertTrue( is_wp_error( $set_cache_level ) );
 		$this->assertSame( 'cloudflare_cache_level', $set_cache_level->get_error_code() );
-		remove_filter('site_url', function() { return self::$site_url; } );
+		remove_filter('site_url', $callback );
 	}
 
 	public function testSetCacheLevelWithSuccess() {
@@ -57,7 +58,8 @@ class Test_SetCacheLevel extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		add_filter('site_url', function() { return self::$site_url; } );
+		$callback = function() { return self::$site_url; };
+		add_filter('site_url', $callback );
 
 		self::$cf        = new Cloudflare( self::$options, self::$cf_facade );
 		//valid values: aggressive, basic, simplified
@@ -68,6 +70,6 @@ class Test_SetCacheLevel extends TestCase {
 		$new             = $this->getSetting( 'cache_level' );
 
 		$this->assertSame( $new, $set_cache_level );
-		remove_filter('site_url', function() { return self::$site_url; } );
+		remove_filter('site_url', $callback );
 	}
 }
