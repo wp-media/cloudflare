@@ -19,11 +19,11 @@ class Test_SetRocketLoader extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		self::$cf          = new Cloudflare( self::$options, self::$cf_facade );
-		$mode              = 'off';
-		$set_rocket_loader = self::$cf->set_rocket_loader( $mode );
+		self::$cf = new Cloudflare( self::$options, self::$cf_facade );
+		$mode     = 'off';
+		$response = self::$cf->set_rocket_loader( $mode );
 
-		$this->assertTrue( is_wp_error( $set_rocket_loader ) );
+		$this->assertTrue( is_wp_error( $response ) );
 	}
 
 	public function testSetRocketLoaderWithSuccess() {
@@ -39,13 +39,14 @@ class Test_SetRocketLoader extends TestCase {
 		$callback = function() { return self::$site_url; };
 		add_filter('site_url', $callback );
 
-		self::$cf          = new Cloudflare( self::$options, self::$cf_facade );
-		$orig              = $this->getSetting( 'rocket_loader' );
-		$new               = 'off' == $orig ? 'on' : 'off';
-		$set_rocket_loader = self::$cf->set_rocket_loader( $new );
-		$new_val           = $this->getSetting( 'rocket_loader' );
+		self::$cf = new Cloudflare( self::$options, self::$cf_facade );
+		$orig     = $this->getSetting( 'rocket_loader' );
+		$new      = 'off' == $orig ? 'on' : 'off';
+		$response = self::$cf->set_rocket_loader( $new );
 
-		$this->assertSame( $new, $new_val );
+		$this->assertFalse( is_wp_error( $response ) );
+		$this->assertSame( $new, $response );
+
 		remove_filter('site_url', $callback );
 	}
 }

@@ -81,11 +81,26 @@ abstract class TestCase extends WP_UnitTestCase {
 		return rocket_get_constant( $name, '' );
 	}
 
+	protected function getNewCacheLevel( $value ) {
+		$valid_cache_level         = $this->getCacheLevelValidValues();
+		$without_given_cache_level = array_values( array_diff( $valid_cache_level, [ $value ] ) );
+
+		return $without_given_cache_level[ rand( 0, count( $without_given_cache_level ) - 1 ) ];
+	}
+
 	protected function getNewTTL( $value ) {
 		$valid_ttls = $this->getTTLValidValues();
 		$without_given_ttl = array_values( array_diff( $valid_ttls, [ $value ] ) );
 
 		return $without_given_ttl[ rand( 0, count( $without_given_ttl ) - 1 ) ];
+	}
+
+	protected function getCacheLevelValidValues() {
+		return [
+			'aggressive',
+			'basic',
+			'simplified'
+		];
 	}
 
 	protected function getTTLValidValues() {

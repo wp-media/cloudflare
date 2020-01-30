@@ -19,13 +19,13 @@ class Test_GetCloudflareIPS extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		$orig_cf_ips        = get_transient( 'rocket_cloudflare_ips' );
-		self::$cf           = new Cloudflare( self::$options, self::$cf_facade );
-		$get_cloudflare_ips = self::$cf->get_cloudflare_ips();
-		$new_cf_ips         = get_transient( 'rocket_cloudflare_ips' );
+		$orig_cf_ips = get_transient( 'rocket_cloudflare_ips' );
+		self::$cf    = new Cloudflare( self::$options, self::$cf_facade );
+		$response    = self::$cf->get_cloudflare_ips();
+		$new_cf_ips  = get_transient( 'rocket_cloudflare_ips' );
 
 		$this->assertFalse( $orig_cf_ips );
-		$this->assertEquals( $get_cloudflare_ips, $new_cf_ips );
+		$this->assertEquals( $response, $new_cf_ips );
 	}
 
 
@@ -42,12 +42,12 @@ class Test_GetCloudflareIPS extends TestCase {
 		$callback = function() { return self::$site_url; };
 		add_filter('site_url', $callback );
 
-		$orig_cf_ips        = get_transient( 'rocket_cloudflare_ips' );
-		self::$cf           = new Cloudflare( self::$options, self::$cf_facade );
-		$get_cloudflare_ips = self::$cf->get_cloudflare_ips();
-		$new_cf_ips         = get_transient( 'rocket_cloudflare_ips' );
+		$orig_cf_ips = get_transient( 'rocket_cloudflare_ips' );
+		self::$cf    = new Cloudflare( self::$options, self::$cf_facade );
+		$response    = self::$cf->get_cloudflare_ips();
+		$new_cf_ips  = get_transient( 'rocket_cloudflare_ips' );
 
-		$this->assertEquals( $get_cloudflare_ips, $new_cf_ips );
+		$this->assertEquals( $response, $new_cf_ips );
 		remove_filter('site_url', $callback );
 	}
 

@@ -19,10 +19,10 @@ class Test_SetDevMode extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		self::$cf    = new Cloudflare( self::$options, self::$cf_facade );
-		$set_devmode = self::$cf->set_devmode( false );
+		self::$cf = new Cloudflare( self::$options, self::$cf_facade );
+		$response = self::$cf->set_devmode( false );
 
-		$this->assertTrue( is_wp_error( $set_devmode ) );
+		$this->assertTrue( is_wp_error( $response ) );
 	}
 
 	public function testSetDevModeWithInvalidValue() {
@@ -38,12 +38,13 @@ class Test_SetDevMode extends TestCase {
 		$callback = function() { return self::$site_url; };
 		add_filter('site_url', $callback );
 
-		self::$cf    = new Cloudflare( self::$options, self::$cf_facade );
-		$new         = 'invalid';
-		$set_devmode = self::$cf->set_devmode( $new );
-		$new_val     = $this->getSetting( 'development_mode' );
+		self::$cf = new Cloudflare( self::$options, self::$cf_facade );
+		$new      = 'invalid';
+		$response = self::$cf->set_devmode( $new );
 
-		$this->assertSame( $new_val, $set_devmode );
+		$this->assertFalse( is_wp_error( $response ) );
+		$this->assertSame( 'off', $response );
+
 		remove_filter('site_url', $callback );
 	}
 
@@ -60,13 +61,14 @@ class Test_SetDevMode extends TestCase {
 		$callback = function() { return self::$site_url; };
 		add_filter('site_url', $callback );
 
-		self::$cf    = new Cloudflare( self::$options, self::$cf_facade );
+		self::$cf = new Cloudflare( self::$options, self::$cf_facade );
 		$orig     = $this->getSetting( 'development_mode' );
-		$new         = 'off' === $orig ? true : false;
-		$set_devmode = self::$cf->set_devmode( $new );
-		$new_val     = $this->getSetting( 'development_mode' );
+		$new      = 'off' === $orig ? true : false;
+		$response = self::$cf->set_devmode( $new );
 
-		$this->assertSame( $new_val, $set_devmode );
+		$this->assertFalse( is_wp_error( $response ) );
+		$this->assertSame( $new, 'off' === $response ? false : true );
+
 		remove_filter('site_url', $callback );
 	}
 }

@@ -19,11 +19,11 @@ class Test_SetMinify extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		self::$cf   = new Cloudflare( self::$options, self::$cf_facade );
-		$mode       = 'off';
-		$set_minify = self::$cf->set_minify( $mode );
+		self::$cf = new Cloudflare( self::$options, self::$cf_facade );
+		$mode     = 'off';
+		$response = self::$cf->set_minify( $mode );
 
-		$this->assertTrue( is_wp_error( $set_minify ) );
+		$this->assertTrue( is_wp_error( $response ) );
 	}
 
 	public function testSetMinifyWithInvalidValue() {
@@ -39,12 +39,12 @@ class Test_SetMinify extends TestCase {
 		$callback = function() { return self::$site_url; };
 		add_filter('site_url', $callback );
 
-		self::$cf   = new Cloudflare( self::$options, self::$cf_facade );
-		$new        = 'invalid';
-		$set_minify = self::$cf->set_minify( $new );
+		self::$cf = new Cloudflare( self::$options, self::$cf_facade );
+		$new      = 'invalid';
+		$response = self::$cf->set_minify( $new );
 
-		$this->assertTrue( is_wp_error( $set_minify ) );
-		$this->assertSame( 'cloudflare_minification', $set_minify->get_error_code() );
+		$this->assertTrue( is_wp_error( $response ) );
+		$this->assertSame( 'cloudflare_minification', $response->get_error_code() );
 		remove_filter('site_url', $callback );
 	}
 
@@ -61,13 +61,13 @@ class Test_SetMinify extends TestCase {
 		$callback = function() { return self::$site_url; };
 		add_filter('site_url', $callback );
 
-		self::$cf   = new Cloudflare( self::$options, self::$cf_facade );
-		$orig       = $this->getSetting( 'minify' );
-		$new        = 'off' == $orig->js ? 'on' : 'off';
-		$set_minify = self::$cf->set_minify( $new );
-		$new_val    = $this->getSetting( 'minify' );
+		self::$cf = new Cloudflare( self::$options, self::$cf_facade );
+		$orig     = $this->getSetting( 'minify' );
+		$new      = 'off' == $orig->js ? 'on' : 'off';
+		$response = self::$cf->set_minify( $new );
 
-		$this->assertSame( $new, $new_val->js );
+		$this->assertFalse( is_wp_error( $response ) );
+		$this->assertSame( $new, $response );
 		remove_filter('site_url', $callback );
 	}
 }

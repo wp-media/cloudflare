@@ -19,11 +19,11 @@ class Test_SetCacheLevel extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		self::$cf        = new Cloudflare( self::$options, self::$cf_facade );
-		$mode            = 'basic';
-		$set_cache_level = self::$cf->set_cache_level( $mode );
+		self::$cf = new Cloudflare( self::$options, self::$cf_facade );
+		$mode     = 'basic';
+		$response = self::$cf->set_cache_level( $mode );
 
-		$this->assertTrue( is_wp_error( $set_cache_level ) );
+		$this->assertTrue( is_wp_error( $response ) );
 	}
 
 	public function testSetCacheLevelWithInvalidValue() {
@@ -39,12 +39,12 @@ class Test_SetCacheLevel extends TestCase {
 		$callback = function() { return self::$site_url; };
 		add_filter('site_url', $callback );
 
-		self::$cf        = new Cloudflare( self::$options, self::$cf_facade );
-		$mode            = 'invalid';
-		$set_cache_level = self::$cf->set_cache_level( $mode );
+		self::$cf = new Cloudflare( self::$options, self::$cf_facade );
+		$mode     = 'invalid';
+		$response = self::$cf->set_cache_level( $mode );
 
-		$this->assertTrue( is_wp_error( $set_cache_level ) );
-		$this->assertSame( 'cloudflare_cache_level', $set_cache_level->get_error_code() );
+		$this->assertTrue( is_wp_error( $response ) );
+		$this->assertSame( 'cloudflare_cache_level', $response->get_error_code() );
 		remove_filter('site_url', $callback );
 	}
 
@@ -63,13 +63,13 @@ class Test_SetCacheLevel extends TestCase {
 
 		self::$cf        = new Cloudflare( self::$options, self::$cf_facade );
 		//valid values: aggressive, basic, simplified
-		$orig            = $this->getSetting( 'cache_level' );
-		$valid_arr       = array_values( array_diff( [ 'aggressive', 'basic', 'simplified' ], [ $orig ] ) );
-		$new_val         = $valid_arr[ rand( 0, count( $valid_arr ) - 1 ) ];
-		$set_cache_level = self::$cf->set_cache_level( $new_val );
-		$new             = $this->getSetting( 'cache_level' );
+		$orig     = $this->getSetting( 'cache_level' );
+		$new_val  = $this->getNewCacheLevel( $orig );
+		$response = self::$cf->set_cache_level( $new_val );
 
-		$this->assertSame( $new, $set_cache_level );
+		$this->assertFalse( is_wp_error( $response ) );
+		$this->assertSame( $new_val, $response );
+
 		remove_filter('site_url', $callback );
 	}
 }
