@@ -3,11 +3,13 @@
 namespace WPMedia\Cloudflare\Tests\Integration;
 
 use Brain\Monkey;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use WPMedia\Cloudflare\Tests\TestCaseTrait;
 use WP_UnitTestCase;
 
 abstract class TestCase extends WP_UnitTestCase {
 	use TestCaseTrait;
+	use MockeryPHPUnitIntegration;
 
 	protected static $api_key;
 	protected static $email;

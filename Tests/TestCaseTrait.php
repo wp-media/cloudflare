@@ -2,13 +2,11 @@
 
 namespace WPMedia\Cloudflare\Tests;
 
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
 
 trait TestCaseTrait {
-	use MockeryPHPUnitIntegration;
 
 	protected static function stubRocketFunctions() {
 		require_once __DIR__ . '/Fixtures/functions.php';
