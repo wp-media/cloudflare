@@ -13,28 +13,52 @@ use WPMedia\Cloudflare\CloudflareSubscriber;
 class Factory {
 	private $container = [];
 
+	public static $api_credentials_config_file;
+	public static $api_key;
+	public static $email;
+	public static $zone_id;
+	public static $site_url;
+
 	public function __construct() {
 		add_action( 'plugins_loaded', [ $this, 'init' ] );
 	}
 
 	public function init() {
 		require_once dirname( __DIR__ ) . '/Fixtures/functions.php';
+
+		add_filter( 'site_url', [ $this, 'setSiteUrl' ] );
+
+		$this->setUpApiCredentials();
 		$this->addOptions();
 		$this->initContainer();
+
+		remove_filter( 'site_url', [ $this, 'setSiteUrl' ] );
+	}
+
+	public function setSiteUrl() {
+		return self::$site_url;
+	}
+
+	private function setUpApiCredentials() {
+		self::$api_credentials_config_file = 'cloudflare.php';
+		self::$email                       = self::getApiCredential( 'ROCKET_CLOUDFLARE_EMAIL' );
+		self::$api_key                     = self::getApiCredential( 'ROCKET_CLOUDFLARE_API_KEY' );
+		self::$zone_id                     = self::getApiCredential( 'ROCKET_CLOUDFLARE_ZONE_ID' );
+		self::$site_url                    = self::getApiCredential( 'ROCKET_CLOUDFLARE_SITE_URL' );
 	}
 
 	private function addOptions() {
 		update_option(
-			'wp_rocket_setting',
+			'wp_rocket_settings',
 			[
 				'cdn'                         => 0,
 				'cdn_cnames'                  => [],
 				'cdn_zone'                    => [],
 				'cdn_reject_files'            => [],
-				'do_cloudflare'               => 0,
-				'cloudflare_email'            => '',
-				'cloudflare_api_key'          => '',
-				'cloudflare_zone_id'          => '',
+				'do_cloudflare'               => 1,
+				'cloudflare_email'            => self::$email,
+				'cloudflare_api_key'          => self::$api_key,
+				'cloudflare_zone_id'          => self::$zone_id,
 				'cloudflare_devmode'          => 0,
 				'cloudflare_protocol_rewrite' => 0,
 				'cloudflare_auto_settings'    => 0,
@@ -71,5 +95,34 @@ class Factory {
 
 	public function restoreState() {
 		$this->addOptions();
+	}
+
+	/**
+	 * Gets the credential's value from either an environment variable (stored locally on the machine or CI) or from a
+	 * local constant defined in `tests/env/local/cloudflare.php`.
+	 *
+	 * @param string $name Name of the environment variable or constant to find.
+	 *
+	 * @return string returns the value if available; else an empty string.
+	 */
+	public static function getApiCredential( $name ) {
+		$var = getenv( $name );
+		if ( ! empty( $var ) ) {
+			return $var;
+		}
+
+		if ( ! self::$api_credentials_config_file ) {
+			return '';
+		}
+
+		$config_file = dirname( __DIR__ ) . '/env/local/cloudflare.php';
+		if ( ! is_readable( $config_file ) ) {
+			return '';
+		}
+
+		// This file is local to the developer's machine and not stored in the repo.
+		require_once $config_file;
+
+		return rocket_get_constant( $name, '' );
 	}
 }

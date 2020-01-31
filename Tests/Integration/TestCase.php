@@ -26,12 +26,10 @@ abstract class TestCase extends WP_UnitTestCase {
 	public static function setUpBeforeClass() {
 		parent::setUpBeforeClass();
 
-		// Set up the Cloudflare API's credentials.
-		self::$api_credentials_config_file = 'cloudflare.php';
-		self::$email                       = self::getApiCredential( 'ROCKET_CLOUDFLARE_EMAIL' );
-		self::$api_key                     = self::getApiCredential( 'ROCKET_CLOUDFLARE_API_KEY' );
-		self::$zone_id                     = self::getApiCredential( 'ROCKET_CLOUDFLARE_ZONE_ID' );
-		self::$site_url                    = self::getApiCredential( 'ROCKET_CLOUDFLARE_SITE_URL' );
+		self::$email    = Factory::$email;
+		self::$api_key  = Factory::$api_key;
+		self::$zone_id  = Factory::$zone_id;
+		self::$site_url = Factory::$site_url;
 	}
 
 	/**
@@ -61,24 +59,7 @@ abstract class TestCase extends WP_UnitTestCase {
 	 * @return string returns the value if available; else an empty string.
 	 */
 	protected static function getApiCredential( $name ) {
-		$var = getenv( $name );
-		if ( ! empty( $var ) ) {
-			return $var;
-		}
-
-		if ( ! self::$api_credentials_config_file ) {
-			return '';
-		}
-
-		$config_file = dirname( __DIR__ ) . '/env/local/cloudflare.php';
-		if ( ! is_readable( $config_file ) ) {
-			return '';
-		}
-
-		// This file is local to the developer's machine and not stored in the repo.
-		require_once $config_file;
-
-		return rocket_get_constant( $name, '' );
+		return Factory::getApiCredential( $name );
 	}
 
 	protected function getNewCacheLevel( $value ) {
@@ -89,7 +70,7 @@ abstract class TestCase extends WP_UnitTestCase {
 	}
 
 	protected function getNewTTL( $value ) {
-		$valid_ttls = $this->getTTLValidValues();
+		$valid_ttls        = $this->getTTLValidValues();
 		$without_given_ttl = array_values( array_diff( $valid_ttls, [ $value ] ) );
 
 		return $without_given_ttl[ rand( 0, count( $without_given_ttl ) - 1 ) ];
@@ -99,7 +80,7 @@ abstract class TestCase extends WP_UnitTestCase {
 		return [
 			'aggressive',
 			'basic',
-			'simplified'
+			'simplified',
 		];
 	}
 
