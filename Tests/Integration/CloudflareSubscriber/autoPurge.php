@@ -30,8 +30,6 @@ class Test_AutoPurge extends TestCase {
 		Functions\expect( 'is_wp_error' )->never();
 
 		do_action( 'after_rocket_clean_domain' );
-
-		$this->assertTrue( true ); // placeholder for risky tests.
 	}
 
 	public function testShouldBailoutWhenUserCantPurgeCF() {
@@ -45,8 +43,6 @@ class Test_AutoPurge extends TestCase {
 		Functions\expect( 'is_wp_error' )->never();
 
 		do_action( 'after_rocket_clean_domain' );
-
-		$this->assertTrue( true ); // placeholder for risky tests.
 	}
 
 	public function testShouldBailoutWhenNoPageRule() {
@@ -75,8 +71,6 @@ class Test_AutoPurge extends TestCase {
 			->with( 0 );
 
 		do_action( 'after_rocket_clean_domain' );
-
-		$this->assertTrue( true ); // placeholder for risky tests.
 
 		remove_filter( 'site_url', [ $this, 'setSiteUrl' ] );
 	}
