@@ -29,7 +29,7 @@ class Factory {
 		add_filter( 'site_url', [ $this, 'setSiteUrl' ] );
 
 		$this->setUpApiCredentials();
-		$this->addOptions();
+		$this->resetToOriginalState();
 		$this->initContainer();
 
 		remove_filter( 'site_url', [ $this, 'setSiteUrl' ] );
@@ -47,25 +47,43 @@ class Factory {
 		self::$site_url                    = self::getApiCredential( 'ROCKET_CLOUDFLARE_SITE_URL' );
 	}
 
+	public function resetToOriginalState() {
+		$transients = [
+			'rocket_cloudflare_is_api_keys_valid',
+			'rocket_cloudflare_ips',
+		];
+		foreach ( $transients as $transient ) {
+			delete_transient( $transient );
+		}
+
+		$this->addOptions();
+	}
+
 	private function addOptions() {
-		update_option(
-			'wp_rocket_settings',
-			[
-				'cdn'                         => 0,
-				'cdn_cnames'                  => [],
-				'cdn_zone'                    => [],
-				'cdn_reject_files'            => [],
-				'do_cloudflare'               => 1,
-				'cloudflare_email'            => self::$email,
-				'cloudflare_api_key'          => self::$api_key,
-				'cloudflare_zone_id'          => self::$zone_id,
-				'cloudflare_devmode'          => 0,
-				'cloudflare_protocol_rewrite' => 0,
-				'cloudflare_auto_settings'    => 0,
-				'cloudflare_old_settings'     => '',
-				'varnish_auto_purge'          => 0,
-			]
-		);
+		$options = $this->getOptions();
+		update_option( 'wp_rocket_settings', $options );
+
+		if ( isset( $this->container['options'] ) ) {
+			$this->container['options']->set_values( $options );
+		}
+	}
+
+	public function getOptions() {
+		return [
+			'cdn'                         => 0,
+			'cdn_cnames'                  => [],
+			'cdn_zone'                    => [],
+			'cdn_reject_files'            => [],
+			'do_cloudflare'               => 1,
+			'cloudflare_email'            => self::$email,
+			'cloudflare_api_key'          => self::$api_key,
+			'cloudflare_zone_id'          => self::$zone_id,
+			'cloudflare_devmode'          => 0,
+			'cloudflare_protocol_rewrite' => 0,
+			'cloudflare_auto_settings'    => 0,
+			'cloudflare_old_settings'     => '',
+			'varnish_auto_purge'          => 0,
+		];
 	}
 
 	private function initContainer() {

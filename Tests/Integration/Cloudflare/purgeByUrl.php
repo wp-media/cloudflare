@@ -10,39 +10,19 @@ use WPMedia\Cloudflare\Cloudflare;
 class Test_PurgeByUrl extends TestCase {
 
 	public function testPurgeByUrlWithAPIError() {
-		$data = [
-			'cloudflare_email'   => null,
-			'cloudflare_api_key' => null,
-			'cloudflare_zone_id' => null,
-			'do_cloudflare'      => true,
-		];
-		update_option( 'wp_rocket_settings', $data );
-		self::$options->set_values( $data );
+		$this->setInvalidApiCredentials();
 
-		self::$cf   = new Cloudflare( self::$options, self::$cf_facade );
+		$cf   = new Cloudflare( self::$options, self::$cf_facade );
 		$purge_urls = [
 			'/',
 			'/hello-world'
 		];
-		$response   = self::$cf->purge_by_url( null, $purge_urls, null );
+		$response   = $cf->purge_by_url( null, $purge_urls, null );
 
 		$this->assertTrue( is_wp_error( $response ) );
 	}
 
 	public function testPurgeByUrlWithPurgeError() {
-		$data = [
-			'cloudflare_email'   => self::$email,
-			'cloudflare_api_key' => self::$api_key,
-			'cloudflare_zone_id' => self::$zone_id,
-			'do_cloudflare'      => true,
-		];
-		update_option( 'wp_rocket_settings', $data );
-		self::$options->set_values( $data );
-
-		$callback = function() { return self::$site_url; };
-		add_filter('site_url', $callback );
-
-		self::$cf   = new Cloudflare( self::$options, self::$cf_facade );
 		$purge_urls = [
 			'/',
 			'/hello-world'
@@ -51,6 +31,5 @@ class Test_PurgeByUrl extends TestCase {
 
 		$this->assertTrue( is_wp_error( $response ) );
 		$this->assertSame( 'cloudflare_purge_failed', $response->get_error_code() );
-		remove_filter('site_url', $callback );
 	}
 }
