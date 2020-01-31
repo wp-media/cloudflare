@@ -39,11 +39,4 @@ class Test_ChangeCacheLevel extends TestCase {
 		$this->assertNotSame( $orig, $response->result->value );
 	}
 
-	private function getNewCacheLevel( $cache_level ) {
-		foreach ( [ 'aggressive', 'basic', 'simplified' ] as $level ) {
-			if ( $level !== $cache_level ) {
-				return $level;
-			}
-		}
-	}
 }

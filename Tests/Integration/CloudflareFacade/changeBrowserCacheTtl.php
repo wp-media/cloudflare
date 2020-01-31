@@ -31,12 +31,12 @@ class Test_ChangeBrowserCacheTtl extends TestCase {
 	public function testShouldChangeBrowserCacheTtlWhenSettingGiven() {
 		self::$cf->set_api_credentials( self::$email, self::$api_key, self::$zone_id );
 
-		$orig = (int) $this->getSetting( 'browser_cache_ttl' );
-		$new  = $orig > 0 ? $orig - 3600 : 3600;
+		$orig      = (int) $this->getSetting( 'browser_cache_ttl' );
+		$new_ttl  = $this->getNewTTL( $orig );
 
-		$response = self::$cf->change_browser_cache_ttl( $new );
+		$response  = self::$cf->change_browser_cache_ttl( $new_ttl );
 		$this->assertTrue( $response->success );
-		$this->assertSame( $new, $response->result->value );
+		$this->assertSame( $new_ttl, $response->result->value );
 		$this->assertNotSame( $orig, $response->result->value );
 	}
 }
