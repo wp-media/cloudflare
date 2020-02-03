@@ -2,7 +2,6 @@
 
 namespace WPMedia\Cloudflare\Tests;
 
-use Brain\Monkey\Functions;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;

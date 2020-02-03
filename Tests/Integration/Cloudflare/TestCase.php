@@ -20,11 +20,29 @@ abstract class TestCase extends BaseTestCase {
 		self::$options   = getFactory()->getContainer( 'options' );
 	}
 
+	public function tearDown() {
+		parent::tearDown();
+
+		getFactory()->resetToOriginalState();
+	}
+
 	protected function getSetting( $setting ) {
 		$response = self::$api->get( 'zones/' . self::$zone_id . '/settings/' . $setting );
 
 		if ( $response->success ) {
 			return $response->result->value;
 		}
+	}
+
+	protected function setInvalidApiCredentials( $do_cloudflare = true ) {
+		$data = [
+			'cloudflare_email'   => null,
+			'cloudflare_api_key' => null,
+			'cloudflare_zone_id' => null,
+			'do_cloudflare'      => $do_cloudflare,
+		];
+
+		update_option( 'wp_rocket_settings', $data );
+		self::$options->set_values( $data );
 	}
 }

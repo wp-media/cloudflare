@@ -11,32 +11,18 @@ use WPMedia\Cloudflare\Cloudflare;
 class Test_GetCloudflareInstance extends TestCase {
 
 	public function testWithCloudflareDisabled() {
-		$data = [
-			'cloudflare_email'   => null,
-			'cloudflare_api_key' => null,
-			'cloudflare_zone_id' => null,
-			'do_cloudflare'      => false,
-		];
-		update_option( 'wp_rocket_settings', $data );
-		self::$options->set_values( $data );
+		$this->setInvalidApiCredentials( false );
 
-		self::$cf             = new Cloudflare( self::$options, self::$cf_facade );
+		new Cloudflare( self::$options, self::$cf_facade );
 		$is_api_keys_valid_cf = get_transient( 'rocket_cloudflare_is_api_keys_valid' );
 
 		$this->assertFalse( $is_api_keys_valid_cf );
 	}
 
 	public function testShouldSetCloudflareApiKeyTransientWhenCFCredentialsAreNull() {
-		$data = [
-			'cloudflare_email'   => null,
-			'cloudflare_api_key' => null,
-			'cloudflare_zone_id' => null,
-			'do_cloudflare'      => true,
-		];
-		update_option( 'wp_rocket_settings', $data );
-		self::$options->set_values( $data );
+		$this->setInvalidApiCredentials();
 
-		self::$cf             = new Cloudflare( self::$options, self::$cf_facade );
+		new Cloudflare( self::$options, self::$cf_facade );
 		$is_api_keys_valid_cf = get_transient( 'rocket_cloudflare_is_api_keys_valid' );
 
 		$this->assertTrue( is_wp_error( $is_api_keys_valid_cf ) );
@@ -52,7 +38,7 @@ class Test_GetCloudflareInstance extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		self::$cf             = new Cloudflare( self::$options, self::$cf_facade );
+		new Cloudflare( self::$options, self::$cf_facade );
 		$is_api_keys_valid_cf = get_transient( 'rocket_cloudflare_is_api_keys_valid' );
 
 		$this->assertTrue( is_wp_error( $is_api_keys_valid_cf ) );
@@ -68,7 +54,7 @@ class Test_GetCloudflareInstance extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		self::$cf             = new Cloudflare( self::$options, self::$cf_facade );
+		new Cloudflare( self::$options, self::$cf_facade );
 		$is_api_keys_valid_cf = get_transient( 'rocket_cloudflare_is_api_keys_valid' );
 
 		$this->assertTrue( is_wp_error( $is_api_keys_valid_cf ) );
@@ -85,7 +71,7 @@ class Test_GetCloudflareInstance extends TestCase {
 		update_option( 'wp_rocket_settings', $data );
 		self::$options->set_values( $data );
 
-		self::$cf             = new Cloudflare( self::$options, self::$cf_facade );
+		new Cloudflare( self::$options, self::$cf_facade );
 		$is_api_keys_valid_cf = get_transient( 'rocket_cloudflare_is_api_keys_valid' );
 
 		$this->assertTrue( is_wp_error( $is_api_keys_valid_cf ) );
@@ -105,7 +91,7 @@ class Test_GetCloudflareInstance extends TestCase {
 		$callback = function() { return 'https://example.org'; };
 		add_filter('site_url', $callback );
 
-		self::$cf             = new Cloudflare( self::$options, self::$cf_facade );
+		new Cloudflare( self::$options, self::$cf_facade );
 		$is_api_keys_valid_cf = get_transient( 'rocket_cloudflare_is_api_keys_valid' );
 
 		$this->assertTrue( is_wp_error( $is_api_keys_valid_cf ) );
@@ -127,7 +113,7 @@ class Test_GetCloudflareInstance extends TestCase {
 		$callback = function() { return self::$site_url; };
 		add_filter('site_url', $callback );
 
-		self::$cf             = new Cloudflare( self::$options, self::$cf_facade );
+		new Cloudflare( self::$options, self::$cf_facade );
 		$is_api_keys_valid_cf = get_transient( 'rocket_cloudflare_is_api_keys_valid' );
 
 		$this->assertTrue( $is_api_keys_valid_cf );
