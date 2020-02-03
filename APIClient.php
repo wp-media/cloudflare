@@ -226,7 +226,9 @@ class APIClient {
 	}
 
 	/**
-	 * API call method for sending requests using GET
+	 * API call method for sending requests using GET.
+	 *
+	 * @since 3.5
 	 *
 	 * @param string $path Path of the endpoint
 	 * @param array  $data Data to be sent along with the request
@@ -238,7 +240,9 @@ class APIClient {
 	}
 
 	/**
-	 * API call method for sending requests using POST
+	 * API call method for sending requests using POST.
+	 *
+	 * @since 3.5
 	 *
 	 * @param string $path Path of the endpoint
 	 * @param array  $data Data to be sent along with the request
@@ -250,7 +254,9 @@ class APIClient {
 	}
 
 	/**
-	 * API call method for sending requests using PUT
+	 * API call method for sending requests using PUT.
+	 *
+	 * @since 3.5
 	 *
 	 * @param string $path Path of the endpoint
 	 * @param array  $data Data to be sent along with the request
@@ -262,7 +268,9 @@ class APIClient {
 	}
 
 	/**
-	 * API call method for sending requests using DELETE
+	 * API call method for sending requests using DELETE.
+	 *
+	 * @since 3.5
 	 *
 	 * @param string $path Path of the endpoint
 	 * @param array  $data Data to be sent along with the request
@@ -274,7 +282,9 @@ class APIClient {
 	}
 
 	/**
-	 * API call method for sending requests using PATCH
+	 * API call method for sending requests using PATCH.
+	 *
+	 * @since 3.5
 	 *
 	 * @param string $path Path of the endpoint
 	 * @param array  $data Data to be sent along with the request
@@ -286,76 +296,27 @@ class APIClient {
 	}
 
 	/**
-	 * API call method for sending requests using GET, POST, PUT, DELETE OR PATCH
+	 * API call method for sending requests using GET, POST, PUT, DELETE OR PATCH.
 	 *
-	 * @param string $path   Path of the endpoint
-	 * @param array  $data   Data to be sent along with the request
-	 * @param string $method Type of method that should be used ('GET', 'POST', 'PUT', 'DELETE', 'PATCH')
+	 * @since  3.5
 	 *
-	 * @return mixed
+	 * @author James Bell <james@james-bell.co.uk> - credit for original code adapted for version 3.5.
+	 * @author WP Media
+	 *
+	 * @param string $path   Path of the endpoint.
+	 * @param array  $data   Data to be sent along with the request.
+	 * @param string $method Type of method that should be used ('GET', 'POST', 'PUT', 'DELETE', 'PATCH').
+	 *
+	 * @return stdClass response object.
+	 * @throws AuthenticationException when email or api key are not set.
+	 * @throws UnauthorizedException when Cloudflare's API returns a 401 or 403.
 	 */
 	protected function request( $path, array $data = [], $method = 'get' ) {
-		if ( ! isset( $this->email, $this->api_key ) || false === filter_var( $this->email, FILTER_VALIDATE_EMAIL ) ) {
+		if ( ! $this->is_authorized() ) {
 			throw new AuthenticationException( __( 'Authentication information must be provided', 'cloudflare' ) );
 		}
 
-		//Removes null entries
-		$data = array_filter( $data, function( $val ) {
-			return ! is_null( $val );
-		} );
-
-		$url = 'https://api.cloudflare.com/client/v4/' . $path;
-
-		$default_curl_options = [
-			CURLOPT_VERBOSE        => false,
-			CURLOPT_FORBID_REUSE   => true,
-			CURLOPT_RETURNTRANSFER => 1,
-			CURLOPT_HEADER         => false,
-			CURLOPT_TIMEOUT        => 30,
-			CURLOPT_SSL_VERIFYPEER => true,
-		];
-
-		$curl_options = $default_curl_options;
-		if ( isset( $this->curl_options ) && is_array( $this->curl_options ) ) {
-			$curl_options = array_replace( $default_curl_options, $this->curl_options );
-		}
-
-		$user_agent = __FILE__;
-		$headers    = [
-			"X-Auth-Email: {$this->email}",
-			"X-Auth-Key: {$this->api_key}",
-			"User-Agent: {$user_agent}",
-			'Content-type: application/json',
-		];
-
-		$ch = curl_init();
-		curl_setopt_array( $ch, $curl_options );
-
-		$json_data = json_encode( $data );
-
-		if ( $method === 'post' ) {
-			curl_setopt( $ch, CURLOPT_POST, true );
-			curl_setopt( $ch, CURLOPT_POSTFIELDS, $json_data );
-		} elseif ( $method === 'put' ) {
-			curl_setopt( $ch, CURLOPT_POSTFIELDS, $json_data );
-			curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, 'PUT' );
-		} elseif ( $method === 'delete' ) {
-			curl_setopt( $ch, CURLOPT_POSTFIELDS, $json_data );
-			curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, 'DELETE' );
-		} elseif ( $method === 'patch' ) {
-			curl_setopt( $ch, CURLOPT_POSTFIELDS, $json_data );
-			curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, 'PATCH' );
-		} else {
-			$url .= '?' . http_build_query( $data );
-		}
-
-		curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
-		curl_setopt( $ch, CURLOPT_URL, $url );
-
-		$http_result = curl_exec( $ch );
-		$error       = curl_error( $ch );
-		$information = curl_getinfo( $ch );
-		$http_code   = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+		list( $http_result, $error, $information, $http_code ) = $this->do_remote_request( $path, $data, $method );
 
 		if ( in_array( $http_code, [ 401, 403 ] ) ) {
 			throw new UnauthorizedException( __( 'You do not have permission to perform this request,', 'cloudflare' ) );
@@ -375,5 +336,133 @@ class APIClient {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Checks if the email and API key for the API credentials are set.
+	 *
+	 * @since 3.5
+	 *
+	 * @return bool true if authorized; else false.
+	 */
+	private function is_authorized() {
+		return (
+			isset( $this->email, $this->api_key )
+			&&
+			false !== filter_var( $this->email, FILTER_VALIDATE_EMAIL )
+		);
+	}
+
+	/**
+	 * Does the request remote cURL request.
+	 *
+	 * @since 3.5
+	 *
+	 * @param string $path   Path of the endpoint.
+	 * @param array  $data   Data to be sent along with the request.
+	 * @param string $method Type of method that should be used ('GET', 'POST', 'PUT', 'DELETE', 'PATCH').
+	 *
+	 * @return array curl response packet.
+	 */
+	private function do_remote_request( $path, array $data, $method ) {
+		$ch = curl_init();
+
+		$this->set_curl_options(
+			$ch,
+			self::CLOUDFLARE_API . $path,
+			$this->remove_null_entries( $data ),
+			$method
+		);
+
+
+		$packet = [
+			curl_exec( $ch ),
+			curl_error( $ch ),
+			curl_getinfo( $ch ),
+			curl_getinfo( $ch, CURLINFO_HTTP_CODE ),
+		];
+
+		curl_close( $ch );
+
+		return $packet;
+	}
+
+	/**
+	 * Sets the cURL options.
+	 *
+	 * @since 3.5
+	 *
+	 * @param resource $ch     cURL handle.
+	 * @param string   $url    Request route.
+	 * @param array    $data   Data to be sent along with the request.
+	 * @param string   $method Type of method that should be used ('GET', 'POST', 'PUT', 'DELETE', 'PATCH').
+	 */
+	private function set_curl_options( $ch, $url, array $data, $method ) {
+		curl_setopt_array( $ch, $this->init_curl_options() );
+
+		if ( 'get' === $method ) {
+			$url .= '?' . http_build_query( $data );
+		} else {
+			curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data ) );
+
+			if ( 'post' === $method ) {
+				curl_setopt( $ch, CURLOPT_POST, true );
+			} else {
+				curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, strtoupper( $method ) );
+			}
+		}
+
+		// Set up the headers.
+		curl_setopt(
+			$ch,
+			CURLOPT_HTTPHEADER,
+			[
+				"X-Auth-Email: {$this->email}",
+				"X-Auth-Key: {$this->api_key}",
+				'User-Agent: ' . __FILE__,
+				'Content-type: application/json',
+			]
+		);
+
+		// Set up the URL.
+		curl_setopt( $ch, CURLOPT_URL, $url );
+	}
+
+	/**
+	 * Removes any null entries from the given data array.
+	 *
+	 * @since 3.5
+	 *
+	 * @param array $data
+	 *
+	 * @return array no null entries.
+	 */
+	private function remove_null_entries( array $data ) {
+		return array_filter(
+			$data,
+			function( $val ) {
+				return ! is_null( $val );
+			}
+		);
+	}
+
+	/**
+	 * Initializes the configured cURL options with the defaults.
+	 *
+	 * @since 3.5
+	 *
+	 * @return array array of curl options.
+	 */
+	private function init_curl_options() {
+		$default = [
+			CURLOPT_VERBOSE        => false,
+			CURLOPT_FORBID_REUSE   => true,
+			CURLOPT_RETURNTRANSFER => 1,
+			CURLOPT_HEADER         => false,
+			CURLOPT_TIMEOUT        => 30,
+			CURLOPT_SSL_VERIFYPEER => true,
+		];
+
+		return array_replace( $default, $this->curl_options );
 	}
 }
