@@ -10,7 +10,8 @@ use WPMedia\Cloudflare\Tests\Unit\TestCase;
 
 /**
  * @covers WPMedia\Cloudflare\CloudflareSubscriber::save_cloudflare_old_settings
- * @group  Subscriber
+ * @group  Cloudflare
+ * @group  CloudflareSubscriber
  */
 class Test_SaveOldSettings extends TestCase {
 

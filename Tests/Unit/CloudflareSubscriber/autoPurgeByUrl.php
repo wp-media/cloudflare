@@ -11,7 +11,8 @@ use WP_Error;
 
 /**
  * @covers WPMedia\Cloudflare\CloudflareSubscriber::auto_purge_by_url
- * @group  Subscriber
+ * @group  Cloudflare
+ * @group  CloudflareSubscriber
  */
 class Test_AutoPurgeByUrl extends TestCase {
 

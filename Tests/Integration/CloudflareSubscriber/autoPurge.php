@@ -8,7 +8,8 @@ use function WPMedia\Cloudflare\Tests\Integration\getFactory;
 
 /**
  * @covers WPMedia\Cloudflare\CloudflareSubscriber::auto_purge
- * @group  Subscriber
+ * @group  Cloudflare
+ * @group  CloudflareSubscriber
  */
 class Test_AutoPurge extends TestCase {
 	private static $options;

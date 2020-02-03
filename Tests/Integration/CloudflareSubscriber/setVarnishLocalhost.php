@@ -6,7 +6,8 @@ use WPMedia\Cloudflare\Tests\Integration\TestCase;
 
 /**
  * @covers WP_Rocket\Subscriber\Addons\Cloudflare\CloudflareSubscriber::set_varnish_localhost
- * @group  Subscriber
+ * @group  Cloudflare
+ * @group  CloudflareSubscriber
  */
 class Test_SetVarnishLocalhost extends TestCase {
 
