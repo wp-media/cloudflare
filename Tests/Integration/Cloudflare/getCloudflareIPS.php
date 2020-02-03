@@ -7,6 +7,7 @@ use WPMedia\Cloudflare\Cloudflare;
 /**
  * @covers WPMedia\Cloudflare\Cloudflare::get_cloudflare_ips
  * @group  Cloudflare
+ * @group  CloudflareManager
  */
 class Test_GetCloudflareIPS extends TestCase {
 
@@ -14,7 +15,7 @@ class Test_GetCloudflareIPS extends TestCase {
 		$this->setInvalidApiCredentials();
 
 		$orig_cf_ips = get_transient( 'rocket_cloudflare_ips' );
-		$cf          = new Cloudflare( self::$options, self::$cf_facade );
+		$cf          = new Cloudflare( self::$options, self::$api );
 		$response    = $cf->get_cloudflare_ips();
 		$new_cf_ips  = get_transient( 'rocket_cloudflare_ips' );
 

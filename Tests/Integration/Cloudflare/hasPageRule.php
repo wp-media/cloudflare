@@ -6,12 +6,13 @@ use WPMedia\Cloudflare\Cloudflare;
 /**
  * @covers WPMedia\Cloudflare\Cloudflare::has_page_rule
  * @group  Cloudflare
+ * @group  CloudflareManager
  */
 class Test_HasPageRule extends TestCase {
 
 	public function testHasPageRuleWithAPIError() {
 		$this->setInvalidApiCredentials();
-		$cf = new Cloudflare( self::$options, self::$cf_facade );
+		$cf = new Cloudflare( self::$options, self::$api );
 		$response = $cf->has_page_rule( 'cache_everything' );
 
 		$this->assertTrue( is_wp_error( $response ) );

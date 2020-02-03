@@ -11,6 +11,7 @@ abstract class TestCase extends WP_UnitTestCase {
 	use TestCaseTrait;
 	use MockeryPHPUnitIntegration;
 
+	protected static $api;
 	protected static $api_key;
 	protected static $email;
 	protected static $zone_id;
@@ -32,6 +33,7 @@ abstract class TestCase extends WP_UnitTestCase {
 		self::$api_key  = Factory::$api_key;
 		self::$zone_id  = Factory::$zone_id;
 		self::$site_url = Factory::$site_url;
+		self::$api      = getFactory()->getContainer( 'cloudflare_api' );
 	}
 
 	/**
@@ -119,7 +121,7 @@ abstract class TestCase extends WP_UnitTestCase {
 	}
 
 	protected function getSetting( $setting ) {
-		$method = $this->get_reflective_method( 'get', self::$api );
+		$method   = $this->get_reflective_method( 'get', self::$api );
 		$response = $method->invoke( self::$api, 'zones/' . self::$zone_id . "/settings/{$setting}" );
 
 		if ( $response->success ) {

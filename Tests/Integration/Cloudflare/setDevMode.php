@@ -7,12 +7,13 @@ use WPMedia\Cloudflare\Cloudflare;
 /**
  * @covers WPMedia\Cloudflare\Cloudflare::set_devmode
  * @group  Cloudflare
+ * @group  CloudflareManager
  */
 class Test_SetDevMode extends TestCase {
 
 	public function testSetDevModeWithAPIError() {
 		$this->setInvalidApiCredentials();
-		$cf       = new Cloudflare( self::$options, self::$cf_facade );
+		$cf       = new Cloudflare( self::$options, self::$api );
 		$response = $cf->set_devmode( false );
 
 		$this->assertTrue( is_wp_error( $response ) );
