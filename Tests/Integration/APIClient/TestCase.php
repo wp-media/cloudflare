@@ -13,13 +13,4 @@ abstract class TestCase extends BaseTestCase {
 
 		self::$api = getFactory()->getContainer( 'cloudflare_api' );
 	}
-
-	protected function getSetting( $setting ) {
-		$method = $this->get_reflective_method( 'get', self::$api );
-		$response = $method->invoke( self::$api, 'zones/' . self::$zone_id . "/settings/{$setting}" );
-
-		if ( $response->success ) {
-			return $response->result->value;
-		}
-	}
 }
