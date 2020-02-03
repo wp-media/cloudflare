@@ -19,8 +19,7 @@
 		"source": "https://github.com/wp-media/cloudflare"
 	},
     "require": {
-		"php": ">=5.6.0",
-		"jamesryanbell/cloudflare": "^1.11"
+		"php": ">=5.6.0"
 	},
 	"require-dev": {
 		"php": "^5.6 || ^7",

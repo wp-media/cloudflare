@@ -13,6 +13,7 @@ use WP_Rocket\Admin\Options;
  * @author Remy Perona
  */
 class CloudflareSubscriber implements Subscriber_Interface {
+
 	/**
 	 * Cloudflare instance
 	 *

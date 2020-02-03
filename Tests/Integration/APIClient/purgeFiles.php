@@ -1,28 +1,28 @@
 <?php
 
-namespace WPMedia\Cloudflare\Tests\Integration\CloudflareFacade;
+namespace WPMedia\Cloudflare\Tests\Integration\APIClient;
 
-use Cloudflare\Exception\AuthenticationException;
+use WPMedia\Cloudflare\AuthenticationException;
 
 /**
- * @covers WPMedia\Cloudflare\CloudflareFacade::purge_files
+ * @covers WPMedia\Cloudflare\APIClient::purge_files
  * @group  Cloudflare
- * @group  CloudflareFacade
+ * @group  CloudflareAPI
  */
 class Test_PurgeFiles extends TestCase {
 
 	public function testShouldThrowErrorWhenInvalidCredentials() {
-		self::$cf->set_api_credentials( null, null, null );
+		self::$api->set_api_credentials( null, null, null );
 
 		$this->expectException( AuthenticationException::class );
 		$this->expectExceptionMessage( 'Authentication information must be provided' );
-		self::$cf->purge_files( [ '/purge-url' ] );
+		self::$api->purge_files( [ '/purge-url' ] );
 	}
 
 	public function testShouldFailWhenUrlInvalid() {
-		self::$cf->set_api_credentials( self::$email, self::$api_key, self::$zone_id );
+		self::$api->set_api_credentials( self::$email, self::$api_key, self::$zone_id );
 
-		$response = self::$cf->purge_files( ['/invalid/URL'] );
+		$response = self::$api->purge_files( [ '/invalid/URL' ] );
 		$this->assertFalse( $response->success );
 		$this->assertSame( 'Unable to purge /invalid/URL, which is an invalid URL.', $response->errors[0]->message );
 	}

@@ -2,12 +2,11 @@
 
 namespace WPMedia\Cloudflare\Tests\Integration;
 
-use Cloudflare\Api;
 use WP_Rocket\Admin\Options;
 use WP_Rocket\Admin\Options_Data;
 use WP_Rocket\Event_Management\Event_Manager;
 use WPMedia\Cloudflare\Cloudflare;
-use WPMedia\Cloudflare\CloudflareFacade;
+use WPMedia\Cloudflare\APIClient;
 use WPMedia\Cloudflare\CloudflareSubscriber;
 
 class Factory {
@@ -87,13 +86,12 @@ class Factory {
 	}
 
 	private function initContainer() {
-		$this->container['options_api']       = new Options( 'wp_rocket_' );
-		$this->container['options']           = new Options_Data(
+		$this->container['options_api']    = new Options( 'wp_rocket_' );
+		$this->container['options']        = new Options_Data(
 			$this->container['options_api']->get( 'settings', [] )
 		);
-		$this->container['cloudflare_api']    = new Api();
-		$this->container['cloudflare_facade'] = new CloudflareFacade( $this->container['cloudflare_api'] );
-		$this->container['cloudflare']        = new Cloudflare( $this->container['options'], $this->container['cloudflare_facade'] );
+		$this->container['cloudflare_api'] = new APIClient( 'cloudflare/3.5' );
+		$this->container['cloudflare']     = new Cloudflare( $this->container['options'], $this->container['cloudflare_api'] );
 
 		$this->container['cloudflare_subscriber'] = new CloudflareSubscriber(
 			$this->container['cloudflare'],

@@ -20,7 +20,7 @@ class Cloudflare {
 	/**
 	 * Cloudflare Facade instance
 	 *
-	 * @var CloudflareFacade
+	 * @var APIClient
 	 */
 	private $cloudflare_facade;
 
@@ -34,10 +34,10 @@ class Cloudflare {
 	/**
 	 * Constructor
 	 *
-	 * @param Options_Data     $options WP Rocket options instance.
-	 * @param CloudflareFacade $facade  Cloudflare facade instance.
+	 * @param Options_Data $options WP Rocket options instance.
+	 * @param APIClient    $facade  Cloudflare facade instance.
 	 */
-	public function __construct( Options_Data $options, CloudflareFacade $facade ) {
+	public function __construct( Options_Data $options, APIClient $facade ) {
 		$this->options = $options;
 
 		if ( ! $this->options->get( 'do_cloudflare' ) ) {

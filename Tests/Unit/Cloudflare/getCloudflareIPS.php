@@ -4,7 +4,7 @@ namespace WPMedia\Cloudflare\Tests\Unit\Cloudflare;
 use Brain\Monkey\Functions;
 use Mockery;
 use WPMedia\Cloudflare\Cloudflare;
-use WPMedia\Cloudflare\CloudflareFacade;
+use WPMedia\Cloudflare\APIClient;
 use WPMedia\Cloudflare\Tests\Unit\TestCase;
 
 /**
@@ -174,7 +174,7 @@ class Test_GetCloudflareIPS extends TestCase {
 		];
 		$options->method('get')->will( $this->returnValueMap( $map ) );
 
-		$facade   = Mockery::mock( CloudflareFacade::class );
+		$facade   = Mockery::mock( APIClient::class );
 		$wp_error = Mockery::mock( 'WP_Error' );
 
 		$cf_ips = (object) [

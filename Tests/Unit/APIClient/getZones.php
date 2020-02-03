@@ -1,39 +1,30 @@
 <?php
 
-namespace WPMedia\Cloudflare\Tests\Unit\CloudflareFacade;
+namespace WPMedia\Cloudflare\Tests\Unit\APIClient;
 
-use Cloudflare\Exception\AuthenticationException;
+use WPMedia\Cloudflare\APIClient;
+use WPMedia\Cloudflare\AuthenticationException;
 
 /**
- * @covers WPMedia\Cloudflare\CloudflareFacade::get_zones
+ * @covers WPMedia\Cloudflare\APIClient::get_zones
  * @group  Cloudflare
- * @group  CloudflareFacade
+ * @group  CloudflareAPI
  */
 class Test_GetZones extends TestCase {
 
 	public function testShouldFailWhenZoneIdInvalid() {
-		list( $api, $cf ) = $this->getMocks();
-
-		$api->shouldReceive( 'get' )
-		    ->once()
-		    ->with( 'zones/' )
-		    ->andReturnUsing( function() {
-			    throw new AuthenticationException( 'Authentication information must be provided' );
-		    } );
+		$api = new APIClient( 'cloudflare/3.5' );
 
 		$this->expectException( AuthenticationException::class );
 		$this->expectExceptionMessage( 'Authentication information must be provided' );
-		$cf->get_zones();
+		$api->get_zones();
 	}
 
 	public function testShouldFailWhenInvalid() {
-		list( $api, $cf ) = $this->getMocks();
-
-		$cf->set_api_credentials( 'test@example.com', 'API_KEY', 'invalid' );
-
-		$api->shouldReceive( 'get' )
+		$api = $this->getAPIMock();
+		$api->shouldReceive( 'request' )
 		    ->once()
-		    ->with( 'zones/invalid' )
+		    ->with( 'zones/invalid', [], 'get' )
 		    ->andReturnUsing( function() {
 			    return (object) [
 				    'result'  => [],
@@ -47,7 +38,9 @@ class Test_GetZones extends TestCase {
 			    ];
 		    } );
 
-		$response = $cf->get_zones();
+		$api->set_api_credentials( 'test@example.com', 'API_KEY', 'invalid' );
+
+		$response = $api->get_zones();
 		$this->assertFalse( $response->success );
 		$zone_error = $response->errors[0];
 		$this->assertSame( 7003, $zone_error->code );
@@ -55,13 +48,10 @@ class Test_GetZones extends TestCase {
 	}
 
 	public function testShouldSucceedWhenZoneExists() {
-		list( $api, $cf ) = $this->getMocks();
-
-		$cf->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
-
-		$api->shouldReceive( 'get' )
+		$api = $this->getAPIMock();
+		$api->shouldReceive( 'request' )
 		    ->once()
-		    ->with( 'zones/zone1234' )
+		    ->with( 'zones/zone1234', [], 'get' )
 		    ->andReturnUsing( function() {
 			    return (object) [
 				    'result'  => (object) [
@@ -72,7 +62,9 @@ class Test_GetZones extends TestCase {
 			    ];
 		    } );
 
-		$response = $cf->get_zones();
+		$api->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
+
+		$response = $api->get_zones();
 		$this->assertTrue( $response->success );
 		$this->assertEmpty( $response->errors );
 		$this->assertSame( 'zone1234', $response->result->id );
