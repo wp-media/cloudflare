@@ -219,7 +219,7 @@ class APIClient {
 	 *
 	 * @return stdClass Cloudflare response packet.
 	 */
-	public function settings() {
+	public function get_settings() {
 		return $this->get( "zones/{$this->zone_id}/settings" );
 	}
 

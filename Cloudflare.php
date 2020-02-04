@@ -495,7 +495,7 @@ class Cloudflare {
 		}
 
 		try {
-			$cf_settings = $this->cloudflare_facade->settings();
+			$cf_settings = $this->cloudflare_facade->get_settings();
 
 			if ( empty( $cf_settings->success ) ) {
 				foreach ( $cf_settings->errors as $error ) {

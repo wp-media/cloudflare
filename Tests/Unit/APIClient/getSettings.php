@@ -6,18 +6,18 @@ use WPMedia\Cloudflare\APIClient;
 use WPMedia\Cloudflare\AuthenticationException;
 
 /**
- * @covers WPMedia\Cloudflare\APIClient::settings
+ * @covers WPMedia\Cloudflare\APIClient::get_settings
  * @group  Cloudflare
  * @group  CloudflareAPI
  */
-class Test_Settings extends TestCase {
+class Test_GetSettings extends TestCase {
 
 	public function testShouldThrowErrorWhenInvalidCredentials() {
 		$api = new APIClient( 'cloudflare/3.5' );
 
 		$this->expectException( AuthenticationException::class );
 		$this->expectExceptionMessage( 'Authentication information must be provided' );
-		$api->settings();
+		$api->get_settings();
 	}
 
 	public function testShouldReturnSettingsWhenZoneIdIsSet() {
@@ -41,7 +41,7 @@ class Test_Settings extends TestCase {
 		         } );
 		$api->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
 
-		$response = $api->settings();
+		$response = $api->get_settings();
 		$this->assertTrue( $response->success );
 		$this->assertEmpty( $response->errors );
 		$this->assertGreaterThan( 4, $response->result );
