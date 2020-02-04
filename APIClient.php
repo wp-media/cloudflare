@@ -249,34 +249,6 @@ class APIClient {
 	}
 
 	/**
-	 * API call method for sending requests using POST.
-	 *
-	 * @since 3.5
-	 *
-	 * @param string $path Path of the endpoint
-	 * @param array  $data Data to be sent along with the request
-	 *
-	 * @return mixed
-	 */
-	protected function post( $path, array $data = [] ) {
-		return $this->request( $path, $data, 'post' );
-	}
-
-	/**
-	 * API call method for sending requests using PUT.
-	 *
-	 * @since 3.5
-	 *
-	 * @param string $path Path of the endpoint
-	 * @param array  $data Data to be sent along with the request
-	 *
-	 * @return mixed
-	 */
-	protected function put( $path, array $data = [] ) {
-		return $this->request( $path, $data, 'put' );
-	}
-
-	/**
 	 * API call method for sending requests using DELETE.
 	 *
 	 * @since 3.5
@@ -314,7 +286,7 @@ class APIClient {
 	 *
 	 * @param string $path   Path of the endpoint.
 	 * @param array  $data   Data to be sent along with the request.
-	 * @param string $method Type of method that should be used ('GET', 'POST', 'PUT', 'DELETE', 'PATCH').
+	 * @param string $method Type of method that should be used ('GET', 'DELETE', 'PATCH').
 	 *
 	 * @return stdClass response object.
 	 * @throws AuthenticationException when email or api key are not set.
@@ -369,7 +341,7 @@ class APIClient {
 	 *
 	 * @param string $path   Path of the endpoint.
 	 * @param array  $data   Data to be sent along with the request.
-	 * @param string $method Type of method that should be used ('GET', 'POST', 'PUT', 'DELETE', 'PATCH').
+	 * @param string $method Type of method that should be used ('GET', 'DELETE', 'PATCH').
 	 *
 	 * @return array curl response packet.
 	 */
@@ -404,7 +376,7 @@ class APIClient {
 	 * @param resource $ch     cURL handle.
 	 * @param string   $url    Request route.
 	 * @param array    $data   Data to be sent along with the request.
-	 * @param string   $method Type of method that should be used ('GET', 'POST', 'PUT', 'DELETE', 'PATCH').
+	 * @param string   $method Type of method that should be used ('GET', 'DELETE', 'PATCH').
 	 */
 	private function set_curl_options( $ch, $url, array $data, $method ) {
 		curl_setopt_array( $ch, $this->curl_options );
@@ -413,12 +385,7 @@ class APIClient {
 			$url .= '?' . http_build_query( $data );
 		} else {
 			curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data ) );
-
-			if ( 'post' === $method ) {
-				curl_setopt( $ch, CURLOPT_POST, true );
-			} else {
-				curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, strtoupper( $method ) );
-			}
+			curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, strtoupper( $method ) );
 		}
 
 		// Set up the headers.
