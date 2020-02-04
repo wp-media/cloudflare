@@ -44,7 +44,15 @@ class APIClient {
 	 * @param string $useragent The user agent for this plugin or package. For example, "wp-rocket/3.5".
 	 */
 	public function __construct( $useragent ) {
-		$this->curl_options[ CURLOPT_USERAGENT ] = $useragent;
+		$this->curl_options = [
+			CURLOPT_VERBOSE        => false,
+			CURLOPT_FORBID_REUSE   => true,
+			CURLOPT_RETURNTRANSFER => 1,
+			CURLOPT_HEADER         => false,
+			CURLOPT_TIMEOUT        => 30,
+			CURLOPT_SSL_VERIFYPEER => true,
+			CURLOPT_USERAGENT      => $useragent,
+		];
 	}
 
 	/**
@@ -398,7 +406,7 @@ class APIClient {
 	 * @param string   $method Type of method that should be used ('GET', 'POST', 'PUT', 'DELETE', 'PATCH').
 	 */
 	private function set_curl_options( $ch, $url, array $data, $method ) {
-		curl_setopt_array( $ch, $this->init_curl_options() );
+		curl_setopt_array( $ch, $this->curl_options );
 
 		if ( 'get' === $method ) {
 			$url .= '?' . http_build_query( $data );
@@ -444,25 +452,5 @@ class APIClient {
 				return ! is_null( $val );
 			}
 		);
-	}
-
-	/**
-	 * Initializes the configured cURL options with the defaults.
-	 *
-	 * @since 3.5
-	 *
-	 * @return array array of curl options.
-	 */
-	private function init_curl_options() {
-		$default = [
-			CURLOPT_VERBOSE        => false,
-			CURLOPT_FORBID_REUSE   => true,
-			CURLOPT_RETURNTRANSFER => 1,
-			CURLOPT_HEADER         => false,
-			CURLOPT_TIMEOUT        => 30,
-			CURLOPT_SSL_VERIFYPEER => true,
-		];
-
-		return array_replace( $default, $this->curl_options );
 	}
 }
