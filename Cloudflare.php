@@ -562,7 +562,7 @@ class Cloudflare {
 
 		$this->cloudflare_facade->set_api_credentials( $cf_email, $cf_api_key, '' );
 		try {
-			$cf_ips = $this->cloudflare_facade->ips();
+			$cf_ips = $this->cloudflare_facade->get_ips();
 
 			if ( empty( $cf_ips->success ) ) {
 				// Set default IPs from Cloudflare if call to Cloudflare /ips API does not contain a success.

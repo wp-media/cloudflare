@@ -224,13 +224,13 @@ class APIClient {
 	}
 
 	/**
-	 * Get the Cloudflare IPs.
+	 * Gets Cloudflare's IPs.
 	 *
 	 * @since  3.5
 	 *
 	 * @return stdClass Cloudflare response packet.
 	 */
-	public function ips() {
+	public function get_ips() {
 		return $this->get( '/ips' );
 	}
 

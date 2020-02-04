@@ -6,18 +6,18 @@ use WPMedia\Cloudflare\APIClient;
 use WPMedia\Cloudflare\AuthenticationException;
 
 /**
- * @covers WPMedia\Cloudflare\APIClient::ips
+ * @covers WPMedia\Cloudflare\APIClient::get_ips
  * @group  Cloudflare
  * @group  CloudflareAPI
  */
-class Test_Ips extends TestCase {
+class Test_Get_Ips extends TestCase {
 
 	public function testShouldThrowErrorWhenInvalidCredentials() {
 		$api = new APIClient( 'cloudflare/3.5' );
 
 		$this->expectException( AuthenticationException::class );
 		$this->expectExceptionMessage( 'Authentication information must be provided' );
-		$api->ips();
+		$api->get_ips();
 	}
 
 	public function testShouldReturnIps() {
@@ -38,7 +38,7 @@ class Test_Ips extends TestCase {
 
 		$api->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
 
-		$response = $api->ips();
+		$response = $api->get_ips();
 		$this->assertTrue( $response->success );
 		$this->assertContains( '173.245.48.0/20', $response->result->ipv4_cidrs );
 		$this->assertContains( '2400:cb00::/32', $response->result->ipv6_cidrs );
