@@ -1,4 +1,5 @@
 <?php
+
 namespace WPMedia\Cloudflare;
 
 use WP_Rocket\Admin\Options_Data;
@@ -6,10 +7,11 @@ use WP_Rocket\Admin\Options_Data;
 /**
  * Cloudflare
  *
- * @since 3.5
+ * @since  3.5
  * @author Soponar Cristina
  */
 class Cloudflare {
+
 	/**
 	 * WP Rocket options instance.
 	 *
@@ -18,11 +20,11 @@ class Cloudflare {
 	private $options;
 
 	/**
-	 * Cloudflare Facade instance
+	 * Cloudflare API instance.
 	 *
 	 * @var APIClient
 	 */
-	private $cloudflare_facade;
+	private $api;
 
 	/**
 	 * WP_Error if Cloudflare Credentials are not valid.
@@ -32,12 +34,12 @@ class Cloudflare {
 	private $cloudflare_api_error;
 
 	/**
-	 * Constructor
+	 * Creates an instance of Cloudflare Addon.
 	 *
 	 * @param Options_Data $options WP Rocket options instance.
-	 * @param APIClient    $facade  Cloudflare facade instance.
+	 * @param APIClient    $api     Cloudflare API instance.
 	 */
-	public function __construct( Options_Data $options, APIClient $facade ) {
+	public function __construct( Options_Data $options, APIClient $api ) {
 		$this->options = $options;
 
 		if ( ! $this->options->get( 'do_cloudflare' ) ) {
@@ -45,9 +47,9 @@ class Cloudflare {
 		}
 
 		$this->cloudflare_api_error = null;
-		$this->cloudflare_facade    = $facade;
+		$this->api                  = $api;
 		// Update api_error with WP_Error if credentials are not valid.
-		// Update facade with Cloudflare instance with correct auth data.
+		// Update API with Cloudflare instance with correct auth data.
 		$this->get_cloudflare_instance();
 	}
 
@@ -73,24 +75,26 @@ class Cloudflare {
 		}
 
 		if ( is_wp_error( $is_api_keys_valid_cf ) ) {
-			// Sets cloudflare facade as WP_Error if credentials are not valid.
+			// Sets Cloudflare API as WP_Error if credentials are not valid.
 			$this->cloudflare_api_error = $is_api_keys_valid_cf;
+
 			return;
 		}
 
 		// Sets Cloudflare Valid Credentials and User Agent.
-		$this->cloudflare_facade->set_api_credentials( $cf_email, $cf_api_key, $cf_zone_id );
+		$this->api->set_api_credentials( $cf_email, $cf_api_key, $cf_zone_id );
 	}
 
 	/**
-	 * Validate Cloudflare input data
+	 * Validate Cloudflare input data.
 	 *
-	 * @since 3.5
+	 * @since  3.5
 	 * @author Soponar Cristina
 	 *
-	 * @param string $cf_email           - Cloudflare email.
-	 * @param string $cf_api_key         - Cloudflare API key.
-	 * @param string $cf_zone_id         - Cloudflare zone ID.
+	 * @param string $cf_email   - Cloudflare email.
+	 * @param string $cf_api_key - Cloudflare API key.
+	 * @param string $cf_zone_id - Cloudflare zone ID.
+	 *
 	 * @return Object                    - true if credentials are ok, WP_Error otherwise.
 	 */
 	public function is_api_keys_valid( $cf_email, $cf_api_key, $cf_zone_id ) {
@@ -102,7 +106,7 @@ class Cloudflare {
 			return new \WP_Error(
 				'cloudflare_credentials_empty',
 				sprintf(
-					/* translators: %1$s = opening link; %2$s = closing link */
+				/* translators: %1$s = opening link; %2$s = closing link */
 					__( 'Cloudflare email and/or API key are not set. Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
 					// translators: Documentation exists in EN, FR; use localized URL if applicable.
 					'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
@@ -116,19 +120,19 @@ class Cloudflare {
 
 			$msg .= ' ' . sprintf(
 				/* translators: %1$s = opening link; %2$s = closing link */
-				__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
-				// translators: Documentation exists in EN, FR; use localized URL if applicable.
-				'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
-				'</a>'
-			);
+					__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
+					// translators: Documentation exists in EN, FR; use localized URL if applicable.
+					'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
+					'</a>'
+				);
 
 			return new \WP_Error( 'cloudflare_no_zone_id', $msg );
 		}
 
 		try {
-			$this->cloudflare_facade->set_api_credentials( $cf_email, $cf_api_key, $cf_zone_id );
+			$this->api->set_api_credentials( $cf_email, $cf_api_key, $cf_zone_id );
 
-			$cf_zone = $this->cloudflare_facade->get_zones();
+			$cf_zone = $this->api->get_zones();
 
 			if ( empty( $cf_zone->success ) ) {
 				foreach ( $cf_zone->errors as $error ) {
@@ -137,11 +141,11 @@ class Cloudflare {
 
 						$msg .= ' ' . sprintf(
 							/* translators: %1$s = opening link; %2$s = closing link */
-							__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
-							// translators: Documentation exists in EN, FR; use localized URL if applicable.
-							'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
-							'</a>'
-						);
+								__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
+								// translators: Documentation exists in EN, FR; use localized URL if applicable.
+								'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
+								'</a>'
+							);
 
 						return new \WP_Error( 'cloudflare_invalid_auth', $msg );
 					}
@@ -151,11 +155,12 @@ class Cloudflare {
 
 				$msg .= ' ' . sprintf(
 					/* translators: %1$s = opening link; %2$s = closing link */
-					__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
-					// translators: Documentation exists in EN, FR; use localized URL if applicable.
-					'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
-					'</a>'
-				);
+						__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
+						// translators: Documentation exists in EN, FR; use localized URL if applicable.
+						'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
+						'</a>'
+					);
+
 				return new \WP_Error( 'cloudflare_invalid_auth', $msg );
 			}
 
@@ -178,24 +183,26 @@ class Cloudflare {
 
 				$msg .= ' ' . sprintf(
 					/* translators: %1$s = opening link; %2$s = closing link */
-					__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
-					// translators: Documentation exists in EN, FR; use localized URL if applicable.
-					'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
-					'</a>'
-				);
+						__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
+						// translators: Documentation exists in EN, FR; use localized URL if applicable.
+						'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
+						'</a>'
+					);
+
 				return new \WP_Error( 'cloudflare_wrong_zone_id', $msg );
 			}
 
 			return true;
 		} catch ( \Exception $e ) {
-			$msg  = __( 'Incorrect Cloudflare email address or API key.', 'rocket' );
+			$msg = __( 'Incorrect Cloudflare email address or API key.', 'rocket' );
 			$msg .= ' ' . sprintf(
 				/* translators: %1$s = opening link; %2$s = closing link */
-				__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
-				// translators: Documentation exists in EN, FR; use localized URL if applicable.
-				'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
-				'</a>'
-			);
+					__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
+					// translators: Documentation exists in EN, FR; use localized URL if applicable.
+					'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
+					'</a>'
+				);
+
 			return new \WP_Error( 'cloudflare_invalid_auth', $msg );
 		}
 	}
@@ -206,7 +213,8 @@ class Cloudflare {
 	 * @since  3.4.2
 	 * @author Soponar Cristina
 	 *
-	 * @param  String $action_value - cache_everything.
+	 * @param String $action_value - cache_everything.
+	 *
 	 * @return mixed  Object|bool   - true / false if $action_value was found or not, WP_Error otherwise
 	 */
 	public function has_page_rule( $action_value ) {
@@ -215,7 +223,7 @@ class Cloudflare {
 		}
 
 		try {
-			$cf_page_rule = $this->cloudflare_facade->list_pagerules();
+			$cf_page_rule = $this->api->list_pagerules();
 
 			if ( empty( $cf_page_rule->success ) ) {
 				foreach ( $cf_page_rule->errors as $error ) {
@@ -223,10 +231,12 @@ class Cloudflare {
 				}
 
 				$errors = wp_sprintf_l( '%l ', $errors );
+
 				return new \WP_Error( 'cloudflare_page_rule_failed', $errors );
 			}
 
 			$cf_page_rule_arr = wp_json_encode( $cf_page_rule );
+
 			return preg_match( '/' . $action_value . '/', $cf_page_rule_arr );
 		} catch ( \Exception $e ) {
 			return new \WP_Error( 'cloudflare_page_rule_failed', $e->getMessage() );
@@ -248,7 +258,7 @@ class Cloudflare {
 		}
 
 		try {
-			$cf_purge = $this->cloudflare_facade->purge();
+			$cf_purge = $this->api->purge();
 
 			if ( empty( $cf_purge->success ) ) {
 				foreach ( $cf_purge->errors as $error ) {
@@ -256,6 +266,7 @@ class Cloudflare {
 				}
 
 				$errors = wp_sprintf_l( '%l ', $errors );
+
 				return new \WP_Error( 'cloudflare_purge_failed', $errors );
 			}
 
@@ -268,7 +279,7 @@ class Cloudflare {
 	/**
 	 * Purge Cloudflare Cache by URL
 	 *
-	 * @since 3.4.2
+	 * @since  3.4.2
 	 * @author Soponar Cristina
 	 *
 	 * @param WP_Post $post       The post object.
@@ -283,7 +294,7 @@ class Cloudflare {
 		}
 
 		try {
-			$cf_purge = $this->cloudflare_facade->purge_files( $purge_urls );
+			$cf_purge = $this->api->purge_files( $purge_urls );
 
 			if ( empty( $cf_purge->success ) ) {
 				foreach ( $cf_purge->errors as $error ) {
@@ -291,6 +302,7 @@ class Cloudflare {
 				}
 
 				$errors = wp_sprintf_l( '%l ', $errors );
+
 				return new \WP_Error( 'cloudflare_purge_failed', $errors );
 			}
 
@@ -308,6 +320,7 @@ class Cloudflare {
 	 * @since 2.8.16
 	 *
 	 * @param string $mode Value for Cloudflare browser cache TTL.
+	 *
 	 * @return mixed Object|String Mode value if the update is successful, WP_Error otherwise
 	 */
 	public function set_browser_cache_ttl( $mode ) {
@@ -316,7 +329,7 @@ class Cloudflare {
 		}
 
 		try {
-			$cf_return = $this->cloudflare_facade->change_browser_cache_ttl( (int) $mode );
+			$cf_return = $this->api->change_browser_cache_ttl( (int) $mode );
 
 			if ( empty( $cf_return->success ) ) {
 				foreach ( $cf_return->errors as $error ) {
@@ -324,6 +337,7 @@ class Cloudflare {
 				}
 
 				$errors = wp_sprintf_l( '%l ', $errors );
+
 				return new \WP_Error( 'cloudflare_browser_cache', $errors );
 			}
 
@@ -341,6 +355,7 @@ class Cloudflare {
 	 * @since 2.5
 	 *
 	 * @param string $mode Value for Cloudflare Rocket Loader.
+	 *
 	 * @return mixed Object|String Mode value if the update is successful, WP_Error otherwise
 	 */
 	public function set_rocket_loader( $mode ) {
@@ -349,7 +364,7 @@ class Cloudflare {
 		}
 
 		try {
-			$cf_return = $this->cloudflare_facade->change_rocket_loader( $mode );
+			$cf_return = $this->api->change_rocket_loader( $mode );
 
 			if ( empty( $cf_return->success ) ) {
 				foreach ( $cf_return->errors as $error ) {
@@ -357,6 +372,7 @@ class Cloudflare {
 				}
 
 				$errors = wp_sprintf_l( '%l ', $errors );
+
 				return new \WP_Error( 'cloudflare_rocket_loader', $errors );
 			}
 
@@ -374,6 +390,7 @@ class Cloudflare {
 	 * @since 2.5
 	 *
 	 * @param string $mode Value for Cloudflare minification.
+	 *
 	 * @return mixed Object|String Mode value if the update is successful, WP_Error otherwise
 	 */
 	public function set_minify( $mode ) {
@@ -388,7 +405,7 @@ class Cloudflare {
 		];
 
 		try {
-			$cf_return = $this->cloudflare_facade->change_minify( $cf_minify_settings );
+			$cf_return = $this->api->change_minify( $cf_minify_settings );
 
 			if ( empty( $cf_return->success ) ) {
 				foreach ( $cf_return->errors as $error ) {
@@ -396,6 +413,7 @@ class Cloudflare {
 				}
 
 				$errors = wp_sprintf_l( '%l ', $errors );
+
 				return new \WP_Error( 'cloudflare_minification', $errors );
 			}
 
@@ -413,6 +431,7 @@ class Cloudflare {
 	 * @since 2.5
 	 *
 	 * @param string $mode Value for Cloudflare caching level.
+	 *
 	 * @return mixed Object|String Mode value if the update is successful, WP_Error otherwise
 	 */
 	public function set_cache_level( $mode ) {
@@ -421,7 +440,7 @@ class Cloudflare {
 		}
 
 		try {
-			$cf_return = $this->cloudflare_facade->change_cache_level( $mode );
+			$cf_return = $this->api->change_cache_level( $mode );
 
 			if ( empty( $cf_return->success ) ) {
 				foreach ( $cf_return->errors as $error ) {
@@ -429,6 +448,7 @@ class Cloudflare {
 				}
 
 				$errors = wp_sprintf_l( '%l ', $errors );
+
 				return new \WP_Error( 'cloudflare_cache_level', $errors );
 			}
 
@@ -446,6 +466,7 @@ class Cloudflare {
 	 * @since 2.5
 	 *
 	 * @param string $mode Value for Cloudflare development mode.
+	 *
 	 * @return mixed Object|String Mode value if the update is successful, WP_Error otherwise
 	 */
 	public function set_devmode( $mode ) {
@@ -460,7 +481,7 @@ class Cloudflare {
 		}
 
 		try {
-			$cf_return = $this->cloudflare_facade->change_development_mode( $value );
+			$cf_return = $this->api->change_development_mode( $value );
 
 			if ( empty( $cf_return->success ) ) {
 				foreach ( $cf_return->errors as $error ) {
@@ -468,6 +489,7 @@ class Cloudflare {
 				}
 
 				$errors = wp_sprintf_l( '%l ', $errors );
+
 				return new \WP_Error( 'cloudflare_dev_mode', $errors );
 			}
 
@@ -495,7 +517,7 @@ class Cloudflare {
 		}
 
 		try {
-			$cf_settings = $this->cloudflare_facade->get_settings();
+			$cf_settings = $this->api->get_settings();
 
 			if ( empty( $cf_settings->success ) ) {
 				foreach ( $cf_settings->errors as $error ) {
@@ -503,6 +525,7 @@ class Cloudflare {
 				}
 
 				$errors = wp_sprintf_l( '%l ', $errors );
+
 				return new \WP_Error( 'cloudflare_dev_mode', $errors );
 			}
 
@@ -544,8 +567,8 @@ class Cloudflare {
 	/**
 	 * Get Cloudflare IPs. No API validation needed, all exceptions returns the default CF IPs array.
 	 *
-	 * @since 2.8.21 Save IPs in a transient to prevent calling the API everytime
-	 * @since 2.8.16
+	 * @since  2.8.21 Save IPs in a transient to prevent calling the API everytime
+	 * @since  2.8.16
 	 *
 	 * @author Remy Perona
 	 *
@@ -560,9 +583,9 @@ class Cloudflare {
 		$cf_email   = $this->options->get( 'cloudflare_email', null );
 		$cf_api_key = defined( 'WP_ROCKET_CF_API_KEY' ) ? WP_ROCKET_CF_API_KEY : $this->options->get( 'cloudflare_api_key', null );
 
-		$this->cloudflare_facade->set_api_credentials( $cf_email, $cf_api_key, '' );
+		$this->api->set_api_credentials( $cf_email, $cf_api_key, '' );
 		try {
-			$cf_ips = $this->cloudflare_facade->get_ips();
+			$cf_ips = $this->api->get_ips();
 
 			if ( empty( $cf_ips->success ) ) {
 				// Set default IPs from Cloudflare if call to Cloudflare /ips API does not contain a success.
@@ -576,6 +599,7 @@ class Cloudflare {
 			// Prevents from making API calls on each page load.
 			$cf_ips = $this->get_default_ips();
 			set_transient( 'rocket_cloudflare_ips', $cf_ips, 2 * WEEK_IN_SECONDS );
+
 			return $cf_ips;
 		}
 
