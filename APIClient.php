@@ -39,6 +39,13 @@ class APIClient {
 	public $curl_options = [];
 
 	/**
+	 * HTTP headers.
+	 *
+	 * @var array
+	 */
+	protected $headers = [];
+
+	/**
 	 * APIClient constructor.
 	 *
 	 * @param string $useragent The user agent for this plugin or package. For example, "wp-rocket/3.5".
@@ -52,6 +59,13 @@ class APIClient {
 			CURLOPT_TIMEOUT        => 30,
 			CURLOPT_SSL_VERIFYPEER => true,
 			CURLOPT_USERAGENT      => $useragent,
+		];
+
+		$this->headers = [
+			'X-Auth-Email: ',
+			'X-Auth-Key: ',
+			'User-Agent: ' . __FILE__,
+			'Content-type: application/json',
 		];
 	}
 
@@ -68,6 +82,9 @@ class APIClient {
 		$this->email   = $email;
 		$this->api_key = $api_key;
 		$this->zone_id = $zone_id;
+
+		$this->headers[0] = "X-Auth-Email: {$email}";
+		$this->headers[1] = "X-Auth-Key: {$api_key}";
 	}
 
 	/**
@@ -421,16 +438,7 @@ class APIClient {
 		}
 
 		// Set up the headers.
-		curl_setopt(
-			$ch,
-			CURLOPT_HTTPHEADER,
-			[
-				"X-Auth-Email: {$this->email}",
-				"X-Auth-Key: {$this->api_key}",
-				'User-Agent: ' . __FILE__,
-				'Content-type: application/json',
-			]
-		);
+		curl_setopt( $ch, CURLOPT_HTTPHEADER, $this->headers );
 
 		// Set up the URL.
 		curl_setopt( $ch, CURLOPT_URL, $url );
