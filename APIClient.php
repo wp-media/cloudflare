@@ -106,15 +106,7 @@ class APIClient {
 	 * @return stdClass Cloudflare response packet.
 	 */
 	public function list_pagerules() {
-		return $this->get(
-			"zones/{$this->zone_id}/pagerules",
-			[
-				'status'    => 'active',
-				'order'     => null,
-				'direction' => null,
-				'match'     => null,
-			]
-		);
+		return $this->get( "zones/{$this->zone_id}/pagerules", [ 'status' => 'active' ] );
 	}
 
 	/**
@@ -133,20 +125,12 @@ class APIClient {
 	 *
 	 * @since  3.5
 	 *
-	 * @param array|null $urls   An array of URLs that should be removed from cache.
-	 * @param array|null $tags   Any assets served with a Cache-Tag header that matches one of the provided values will
-	 *                           be purged from the CloudFlare cache.
+	 * @param array|null $urls An array of URLs that should be removed from cache.
 	 *
 	 * @return stdClass Cloudflare response packet.
 	 */
-	public function purge_files( array $urls, array $tags = null ) {
-		return $this->delete(
-			"zones/{$this->zone_id}/purge_cache",
-			[
-				'files' => $urls,
-				'tags'  => $tags,
-			]
-		);
+	public function purge_files( array $urls ) {
+		return $this->delete( "zones/{$this->zone_id}/purge_cache", [ 'files' => $urls ] );
 	}
 
 	/**
@@ -395,7 +379,7 @@ class APIClient {
 		$this->set_curl_options(
 			$ch,
 			self::CLOUDFLARE_API . $path,
-			$this->remove_null_entries( $data ),
+			$data,
 			$method
 		);
 
@@ -442,23 +426,5 @@ class APIClient {
 
 		// Set up the URL.
 		curl_setopt( $ch, CURLOPT_URL, $url );
-	}
-
-	/**
-	 * Removes any null entries from the given data array.
-	 *
-	 * @since 3.5
-	 *
-	 * @param array $data
-	 *
-	 * @return array no null entries.
-	 */
-	private function remove_null_entries( array $data ) {
-		return array_filter(
-			$data,
-			function( $val ) {
-				return ! is_null( $val );
-			}
-		);
 	}
 }

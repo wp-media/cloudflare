@@ -25,13 +25,8 @@ class Test_ListPagerules extends TestCase {
 		$api->shouldReceive( 'request' )
 		    ->once()
 		    ->with(
-		    	'zones/zone1234/pagerules',
-			    [
-				    'status'    => 'active',
-				    'order'     => null,
-				    'direction' => null,
-				    'match'     => null,
-			    ],
+			    'zones/zone1234/pagerules',
+			    [ 'status' => 'active' ],
 			    'get'
 		    )
 		    ->andReturnUsing( function() {

@@ -26,10 +26,7 @@ class Test_PurgeFiles extends TestCase {
 		    ->once()
 		    ->with(
 			    'zones/zone1234/purge_cache',
-			    [
-				    'files' => [ '/invalid/URL' ],
-				    'tags'  => null,
-			    ],
+			    [ 'files' => [ '/invalid/URL' ] ],
 			    'delete'
 		    )
 		    ->andReturnUsing( function() {
@@ -56,10 +53,7 @@ class Test_PurgeFiles extends TestCase {
 		    ->once()
 		    ->with(
 			    'zones/zone1234/purge_cache',
-			    [
-				    'files' => [ '/about', '/contact' ],
-				    'tags'  => null,
-			    ],
+			    [ 'files' => [ '/about', '/contact' ] ],
 			    'delete'
 		    )
 		    ->andReturnUsing( function() {
