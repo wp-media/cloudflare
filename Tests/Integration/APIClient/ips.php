@@ -8,7 +8,6 @@ use WPMedia\Cloudflare\AuthenticationException;
  * @covers WPMedia\Cloudflare\APIClient::ips
  * @group  Cloudflare
  * @group  CloudflareAPI
- * @group thisone
  */
 class Test_Ips extends TestCase {
 

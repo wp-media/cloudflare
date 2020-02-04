@@ -64,7 +64,7 @@ class APIClient {
 		$this->headers = [
 			'X-Auth-Email: ',
 			'X-Auth-Key: ',
-			'User-Agent: ' . __FILE__,
+			"User-Agent: {$useragent}",
 			'Content-type: application/json',
 		];
 	}
