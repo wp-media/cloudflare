@@ -45,7 +45,7 @@ class Test_ChangeCacheLevel extends TestCase {
 		$this->assertSame( 'Invalid value for zone setting change_cache_level', $error->message );
 	}
 
-	public function testShouldReturnIps() {
+	public function testShouldChangeCacheLevelWhenLevelGiven {
 		$api = $this->getAPIMock();
 		$api->shouldReceive( 'request' )
 		    ->once()
