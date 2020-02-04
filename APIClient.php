@@ -15,14 +15,14 @@ class APIClient {
 	 *
 	 * @var string
 	 */
-	public $email;
+	protected $email;
 
 	/**
 	 * API key for API authentication.
 	 *
 	 * @var string
 	 */
-	public $api_key;
+	protected $api_key;
 
 	/**
 	 * Zone ID.
@@ -36,7 +36,7 @@ class APIClient {
 	 *
 	 * @var array
 	 */
-	public $curl_options = [];
+	protected $curl_options = [];
 
 	/**
 	 * HTTP headers.
