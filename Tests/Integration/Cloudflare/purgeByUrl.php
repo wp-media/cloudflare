@@ -12,7 +12,7 @@ class Test_PurgeByUrl extends TestCase {
 	public function testPurgeByUrlWithAPIError() {
 		$this->setInvalidApiCredentials();
 
-		$cf   = new Cloudflare( self::$options, self::$cf_facade );
+		$cf   = new Cloudflare( self::$options, self::$api );
 		$purge_urls = [
 			'/',
 			'/hello-world'

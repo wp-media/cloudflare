@@ -11,7 +11,8 @@ use WP_Error;
 
 /**
  * @covers WPMedia\Cloudflare\CloudflareSubscriber::save_cloudflare_options
- * @group  Subscriber
+ * @group  Cloudflare
+ * @group  CloudflareSubscriber
  */
 class Tes_SaveCloudflareOptions extends TestCase {
 

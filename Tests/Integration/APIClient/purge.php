@@ -1,28 +1,28 @@
 <?php
 
-namespace WPMedia\Cloudflare\Tests\Integration\CloudflareFacade;
+namespace WPMedia\Cloudflare\Tests\Integration\APIClient;
 
-use Cloudflare\Exception\AuthenticationException;
+use WPMedia\Cloudflare\AuthenticationException;
 
 /**
- * @covers WPMedia\Cloudflare\CloudflareFacade::purge
+ * @covers WPMedia\Cloudflare\APIClient::purge
  * @group  Cloudflare
- * @group  CloudflareFacade
+ * @group  CloudflareAPI
  */
 class Test_Purge extends TestCase {
 
 	public function testShouldThrowErrorWhenInvalidCredentials() {
-		self::$cf->set_api_credentials( null, null, null );
+		self::$api->set_api_credentials( null, null, null );
 
 		$this->expectException( AuthenticationException::class );
 		$this->expectExceptionMessage( 'Authentication information must be provided' );
-		self::$cf->purge();
+		self::$api->purge();
 	}
 
 	public function testShouldPurgeCacheWhenZoneIdIsSet() {
-		self::$cf->set_api_credentials( self::$email, self::$api_key, self::$zone_id );
+		self::$api->set_api_credentials( self::$email, self::$api_key, self::$zone_id );
 
-		$response = self::$cf->purge();
+		$response = self::$api->purge();
 		$this->assertTrue( $response->success );
 		$this->assertEmpty( $response->errors );
 	}

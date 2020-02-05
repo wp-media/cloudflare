@@ -7,7 +7,8 @@ use function WPMedia\Cloudflare\Tests\Integration\getFactory;
 
 /**
  * @covers WPMedia\Cloudflare\CloudflareSubscriber::set_varnish_purge_request_host
- * @group  Subscriber
+ * @group  Cloudflare
+ * @group  CloudflareSubscriber
  */
 class Test_SetVarnishPurgeRequestHost extends TestCase {
 

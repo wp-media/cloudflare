@@ -7,7 +7,8 @@ use function WPMedia\Cloudflare\Tests\Integration\getFactory;
 
 /**
  * @covers WPMedia\Cloudflare\CloudflareSubscriber::deactivate_devmode
- * @group  Subscriber
+ * @group  Cloudflare
+ * @group  CloudflareSubscriber
  */
 class Test_DeactivateDevMode extends TestCase {
 	private static $options;

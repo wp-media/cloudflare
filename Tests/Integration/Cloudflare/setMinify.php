@@ -7,12 +7,13 @@ use WPMedia\Cloudflare\Cloudflare;
 /**
  * @covers WPMedia\Cloudflare\Cloudflare::set_minify
  * @group  Cloudflare
+ * @group  CloudflareManager
  */
 class Test_SetMinify extends TestCase {
 
 	public function testSetMinifyWithAPIError() {
 		$this->setInvalidApiCredentials();
-		$cf       = new Cloudflare( self::$options, self::$cf_facade );
+		$cf       = new Cloudflare( self::$options, self::$api );
 		$response = $cf->set_minify( 'off' );
 
 		$this->assertTrue( is_wp_error( $response ) );

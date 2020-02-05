@@ -1,28 +1,28 @@
 <?php
 
-namespace WPMedia\Cloudflare\Tests\Integration\CloudflareFacade;
+namespace WPMedia\Cloudflare\Tests\Integration\APIClient;
 
-use Cloudflare\Exception\AuthenticationException;
+use WPMedia\Cloudflare\AuthenticationException;
 
 /**
- * @covers WPMedia\Cloudflare\CloudflareFacade::ips
+ * @covers WPMedia\Cloudflare\APIClient::get_ips
  * @group  Cloudflare
- * @group  CloudflareFacade
+ * @group  CloudflareAPI
  */
-class Test_Ips extends TestCase {
+class Test_GetIps extends TestCase {
 
 	public function testShouldThrowErrorWhenInvalidCredentials() {
-		self::$cf->set_api_credentials( null, null, null );
+		self::$api->set_api_credentials( null, null, null );
 
 		$this->expectException( AuthenticationException::class );
 		$this->expectExceptionMessage( 'Authentication information must be provided' );
-		self::$cf->ips();
+		self::$api->get_ips();
 	}
 
 	public function testShouldReturnIps() {
-		self::$cf->set_api_credentials( self::$email, self::$api_key, null );
+		self::$api->set_api_credentials( self::$email, self::$api_key, null );
 
-		$response = self::$cf->ips();
+		$response = self::$api->get_ips();
 		$this->assertTrue( $response->success );
 		$this->assertContains( '173.245.48.0/20', $response->result->ipv4_cidrs );
 		$this->assertContains( '2400:cb00::/32', $response->result->ipv6_cidrs );

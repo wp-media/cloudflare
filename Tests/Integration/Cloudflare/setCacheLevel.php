@@ -7,12 +7,13 @@ use WPMedia\Cloudflare\Cloudflare;
 /**
  * @covers WPMedia\Cloudflare\Cloudflare::set_cache_level
  * @group  Cloudflare
+ * @group  CloudflareManager
  */
 class Test_SetCacheLevel extends TestCase {
 
 	public function testSetCacheLevelWithAPIError() {
 		$this->setInvalidApiCredentials();
-		$cf       = new Cloudflare( self::$options, self::$cf_facade );
+		$cf       = new Cloudflare( self::$options, self::$api );
 		$response = $cf->set_cache_level( 'basic' );
 
 		$this->assertTrue( is_wp_error( $response ) );

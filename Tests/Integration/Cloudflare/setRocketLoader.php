@@ -6,12 +6,13 @@ use WPMedia\Cloudflare\Cloudflare;
 /**
  * @covers WPMedia\Cloudflare\Cloudflare::set_rocket_loader
  * @group  Cloudflare
+ * @group  CloudflareManager
  */
 class Test_SetRocketLoader extends TestCase {
 
 	public function testSetRocketLoaderWithAPIError() {
 		$this->setInvalidApiCredentials();
-		$cf = new Cloudflare( self::$options, self::$cf_facade );
+		$cf = new Cloudflare( self::$options, self::$api );
 		$response = $cf->set_rocket_loader( 'off' );
 
 		$this->assertTrue( is_wp_error( $response ) );

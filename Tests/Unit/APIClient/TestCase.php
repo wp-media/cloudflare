@@ -1,6 +1,6 @@
 <?php
 
-namespace WPMedia\Cloudflare\Tests\Unit\CloudflareFacade;
+namespace WPMedia\Cloudflare\Tests\Unit\APIClient;
 
 use Cloudflare\Api;
 use InvalidArgumentException;
@@ -8,12 +8,6 @@ use Mockery;
 use WPMedia\Cloudflare\Tests\Unit\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase {
-	protected $deps = [
-		'ips'        => 'Cloudflare\IPs',
-		'cache'      => 'Cloudflare\Zone\Cache',
-		'page_rules' => 'Cloudflare\Zone\Pagerules',
-		'settings'   => 'Cloudflare\Zone\Settings',
-	];
 
 	protected function getMocks( $setApiExpects = true ) {
 		$api = $this->getApi( $setApiExpects );

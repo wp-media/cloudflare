@@ -7,12 +7,13 @@ use WPMedia\Cloudflare\Cloudflare;
 /**
  * @covers WPMedia\Cloudflare\Cloudflare::set_browser_cache_ttl
  * @group  Cloudflare
+ * @group  CloudflareManager
  */
 class Test_SetBrowserCacheTTL extends TestCase {
 
 	public function testSetBrowserCacheTTLWithAPIError() {
 		$this->setInvalidApiCredentials();
-		$cf       = new Cloudflare( self::$options, self::$cf_facade );
+		$cf       = new Cloudflare( self::$options, self::$api );
 		$response = $cf->set_browser_cache_ttl( 3600 );
 
 		$this->assertTrue( is_wp_error( $response ) );

@@ -1,22 +1,22 @@
 <?php
 
-namespace WPMedia\Cloudflare\Tests\Integration\CloudflareFacade;
+namespace WPMedia\Cloudflare\Tests\Integration\APIClient;
 
-use Cloudflare\Exception\AuthenticationException;
+use WPMedia\Cloudflare\AuthenticationException;
 
 /**
- * @covers WPMedia\Cloudflare\CloudflareFacade::change_minify
+ * @covers WPMedia\Cloudflare\APIClient::change_minify
  * @group  Cloudflare
- * @group  CloudflareFacade
+ * @group  CloudflareAPI
  */
 class Test_ChangeMinify extends TestCase {
 
 	public function testShouldThrowErrorWhenInvalidCredentials() {
-		self::$cf->set_api_credentials( null, null, null );
+		self::$api->set_api_credentials( null, null, null );
 
 		$this->expectException( AuthenticationException::class );
 		$this->expectExceptionMessage( 'Authentication information must be provided' );
-		self::$cf->change_minify(
+		self::$api->change_minify(
 			[
 				'css'  => 'on',
 				'html' => 'on',
@@ -26,20 +26,20 @@ class Test_ChangeMinify extends TestCase {
 	}
 
 	public function testShouldFailWhenInvalidSettingGiven() {
-		self::$cf->set_api_credentials( self::$email, self::$api_key, self::$zone_id );
+		self::$api->set_api_credentials( self::$email, self::$api_key, self::$zone_id );
 
-		$response = self::$cf->change_minify( [ 'css' => 'invalid' ] );
+		$response = self::$api->change_minify( [ 'css' => 'invalid' ] );
 		$this->assertFalse( $response->success );
 		$error = $response->errors[0];
 		$this->assertSame( 'Invalid value for zone setting minify', $error->message );
 	}
 
 	public function testShouldChangeMinifyWhenSettingGiven() {
-		self::$cf->set_api_credentials( self::$email, self::$api_key, self::$zone_id );
+		self::$api->set_api_credentials( self::$email, self::$api_key, self::$zone_id );
 
 		$orig     = (array) $this->getSetting( 'minify' );
 		$new      = $this->getNewSetting( $orig );
-		$response = self::$cf->change_minify( $new );
+		$response = self::$api->change_minify( $new );
 
 		$this->assertTrue( $response->success );
 		$actual = (array) $response->result->value;

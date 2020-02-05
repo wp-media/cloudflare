@@ -72,10 +72,9 @@ abstract class TestCase extends PHPUnitTestCase {
 		}
 	}
 
-	protected function getFacade( $api_mock ) {
-		$mock = Mockery::mock( 'WPMedia\Cloudflare\CloudflareFacade[init_api_objects]', [ $api_mock ] )->shouldAllowMockingProtectedMethods();
-		$mock->shouldReceive( 'init_api_objects' )->andReturnNull();
-
-		return $mock;
+	protected function getAPIMock() {
+		return Mockery::mock( 'WPMedia\Cloudflare\APIClient', [ 'cloudflare/3.5' ] )
+		              ->makePartial()
+		              ->shouldAllowMockingProtectedMethods();
 	}
 }

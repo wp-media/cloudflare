@@ -1,37 +1,30 @@
 <?php
 
-namespace WPMedia\Cloudflare\Tests\Unit\CloudflareFacade;
+namespace WPMedia\Cloudflare\Tests\Unit\APIClient;
 
-use Cloudflare\Exception\AuthenticationException;
+use WPMedia\Cloudflare\APIClient;
+use WPMedia\Cloudflare\AuthenticationException;
 
 /**
- * @covers WPMedia\Cloudflare\CloudflareFacade::ips
+ * @covers WPMedia\Cloudflare\APIClient::get_ips
  * @group  Cloudflare
- * @group  CloudflareFacade
+ * @group  CloudflareAPI
  */
-class Test_Ips extends TestCase {
+class Test_GetIps extends TestCase {
 
 	public function testShouldThrowErrorWhenInvalidCredentials() {
-		list( $cf, $ips ) = $this->getMocksWithDep( 'ips', false );
-
-		$ips->shouldReceive( 'ips' )
-		    ->once()
-		    ->andReturnUsing( function() {
-			    throw new AuthenticationException( 'Authentication information must be provided' );
-		    } );
+		$api = new APIClient( 'cloudflare/3.5' );
 
 		$this->expectException( AuthenticationException::class );
 		$this->expectExceptionMessage( 'Authentication information must be provided' );
-		$cf->ips();
+		$api->get_ips();
 	}
 
 	public function testShouldReturnIps() {
-		list( $cf, $ips ) = $this->getMocksWithDep( 'ips' );
-
-		$cf->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
-
-		$ips->shouldReceive( 'ips' )
+		$api = $this->getAPIMock();
+		$api->shouldReceive( 'request' )
 		    ->once()
+		    ->with( '/ips', [], 'get' )
 		    ->andReturnUsing( function() {
 			    return (object) [
 				    'result'   => (object) [
@@ -43,7 +36,9 @@ class Test_Ips extends TestCase {
 			    ];
 		    } );
 
-		$response = $cf->ips();
+		$api->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
+
+		$response = $api->get_ips();
 		$this->assertTrue( $response->success );
 		$this->assertContains( '173.245.48.0/20', $response->result->ipv4_cidrs );
 		$this->assertContains( '2400:cb00::/32', $response->result->ipv6_cidrs );

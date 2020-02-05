@@ -7,12 +7,13 @@ use WPMedia\Cloudflare\Cloudflare;
 /**
  * @covers WPMedia\Cloudflare\Cloudflare::get_settings
  * @group  Cloudflare
+ * @group  CloudflareManager
  */
 class Test_GetSettings extends TestCase {
 
 	public function testGetSettingsWithAPIError() {
 		$this->setInvalidApiCredentials();
-		$cf       = new Cloudflare( self::$options, self::$cf_facade );
+		$cf       = new Cloudflare( self::$options, self::$api );
 		$response = $cf->get_settings();
 
 		$this->assertTrue( is_wp_error( $response ) );

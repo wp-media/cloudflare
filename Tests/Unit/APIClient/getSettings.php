@@ -1,39 +1,30 @@
 <?php
 
-namespace WPMedia\Cloudflare\Tests\Unit\CloudflareFacade;
+namespace WPMedia\Cloudflare\Tests\Unit\APIClient;
 
-use Cloudflare\Exception\AuthenticationException;
+use WPMedia\Cloudflare\APIClient;
+use WPMedia\Cloudflare\AuthenticationException;
 
 /**
- * @covers WPMedia\Cloudflare\CloudflareFacade::settings
+ * @covers WPMedia\Cloudflare\APIClient::get_settings
  * @group  Cloudflare
- * @group  CloudflareFacade
+ * @group  CloudflareAPI
  */
-class Test_Settings extends TestCase {
+class Test_GetSettings extends TestCase {
 
 	public function testShouldThrowErrorWhenInvalidCredentials() {
-		list( $cf, $settings ) = $this->getMocksWithDep( 'settings', false );
-
-		$settings->shouldReceive( 'settings' )
-		         ->once()
-		         ->with( null )
-		         ->andReturnUsing( function() {
-			         throw new AuthenticationException( 'Authentication information must be provided' );
-		         } );
+		$api = new APIClient( 'cloudflare/3.5' );
 
 		$this->expectException( AuthenticationException::class );
 		$this->expectExceptionMessage( 'Authentication information must be provided' );
-		$cf->settings();
+		$api->get_settings();
 	}
 
 	public function testShouldReturnSettingsWhenZoneIdIsSet() {
-		list( $cf, $settings ) = $this->getMocksWithDep( 'settings' );
-
-		$cf->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
-
-		$settings->shouldReceive( 'settings' )
-		         ->once()
-		         ->with( 'zone1234' )
+		$api = $this->getAPIMock();
+		$api->shouldReceive( 'request' )
+		    ->once()
+		    ->with( 'zones/zone1234/settings', [], 'get' )
 		         ->andReturnUsing( function() {
 			         return (object) [
 				         'result'  => [
@@ -48,8 +39,9 @@ class Test_Settings extends TestCase {
 				         'errors'  => [],
 			         ];
 		         } );
+		$api->set_api_credentials( 'test@example.com', 'API_KEY', 'zone1234' );
 
-		$response = $cf->settings();
+		$response = $api->get_settings();
 		$this->assertTrue( $response->success );
 		$this->assertEmpty( $response->errors );
 		$this->assertGreaterThan( 4, $response->result );

@@ -1,42 +1,41 @@
 <?php
 
-namespace WPMedia\Cloudflare\Tests\Integration\CloudflareFacade;
+namespace WPMedia\Cloudflare\Tests\Integration\APIClient;
 
-use Cloudflare\Exception\AuthenticationException;
+use WPMedia\Cloudflare\AuthenticationException;
 
 /**
- * @covers WPMedia\Cloudflare\CloudflareFacade::change_cache_level
+ * @covers WPMedia\Cloudflare\APIClient::change_cache_level
  * @group  Cloudflare
- * @group  CloudflareFacade
+ * @group  CloudflareAPI
  */
 class Test_ChangeCacheLevel extends TestCase {
 
 	public function testShouldThrowErrorWhenInvalidCredentials() {
-		self::$cf->set_api_credentials( null, null, null );
+		self::$api->set_api_credentials( null, null, null );
 
 		$this->expectException( AuthenticationException::class );
 		$this->expectExceptionMessage( 'Authentication information must be provided' );
-		self::$cf->change_cache_level( 'aggressive' );
+		self::$api->change_cache_level( 'aggressive' );
 	}
 
 	public function testShouldFailWhenInvalidLevelGiven() {
-		self::$cf->set_api_credentials( self::$email, self::$api_key, self::$zone_id );
+		self::$api->set_api_credentials( self::$email, self::$api_key, self::$zone_id );
 
-		$response = self::$cf->change_cache_level( 'invalid' );
+		$response = self::$api->change_cache_level( 'invalid' );
 		$this->assertFalse( $response->success );
 		$error = $response->errors[0];
 		$this->assertSame( 'Invalid value for zone setting cache_level', $error->message );
 	}
 
 	public function testShouldChangeCacheLevelWhenLevelGiven() {
-		self::$cf->set_api_credentials( self::$email, self::$api_key, self::$zone_id );
+		self::$api->set_api_credentials( self::$email, self::$api_key, self::$zone_id );
 
 		$orig     = $this->getSetting( 'cache_level' );
 		$new      = $this->getNewCacheLevel( $orig );
-		$response = self::$cf->change_cache_level( $new );
+		$response = self::$api->change_cache_level( $new );
 		$this->assertTrue( $response->success );
 		$this->assertSame( $new, $response->result->value );
 		$this->assertNotSame( $orig, $response->result->value );
 	}
-
 }

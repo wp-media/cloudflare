@@ -7,7 +7,8 @@ use WPMedia\Cloudflare\CloudflareSubscriber;
 
 /**
  * @covers WPMedia\Cloudflare\CloudflareSubscriber::get_subscribed_events
- * @group  Subscriber
+ * @group  Cloudflare
+ * @group  CloudflareSubscriber
  */
 class Test_GetSubscribedEvents extends TestCase {
 
