@@ -3,14 +3,9 @@
 namespace WPMedia\Cloudflare\Tests\Integration;
 
 use Brain\Monkey;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use WPMedia\Cloudflare\Tests\TestCaseTrait;
-use WP_UnitTestCase;
+use WPMedia\PHPUnit\Integration\TestCase as BaseTestCase;
 
-abstract class TestCase extends WP_UnitTestCase {
-	use TestCaseTrait;
-	use MockeryPHPUnitIntegration;
-
+abstract class TestCase extends BaseTestCase {
 	protected static $api;
 	protected static $api_key;
 	protected static $email;
@@ -44,14 +39,6 @@ abstract class TestCase extends WP_UnitTestCase {
 		Monkey\setUp();
 
 		getFactory()->restoreState();
-	}
-
-	/**
-	 * Cleans up the test environment after each test.
-	 */
-	public function tearDown() {
-		Monkey\tearDown();
-		parent::tearDown();
 	}
 
 	/**

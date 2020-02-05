@@ -8,8 +8,10 @@ use WP_Rocket\Event_Management\Event_Manager;
 use WPMedia\Cloudflare\Cloudflare;
 use WPMedia\Cloudflare\APIClient;
 use WPMedia\Cloudflare\CloudflareSubscriber;
+use WPMedia\PHPUnit\TestCaseTrait;
 
 class Factory {
+	use TestCaseTrait;
 	private $container = [];
 
 	public static $api_credentials_config_file;
@@ -23,7 +25,7 @@ class Factory {
 	}
 
 	public function init() {
-		require_once dirname( __DIR__ ) . '/Fixtures/functions.php';
+		$this->stubPolyfills();
 
 		add_filter( 'site_url', [ $this, 'setSiteUrl' ] );
 
