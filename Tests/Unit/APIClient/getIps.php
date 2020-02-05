@@ -10,7 +10,7 @@ use WPMedia\Cloudflare\AuthenticationException;
  * @group  Cloudflare
  * @group  CloudflareAPI
  */
-class Test_Get_Ips extends TestCase {
+class Test_GetIps extends TestCase {
 
 	public function testShouldThrowErrorWhenInvalidCredentials() {
 		$api = new APIClient( 'cloudflare/3.5' );
