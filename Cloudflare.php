@@ -2,6 +2,7 @@
 
 namespace WPMedia\Cloudflare;
 
+use WP_Error;
 use WP_Rocket\Admin\Options_Data;
 
 /**
@@ -13,7 +14,7 @@ use WP_Rocket\Admin\Options_Data;
 class Cloudflare {
 
 	/**
-	 * WP Rocket options instance.
+	 * Options Data instance.
 	 *
 	 * @var Options_Data
 	 */
@@ -120,13 +121,13 @@ class Cloudflare {
 
 			$msg .= ' ' . sprintf(
 				/* translators: %1$s = opening link; %2$s = closing link */
-					__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
-					// translators: Documentation exists in EN, FR; use localized URL if applicable.
-					'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
-					'</a>'
-				);
+				__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
+				// translators: Documentation exists in EN, FR; use localized URL if applicable.
+				'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
+				'</a>'
+			);
 
-			return new \WP_Error( 'cloudflare_no_zone_id', $msg );
+			return new WP_Error( 'cloudflare_no_zone_id', $msg );
 		}
 
 		try {
@@ -141,13 +142,13 @@ class Cloudflare {
 
 						$msg .= ' ' . sprintf(
 							/* translators: %1$s = opening link; %2$s = closing link */
-								__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
-								// translators: Documentation exists in EN, FR; use localized URL if applicable.
-								'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
-								'</a>'
-							);
+							__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
+							// translators: Documentation exists in EN, FR; use localized URL if applicable.
+							'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
+							'</a>'
+						);
 
-						return new \WP_Error( 'cloudflare_invalid_auth', $msg );
+						return new WP_Error( 'cloudflare_invalid_auth', $msg );
 					}
 				}
 
@@ -155,13 +156,13 @@ class Cloudflare {
 
 				$msg .= ' ' . sprintf(
 					/* translators: %1$s = opening link; %2$s = closing link */
-						__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
-						// translators: Documentation exists in EN, FR; use localized URL if applicable.
-						'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
-						'</a>'
-					);
+					__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
+					// translators: Documentation exists in EN, FR; use localized URL if applicable.
+					'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
+					'</a>'
+				);
 
-				return new \WP_Error( 'cloudflare_invalid_auth', $msg );
+				return new WP_Error( 'cloudflare_invalid_auth', $msg );
 			}
 
 			$zone_found = false;
@@ -183,27 +184,27 @@ class Cloudflare {
 
 				$msg .= ' ' . sprintf(
 					/* translators: %1$s = opening link; %2$s = closing link */
-						__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
-						// translators: Documentation exists in EN, FR; use localized URL if applicable.
-						'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
-						'</a>'
-					);
-
-				return new \WP_Error( 'cloudflare_wrong_zone_id', $msg );
-			}
-
-			return true;
-		} catch ( \Exception $e ) {
-			$msg = __( 'Incorrect Cloudflare email address or API key.', 'rocket' );
-			$msg .= ' ' . sprintf(
-				/* translators: %1$s = opening link; %2$s = closing link */
 					__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
 					// translators: Documentation exists in EN, FR; use localized URL if applicable.
 					'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
 					'</a>'
 				);
 
-			return new \WP_Error( 'cloudflare_invalid_auth', $msg );
+				return new WP_Error( 'cloudflare_wrong_zone_id', $msg );
+			}
+
+			return true;
+		} catch ( \Exception $e ) {
+			$msg  = __( 'Incorrect Cloudflare email address or API key.', 'rocket' );
+			$msg .= ' ' . sprintf(
+				/* translators: %1$s = opening link; %2$s = closing link */
+				__( 'Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
+				// translators: Documentation exists in EN, FR; use localized URL if applicable.
+				'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',
+				'</a>'
+			);
+
+			return new WP_Error( 'cloudflare_invalid_auth', $msg );
 		}
 	}
 

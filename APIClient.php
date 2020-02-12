@@ -5,7 +5,9 @@ namespace WPMedia\Cloudflare;
 use stdClass;
 
 /**
- * @since  3.5
+ * Cloudflare API Client.
+ *
+ * @since 3.5
  */
 class APIClient {
 	const CLOUDFLARE_API = 'https://api.cloudflare.com/client/v4/';
@@ -239,8 +241,8 @@ class APIClient {
 	 *
 	 * @since 3.5
 	 *
-	 * @param string $path Path of the endpoint
-	 * @param array  $data Data to be sent along with the request
+	 * @param string $path Path of the endpoint.
+	 * @param array  $data Data to be sent along with the request.
 	 *
 	 * @return stdClass Cloudflare response packet.
 	 */
@@ -253,10 +255,10 @@ class APIClient {
 	 *
 	 * @since 3.5
 	 *
-	 * @param string $path Path of the endpoint
-	 * @param array  $data Data to be sent along with the request
+	 * @param string $path Path of the endpoint.
+	 * @param array  $data Data to be sent along with the request.
 	 *
-	 * @return mixed
+	 * @return stdClass Cloudflare response packet.
 	 */
 	protected function delete( $path, array $data = [] ) {
 		return $this->request( $path, $data, 'delete' );
@@ -267,10 +269,10 @@ class APIClient {
 	 *
 	 * @since 3.5
 	 *
-	 * @param string $path Path of the endpoint
-	 * @param array  $data Data to be sent along with the request
+	 * @param string $path Path of the endpoint.
+	 * @param array  $data Data to be sent along with the request.
 	 *
-	 * @return mixed
+	 * @return stdClass Cloudflare response packet.
 	 */
 	protected function patch( $path, array $data = [] ) {
 		return $this->request( $path, $data, 'patch' );
@@ -289,18 +291,18 @@ class APIClient {
 	 * @param string $method Type of method that should be used ('GET', 'DELETE', 'PATCH').
 	 *
 	 * @return stdClass response object.
-	 * @throws AuthenticationException when email or api key are not set.
-	 * @throws UnauthorizedException when Cloudflare's API returns a 401 or 403.
+	 * @throws AuthenticationException When email or api key are not set.
+	 * @throws UnauthorizedException When Cloudflare's API returns a 401 or 403.
 	 */
 	protected function request( $path, array $data = [], $method = 'get' ) {
 		if ( ! $this->is_authorized() ) {
-			throw new AuthenticationException( __( 'Authentication information must be provided', 'cloudflare' ) );
+			throw new AuthenticationException( 'Authentication information must be provided.' );
 		}
 
 		list( $http_result, $error, $information, $http_code ) = $this->do_remote_request( $path, $data, $method );
 
-		if ( in_array( $http_code, [ 401, 403 ] ) ) {
-			throw new UnauthorizedException( __( 'You do not have permission to perform this request,', 'cloudflare' ) );
+		if ( in_array( $http_code, [ 401, 403 ], true ) ) {
+			throw new UnauthorizedException( 'You do not have permission to perform this request.' );
 		}
 
 		$response = json_decode( $http_result );
@@ -355,7 +357,6 @@ class APIClient {
 			$method
 		);
 
-
 		$packet = [
 			curl_exec( $ch ),
 			curl_error( $ch ),
@@ -384,7 +385,7 @@ class APIClient {
 		if ( 'get' === $method ) {
 			$url .= '?' . http_build_query( $data );
 		} else {
-			curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data ) );
+			curl_setopt( $ch, CURLOPT_POSTFIELDS, wp_json_encode( $data ) );
 			curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, strtoupper( $method ) );
 		}
 

@@ -2,6 +2,7 @@
 
 namespace WPMedia\Cloudflare\Tests\Unit;
 
+use Brain\Monkey\Functions;
 use Mockery;
 use WPMedia\PHPUnit\Unit\TestCase as WPMediaTestCase;
 
