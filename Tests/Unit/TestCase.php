@@ -17,6 +17,9 @@ abstract class TestCase extends WPMediaTestCase {
 		parent::setUp();
 
 		rocket_get_constant( 'WP_ROCKET_VERSION', '3.5' );
+
+		Functions\stubs( [ 'sanitize_text_field' ] );
+
 	}
 
 	protected function getAPIMock() {
