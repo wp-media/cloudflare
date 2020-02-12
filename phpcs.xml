@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="WP Rocket" xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
-	<description>The custom ruleset for WP Rocket.</description>
+	<description>The custom ruleset for WPMedia.</description>
 
 	<!-- For help in understanding this file: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-ruleset.xml -->
 	<!-- For help in using PHPCS: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Usage -->
@@ -9,8 +9,6 @@
 
 	<file>.</file>
 	<!-- Ignoring Files and Folders: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage#ignoring-files-and-folders -->
-	<exclude-pattern>/inc/deprecated/*</exclude-pattern>
-	<exclude-pattern>/inc/vendors/*</exclude-pattern>
 	<exclude-pattern>/tests/Integration/*</exclude-pattern>
 	<exclude-pattern>/tests/Unit/*</exclude-pattern>
 	<exclude-pattern>/vendor/*</exclude-pattern>
@@ -28,14 +26,15 @@
 	<config name="minimum_supported_wp_version" value="4.7"/>
 
 	<rule ref="WordPress">
-        <exclude name="Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma"/>
-		<exclude name="Generic.PHP.NoSilencedErrors.Discouraged"/>
-        <exclude name="PEAR.Functions.FunctionCallSignature.Indent"/>
-        <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
-        <exclude name="Squiz.Commenting.FileComment.Missing"/>
-        <exclude name="Squiz.Commenting.FileComment.MissingPackageTag"/>
-        <exclude name="Squiz.PHP.CommentedOutCode.Found"/>
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+		<!-- Allow cURL. -->
+		<exclude name="WordPress.WP.AlternativeFunctions.curl_curl_init" />
+		<exclude name="WordPress.WP.AlternativeFunctions.curl_curl_exec" />
+		<exclude name="WordPress.WP.AlternativeFunctions.curl_curl_error" />
+		<exclude name="WordPress.WP.AlternativeFunctions.curl_curl_getinfo" />
+		<exclude name="WordPress.WP.AlternativeFunctions.curl_curl_close" />
+		<exclude name="WordPress.WP.AlternativeFunctions.curl_curl_setopt_array" />
+		<exclude name="WordPress.WP.AlternativeFunctions.curl_curl_setopt" />
 	</rule>
     <rule ref="WordPress.WP.I18n">
         <properties>
@@ -44,7 +43,7 @@
     </rule>
     <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
         <properties>
-            <property name="prefixes" type="array" value="rocket,wp_rocket" />
+            <property name="prefixes" type="array" value="WPMedia, ROCKET" />
         </properties>
     </rule>
     <rule ref="WordPress.Files.FileName">
@@ -52,44 +51,11 @@
             <property name="strict_class_file_names" value="false" />
         </properties>
     </rule>
-	<rule ref="WordPress.WP.AlternativeFunctions.file_system_read_readfile">
-		<exclude-pattern>inc/classes/buffer/class-cache.php</exclude-pattern>
-	</rule>
-	<rule ref="WordPress.PHP.NoSilencedErrors.Discouraged">
-		<exclude-pattern>inc/admin/admin.php</exclude-pattern>
-		<exclude-pattern>inc/front/process.php</exclude-pattern>
-		<exclude-pattern>uninstall.php</exclude-pattern>
-		<exclude-pattern>inc/classes/buffer/class-cache.php</exclude-pattern>
-		<exclude-pattern>inc/classes/admin/class-logs.php</exclude-pattern>
-		<exclude-pattern>inc/classes/logger/class-stream-handler.php</exclude-pattern>
-		<exclude-pattern>inc/classes/logger/class-logger.php</exclude-pattern>
-		<exclude-pattern>inc/classes/subscriber/third-party/Hostings/class-litespeed-subscriber.php</exclude-pattern>
-		<exclude-pattern>inc/classes/subscriber/third-party/plugins/ecommerce/class-woocommerce-subscriber.php</exclude-pattern>
-		<exclude-pattern>inc/classes/subscriber/third-party/plugins/security/class-sucuri-subscriber.php</exclude-pattern>
-	</rule>
 
-	<rule ref="WordPress.DB.DirectDatabaseQuery.DirectQuery">
-		<exclude-pattern>inc/classes/admin/Database/class-optimization-process.php</exclude-pattern>
-		<exclude-pattern>inc/classes/admin/Database/class-optimization.php</exclude-pattern>
-		<exclude-pattern>inc/classes/optimization/CSS/class-critical-css.php</exclude-pattern>
+	<rule ref="WordPress-Docs">
+		<exclude name="Squiz.Commenting.FileComment.Missing"/>
+		<exclude name="Squiz.Commenting.ClassComment.Missing"/>
 	</rule>
-
-	<rule ref="WordPress.DB.DirectDatabaseQuery.NoCaching">
-		<exclude-pattern>inc/classes/admin/Database/class-optimization-process.php</exclude-pattern>
-		<exclude-pattern>inc/classes/admin/Database/class-optimization.php</exclude-pattern>
-		<exclude-pattern>inc/classes/optimization/CSS/class-critical-css.php</exclude-pattern>
-	</rule>
-
-	<rule ref="WordPress.DB.PreparedSQL.NotPrepared">
-		<exclude-pattern>inc/classes/admin/Database/class-optimization-process.php</exclude-pattern>
-		<exclude-pattern>inc/classes/admin/Database/class-optimization.php</exclude-pattern>
-	</rule>
-
-	<rule ref="WordPress.DB.PreparedSQL.InterpolatedNotPrepared">
-		<exclude-pattern>inc/classes/admin/Database/class-optimization-process.php</exclude-pattern>
-		<exclude-pattern>inc/classes/optimization/CSS/class-critical-css.php</exclude-pattern>
-	</rule>
-	<rule ref="WordPress-Docs"/>
 
 	<!-- Rules: WordPress Coding Standards - see
 		https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards

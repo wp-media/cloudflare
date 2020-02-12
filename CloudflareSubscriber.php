@@ -22,7 +22,7 @@ class CloudflareSubscriber implements Subscriber_Interface {
 	private $cloudflare;
 
 	/**
-	 * WP Rocket options instance.
+	 * Options Data instance.
 	 *
 	 * @var Options_Data
 	 */
@@ -39,7 +39,7 @@ class CloudflareSubscriber implements Subscriber_Interface {
 	private $options_api;
 
 	/**
-	 * Constructor
+	 * Creates an instance of the Cloudflare Subscriber.
 	 *
 	 * @param Cloudflare   $cloudflare  Cloudflare instance.
 	 * @param Options_Data $options     WP Rocket options instance.
@@ -52,7 +52,11 @@ class CloudflareSubscriber implements Subscriber_Interface {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Gets the subscribed events.
+	 *
+	 * @since 3.5
+	 *
+	 * @return array subscribed events => callbacks.
 	 */
 	public static function get_subscribed_events() {
 		$slug = rocket_get_constant( 'WP_ROCKET_SLUG', 'wp_rocket_settings' );
@@ -266,7 +270,7 @@ class CloudflareSubscriber implements Subscriber_Interface {
 
 		$cf_ips_values = $this->cloudflare->get_cloudflare_ips();
 		$cf_ip_ranges  = $cf_ips_values->result->ipv6_cidrs;
-		$ip            = wp_unslash( $_SERVER['REMOTE_ADDR'] );
+		$ip            = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
 		$ipv6          = get_rocket_ipv6_full( $ip );
 		if ( false === strpos( $ip, ':' ) ) {
 			// IPV4: Update the REMOTE_ADDR value if the current REMOTE_ADDR value is in the specified range.
@@ -274,9 +278,12 @@ class CloudflareSubscriber implements Subscriber_Interface {
 		}
 
 		foreach ( $cf_ip_ranges as $range ) {
-			if ( ( strpos( $ip, ':' ) && rocket_ipv6_in_range( $ipv6, $range ) ) ||
-			     ( false === strpos( $ip, ':' ) && rocket_ipv4_in_range( $ip, $range ) ) ) {
-				$_SERVER['REMOTE_ADDR'] = wp_unslash( $_SERVER['HTTP_CF_CONNECTING_IP'] );
+			if (
+				( strpos( $ip, ':' ) && rocket_ipv6_in_range( $ipv6, $range ) )
+				||
+				( false === strpos( $ip, ':' ) && rocket_ipv4_in_range( $ip, $range ) )
+			) {
+				$_SERVER['REMOTE_ADDR'] = sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_CONNECTING_IP'] ) );
 				break;
 			}
 		}
@@ -378,9 +385,12 @@ class CloudflareSubscriber implements Subscriber_Interface {
 			delete_transient( 'rocket_cloudflare_is_api_keys_valid' );
 		}
 
-		if ( ( ( isset( $old_value['cloudflare_email'], $value['cloudflare_email'] ) && $old_value['cloudflare_email'] !== $value['cloudflare_email'] ) ||
-		       ( isset( $old_value['cloudflare_api_key'], $value['cloudflare_api_key'] ) && $old_value['cloudflare_api_key'] !== $value['cloudflare_api_key'] ) ||
-		       ( isset( $old_value['cloudflare_zone_id'], $value['cloudflare_zone_id'] ) && $old_value['cloudflare_zone_id'] !== $value['cloudflare_zone_id'] ) )
+		if (
+			( isset( $old_value['cloudflare_email'], $value['cloudflare_email'] ) && $old_value['cloudflare_email'] !== $value['cloudflare_email'] )
+			||
+			( isset( $old_value['cloudflare_api_key'], $value['cloudflare_api_key'] ) && $old_value['cloudflare_api_key'] !== $value['cloudflare_api_key'] )
+			||
+			( isset( $old_value['cloudflare_zone_id'], $value['cloudflare_zone_id'] ) && $old_value['cloudflare_zone_id'] !== $value['cloudflare_zone_id'] )
 		) {
 			// Check Cloudflare input data and display error message.
 			if ( $this->options->get( 'do_cloudflare' ) ) {
