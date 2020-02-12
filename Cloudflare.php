@@ -2,6 +2,8 @@
 
 namespace WPMedia\Cloudflare;
 
+use Exception;
+use stdClass;
 use WP_Error;
 use WP_Rocket\Admin\Options_Data;
 
@@ -87,19 +89,19 @@ class Cloudflare {
 	 *
 	 * @since 1.0
 	 *
-	 * @param string $cf_email   - Cloudflare email.
-	 * @param string $cf_api_key - Cloudflare API key.
-	 * @param string $cf_zone_id - Cloudflare zone ID.
+	 * @param string $cf_email   Cloudflare email.
+	 * @param string $cf_api_key Cloudflare API key.
+	 * @param string $cf_zone_id Cloudflare zone ID.
 	 *
-	 * @return \stdClass true if credentials are ok, WP_Error otherwise.
+	 * @return stdClass true if credentials are ok, WP_Error otherwise.
 	 */
 	public function is_api_keys_valid( $cf_email, $cf_api_key, $cf_zone_id ) {
 		if ( ! function_exists( 'curl_init' ) || ! function_exists( 'curl_exec' ) ) {
-			return new \WP_Error( 'curl_disabled', __( 'Curl is disabled on your server. Please ask your host to enable it. This is required for the Cloudflare Add-on to work correctly.', 'rocket' ) );
+			return new WP_Error( 'curl_disabled', __( 'Curl is disabled on your server. Please ask your host to enable it. This is required for the Cloudflare Add-on to work correctly.', 'rocket' ) );
 		}
 
 		if ( empty( $cf_email ) || empty( $cf_api_key ) ) {
-			return new \WP_Error(
+			return new WP_Error(
 				'cloudflare_credentials_empty',
 				sprintf(
 					/* translators: %1$s = opening link; %2$s = closing link */
@@ -189,7 +191,7 @@ class Cloudflare {
 			}
 
 			return true;
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$msg  = __( 'Incorrect Cloudflare email address or API key.', 'rocket' );
 			$msg .= ' ' . sprintf(
 				/* translators: %1$s = opening link; %2$s = closing link */
@@ -208,7 +210,7 @@ class Cloudflare {
 	 *
 	 * @since 1.0
 	 *
-	 * @param String $action_value - cache_everything.
+	 * @param string $action_value Cache_everything.
 	 *
 	 * @return mixed  Object|bool true / false if $action_value was found or not, WP_Error otherwise.
 	 */
@@ -227,14 +229,14 @@ class Cloudflare {
 
 				$errors = wp_sprintf_l( '%l ', $errors );
 
-				return new \WP_Error( 'cloudflare_page_rule_failed', $errors );
+				return new WP_Error( 'cloudflare_page_rule_failed', $errors );
 			}
 
 			$cf_page_rule_arr = wp_json_encode( $cf_page_rule );
 
 			return preg_match( '/' . $action_value . '/', $cf_page_rule_arr );
-		} catch ( \Exception $e ) {
-			return new \WP_Error( 'cloudflare_page_rule_failed', $e->getMessage() );
+		} catch ( Exception $e ) {
+			return new WP_Error( 'cloudflare_page_rule_failed', $e->getMessage() );
 		}
 	}
 
@@ -260,12 +262,12 @@ class Cloudflare {
 
 				$errors = wp_sprintf_l( '%l ', $errors );
 
-				return new \WP_Error( 'cloudflare_purge_failed', $errors );
+				return new WP_Error( 'cloudflare_purge_failed', $errors );
 			}
 
 			return true;
-		} catch ( \Exception $e ) {
-			return new \WP_Error( 'cloudflare_purge_failed', $e->getMessage() );
+		} catch ( Exception $e ) {
+			return new WP_Error( 'cloudflare_purge_failed', $e->getMessage() );
 		}
 	}
 
@@ -295,13 +297,13 @@ class Cloudflare {
 
 				$errors = wp_sprintf_l( '%l ', $errors );
 
-				return new \WP_Error( 'cloudflare_purge_failed', $errors );
+				return new WP_Error( 'cloudflare_purge_failed', $errors );
 			}
 
 			return true;
 
-		} catch ( \Exception $e ) {
-			return new \WP_Error( 'cloudflare_purge_failed', $e->getMessage() );
+		} catch ( Exception $e ) {
+			return new WP_Error( 'cloudflare_purge_failed', $e->getMessage() );
 		}
 	}
 
@@ -329,12 +331,12 @@ class Cloudflare {
 
 				$errors = wp_sprintf_l( '%l ', $errors );
 
-				return new \WP_Error( 'cloudflare_browser_cache', $errors );
+				return new WP_Error( 'cloudflare_browser_cache', $errors );
 			}
 
 			return $mode;
-		} catch ( \Exception $e ) {
-			return new \WP_Error( 'cloudflare_browser_cache', $e->getMessage() );
+		} catch ( Exception $e ) {
+			return new WP_Error( 'cloudflare_browser_cache', $e->getMessage() );
 		}
 	}
 
@@ -362,12 +364,12 @@ class Cloudflare {
 
 				$errors = wp_sprintf_l( '%l ', $errors );
 
-				return new \WP_Error( 'cloudflare_rocket_loader', $errors );
+				return new WP_Error( 'cloudflare_rocket_loader', $errors );
 			}
 
 			return $mode;
-		} catch ( \Exception $e ) {
-			return new \WP_Error( 'cloudflare_rocket_loader', $e->getMessage() );
+		} catch ( Exception $e ) {
+			return new WP_Error( 'cloudflare_rocket_loader', $e->getMessage() );
 		}
 	}
 
@@ -401,12 +403,12 @@ class Cloudflare {
 
 				$errors = wp_sprintf_l( '%l ', $errors );
 
-				return new \WP_Error( 'cloudflare_minification', $errors );
+				return new WP_Error( 'cloudflare_minification', $errors );
 			}
 
 			return $mode;
-		} catch ( \Exception $e ) {
-			return new \WP_Error( 'cloudflare_minification', $e->getMessage() );
+		} catch ( Exception $e ) {
+			return new WP_Error( 'cloudflare_minification', $e->getMessage() );
 		}
 	}
 
@@ -434,12 +436,12 @@ class Cloudflare {
 
 				$errors = wp_sprintf_l( '%l ', $errors );
 
-				return new \WP_Error( 'cloudflare_cache_level', $errors );
+				return new WP_Error( 'cloudflare_cache_level', $errors );
 			}
 
 			return $mode;
-		} catch ( \Exception $e ) {
-			return new \WP_Error( 'cloudflare_cache_level', $e->getMessage() );
+		} catch ( Exception $e ) {
+			return new WP_Error( 'cloudflare_cache_level', $e->getMessage() );
 		}
 	}
 
@@ -473,7 +475,7 @@ class Cloudflare {
 
 				$errors = wp_sprintf_l( '%l ', $errors );
 
-				return new \WP_Error( 'cloudflare_dev_mode', $errors );
+				return new WP_Error( 'cloudflare_dev_mode', $errors );
 			}
 
 			if ( 'on' === $value ) {
@@ -481,8 +483,8 @@ class Cloudflare {
 			}
 
 			return $value;
-		} catch ( \Exception $e ) {
-			return new \WP_Error( 'cloudflare_dev_mode', $e->getMessage() );
+		} catch ( Exception $e ) {
+			return new WP_Error( 'cloudflare_dev_mode', $e->getMessage() );
 		}
 	}
 
@@ -508,7 +510,7 @@ class Cloudflare {
 
 				$errors = wp_sprintf_l( '%l ', $errors );
 
-				return new \WP_Error( 'cloudflare_dev_mode', $errors );
+				return new WP_Error( 'cloudflare_dev_mode', $errors );
 			}
 
 			foreach ( $cf_settings->result as $cloudflare_option ) {
@@ -541,8 +543,8 @@ class Cloudflare {
 			];
 
 			return $cf_settings_array;
-		} catch ( \Exception $e ) {
-			return new \WP_Error( 'cloudflare_current_settings', $e->getMessage() );
+		} catch ( Exception $e ) {
+			return new WP_Error( 'cloudflare_current_settings', $e->getMessage() );
 		}
 	}
 
@@ -573,7 +575,7 @@ class Cloudflare {
 			}
 
 			set_transient( 'rocket_cloudflare_ips', $cf_ips, 2 * WEEK_IN_SECONDS );
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			// Set default IPs from Cloudflare if call to Cloudflare /ips API fails.
 			// Prevents from making API calls on each page load.
 			$cf_ips = $this->get_default_ips();
@@ -590,7 +592,7 @@ class Cloudflare {
 	 *
 	 * @since 1.0
 	 *
-	 * @return \stdClass Default Cloudflare connecting IPs.
+	 * @return stdClass Default Cloudflare connecting IPs.
 	 */
 	private function get_default_ips() {
 		$cf_ips = (object) [
