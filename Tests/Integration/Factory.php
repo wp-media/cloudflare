@@ -92,7 +92,7 @@ class Factory {
 		$this->container['options']        = new Options_Data(
 			$this->container['options_api']->get( 'settings', [] )
 		);
-		$this->container['cloudflare_api'] = new APIClient( 'cloudflare/3.5' );
+		$this->container['cloudflare_api'] = new APIClient( 'cloudflare/1.0' );
 		$this->container['cloudflare']     = new Cloudflare( $this->container['options'], $this->container['cloudflare_api'] );
 
 		$this->container['cloudflare_subscriber'] = new CloudflareSubscriber(

@@ -7,7 +7,7 @@ use stdClass;
 /**
  * Cloudflare API Client.
  *
- * @since 3.5
+ * @since 1.0
  */
 class APIClient {
 	const CLOUDFLARE_API = 'https://api.cloudflare.com/client/v4/';
@@ -50,6 +50,8 @@ class APIClient {
 	/**
 	 * APIClient constructor.
 	 *
+	 * @since 1.0
+	 *
 	 * @param string $useragent The user agent for this plugin or package. For example, "wp-rocket/3.5".
 	 */
 	public function __construct( $useragent ) {
@@ -74,7 +76,7 @@ class APIClient {
 	/**
 	 * Sets up the API credentials.
 	 *
-	 * @since  3.5
+	 * @since 1.0
 	 *
 	 * @param string $email   The email associated with the Cloudflare account.
 	 * @param string $api_key The API key for the associated Cloudflare account.
@@ -92,7 +94,7 @@ class APIClient {
 	/**
 	 * Get zone data.
 	 *
-	 * @since  3.5
+	 * @since 1.0
 	 *
 	 * @return stdClass Cloudflare response packet.
 	 */
@@ -103,7 +105,7 @@ class APIClient {
 	/**
 	 * Get the zone's page rules.
 	 *
-	 * @since  3.5
+	 * @since 1.0
 	 *
 	 * @return stdClass Cloudflare response packet.
 	 */
@@ -114,7 +116,7 @@ class APIClient {
 	/**
 	 * Purges the cache.
 	 *
-	 * @since  3.5
+	 * @since 1.0
 	 *
 	 * @return stdClass Cloudflare response packet.
 	 */
@@ -125,7 +127,7 @@ class APIClient {
 	/**
 	 * Purges the given URLs.
 	 *
-	 * @since  3.5
+	 * @since 1.0
 	 *
 	 * @param array|null $urls An array of URLs that should be removed from cache.
 	 *
@@ -138,7 +140,7 @@ class APIClient {
 	/**
 	 * Changes the zone's browser cache TTL setting.
 	 *
-	 * @since  3.5
+	 * @since 1.0
 	 *
 	 * @param string $value New setting's value.
 	 *
@@ -151,7 +153,7 @@ class APIClient {
 	/**
 	 * Changes the zone's rocket loader setting.
 	 *
-	 * @since  3.5
+	 * @since 1.0
 	 *
 	 * @param string $value New setting's value.
 	 *
@@ -164,7 +166,7 @@ class APIClient {
 	/**
 	 * Changes the zone's minify setting.
 	 *
-	 * @since  3.5
+	 * @since 1.0
 	 *
 	 * @param string $value New setting's value.
 	 *
@@ -177,7 +179,7 @@ class APIClient {
 	/**
 	 * Changes the zone's cache level.
 	 *
-	 * @since  3.5
+	 * @since 1.0
 	 *
 	 * @param string $value New setting's value.
 	 *
@@ -190,7 +192,7 @@ class APIClient {
 	/**
 	 * Changes the zone's development mode.
 	 *
-	 * @since  3.5
+	 * @since 1.0
 	 *
 	 * @param string $value New setting's value.
 	 *
@@ -203,7 +205,7 @@ class APIClient {
 	/**
 	 * Changes the given setting.
 	 *
-	 * @since  3.5
+	 * @since 1.0
 	 *
 	 * @param string $setting Name of the setting to change.
 	 * @param string $value   New setting's value.
@@ -217,7 +219,7 @@ class APIClient {
 	/**
 	 * Gets all of the Cloudflare settings.
 	 *
-	 * @since  3.5
+	 * @since 1.0
 	 *
 	 * @return stdClass Cloudflare response packet.
 	 */
@@ -228,7 +230,7 @@ class APIClient {
 	/**
 	 * Gets Cloudflare's IPs.
 	 *
-	 * @since  3.5
+	 * @since 1.0
 	 *
 	 * @return stdClass Cloudflare response packet.
 	 */
@@ -239,7 +241,7 @@ class APIClient {
 	/**
 	 * API call method for sending requests using GET.
 	 *
-	 * @since 3.5
+	 * @since 1.0
 	 *
 	 * @param string $path Path of the endpoint.
 	 * @param array  $data Data to be sent along with the request.
@@ -253,7 +255,7 @@ class APIClient {
 	/**
 	 * API call method for sending requests using DELETE.
 	 *
-	 * @since 3.5
+	 * @since 1.0
 	 *
 	 * @param string $path Path of the endpoint.
 	 * @param array  $data Data to be sent along with the request.
@@ -267,7 +269,7 @@ class APIClient {
 	/**
 	 * API call method for sending requests using PATCH.
 	 *
-	 * @since 3.5
+	 * @since 1.0
 	 *
 	 * @param string $path Path of the endpoint.
 	 * @param array  $data Data to be sent along with the request.
@@ -281,9 +283,9 @@ class APIClient {
 	/**
 	 * API call method for sending requests using GET, POST, PUT, DELETE OR PATCH.
 	 *
-	 * @since  3.5
+	 * @since 1.0
 	 *
-	 * @author James Bell <james@james-bell.co.uk> - credit for original code adapted for version 3.5.
+	 * @author James Bell <james@james-bell.co.uk> - credit for original code adapted for version 1.0.
 	 * @author WP Media
 	 *
 	 * @param string $path   Path of the endpoint.
@@ -324,7 +326,7 @@ class APIClient {
 	/**
 	 * Checks if the email and API key for the API credentials are set.
 	 *
-	 * @since 3.5
+	 * @since 1.0
 	 *
 	 * @return bool true if authorized; else false.
 	 */
@@ -339,7 +341,7 @@ class APIClient {
 	/**
 	 * Does the request remote cURL request.
 	 *
-	 * @since 3.5
+	 * @since 1.0
 	 *
 	 * @param string $path   Path of the endpoint.
 	 * @param array  $data   Data to be sent along with the request.
@@ -372,7 +374,7 @@ class APIClient {
 	/**
 	 * Sets the cURL options.
 	 *
-	 * @since 3.5
+	 * @since 1.0
 	 *
 	 * @param resource $ch     cURL handle.
 	 * @param string   $url    Request route.

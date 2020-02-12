@@ -13,7 +13,7 @@ use WPMedia\Cloudflare\AuthenticationException;
 class Test_ChangeCacheLevel extends TestCase {
 
 	public function testShouldThrowErrorWhenInvalidCredentials() {
-		$api = new APIClient( 'cloudflare/3.5' );
+		$api = new APIClient( 'cloudflare/1.0' );
 
 		$this->expectException( AuthenticationException::class );
 		$this->expectExceptionMessage( 'Authentication information must be provided' );

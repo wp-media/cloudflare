@@ -116,7 +116,7 @@ class Test_PurgeCache extends TestCase {
 	/**
 	 * Get the mocks required by Cloudflare’s constructor.
 	 *
-	 * @since  3.5
+	 * @since  1.0
 	 * @author Soponar Cristina
 	 * @access private
 	 *
