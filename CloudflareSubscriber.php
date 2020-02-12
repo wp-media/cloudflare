@@ -9,7 +9,7 @@ use WP_Rocket\Admin\Options;
 /**
  * Cloudflare Subscriber
  *
- * @since  3.5
+ * @since  1.0
  * @author Remy Perona
  */
 class CloudflareSubscriber implements Subscriber_Interface {
@@ -31,7 +31,7 @@ class CloudflareSubscriber implements Subscriber_Interface {
 	/**
 	 * Options instance.
 	 *
-	 * @since  3.5
+	 * @since  1.0
 	 * @author Soponar Cristina
 	 *
 	 * @var Options
@@ -54,7 +54,7 @@ class CloudflareSubscriber implements Subscriber_Interface {
 	/**
 	 * Gets the subscribed events.
 	 *
-	 * @since 3.5
+	 * @since 1.0
 	 *
 	 * @return array subscribed events => callbacks.
 	 */
@@ -81,7 +81,7 @@ class CloudflareSubscriber implements Subscriber_Interface {
 	/**
 	 * Sets the Varnish IP to localhost if Cloudflare is active
 	 *
-	 * @since  3.5
+	 * @since  1.0
 	 * @author Remy Perona
 	 *
 	 * @param string|array $varnish_ip Varnish IP.
@@ -105,7 +105,7 @@ class CloudflareSubscriber implements Subscriber_Interface {
 	/**
 	 * Sets the Host header to the website domain if Cloudflare is active
 	 *
-	 * @since  3.5
+	 * @since  1.0
 	 * @author Remy Perona
 	 *
 	 * @param string $host the host header value.
@@ -123,7 +123,7 @@ class CloudflareSubscriber implements Subscriber_Interface {
 	/**
 	 * Checks if we should filter the value for the Varnish purge
 	 *
-	 * @since  3.5
+	 * @since  1.0
 	 * @author Remy Perona
 	 *
 	 * @return bool
@@ -368,7 +368,7 @@ class CloudflareSubscriber implements Subscriber_Interface {
 	/**
 	 * Save Cloudflare admin options
 	 *
-	 * @since  3.5
+	 * @since  1.0
 	 * @author Soponar Cristina
 	 *
 	 * @param array $old_value An array of previous values for the settings.
@@ -514,7 +514,7 @@ class CloudflareSubscriber implements Subscriber_Interface {
 	/**
 	 * Save Cloudflare old settings when the auto settings option is enabled.
 	 *
-	 * @since  3.5
+	 * @since  1.0
 	 * @author Soponar Cristina
 	 *
 	 * @param array $value     An array of previous values for the settings.

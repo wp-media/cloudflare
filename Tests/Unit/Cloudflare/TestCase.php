@@ -11,7 +11,7 @@ abstract class TestCase extends BaseTestCase {
 	/**
 	 * Get the mocks required by Cloudflare’s constructor.
 	 *
-	 * @since  3.5
+	 * @since  1.0
 	 *
 	 * @param integer $do_cloudflare - Value to return for $options->get( 'do_cloudflare' ).
 	 * @param string  $email         - Value to return for $options->get( 'cloudflare_email' ).
@@ -40,7 +40,7 @@ abstract class TestCase extends BaseTestCase {
 	/**
 	 * Get the mocks required by Cloudflare’s constructor.
 	 *
-	 * @since  3.5
+	 * @since  1.0
 	 *
 	 * @param integer $do_cloudflare - Value to return for $options->get( 'do_cloudflare' ).
 	 * @param string  $email         - Value to return for $options->get( 'cloudflare_email' ).

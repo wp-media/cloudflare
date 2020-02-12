@@ -12,7 +12,7 @@ use WPMedia\Cloudflare\APIClient;
 class Test_SetApiCredentials extends TestCase {
 
 	public function testShouldSetEmail() {
-		$api = new APIClient( 'cloudflare/3.5' );
+		$api = new APIClient( 'cloudflare/1.0' );
 		$email = $this->get_reflective_property( 'email', $api );
 
 		$api->set_api_credentials( '', null, null );
@@ -23,7 +23,7 @@ class Test_SetApiCredentials extends TestCase {
 	}
 
 	public function testShouldSetApiKeyWhenGiven() {
-		$api = new APIClient( 'cloudflare/3.5' );
+		$api = new APIClient( 'cloudflare/1.0' );
 		$api_key = $this->get_reflective_property( 'api_key', $api );
 
 		$api->set_api_credentials( null, '', null );
@@ -34,7 +34,7 @@ class Test_SetApiCredentials extends TestCase {
 	}
 
 	public function testShouldSetZoneId() {
-		$api = new APIClient( 'cloudflare/3.5' );
+		$api = new APIClient( 'cloudflare/1.0' );
 		$zone_id = $this->get_reflective_property( 'zone_id', $api );
 
 		$api->set_api_credentials( null, null, 'zone1' );

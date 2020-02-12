@@ -23,7 +23,7 @@ abstract class TestCase extends WPMediaTestCase {
 	}
 
 	protected function getAPIMock() {
-		return Mockery::mock( 'WPMedia\Cloudflare\APIClient', [ 'cloudflare/3.5' ] )
+		return Mockery::mock( 'WPMedia\Cloudflare\APIClient', [ 'cloudflare/1.0' ] )
 		              ->makePartial()
 		              ->shouldAllowMockingProtectedMethods();
 	}
