@@ -3,7 +3,7 @@
 namespace WPMedia\Cloudflare\Tests\Unit\CloudflareSubscriber;
 
 use WPMedia\Cloudflare\Tests\Unit\TestCase;
-use WPMedia\Cloudflare\CloudflareSubscriber;
+use WPMedia\Cloudflare\Subscriber;
 
 /**
  * @covers WPMedia\Cloudflare\CloudflareSubscriber::get_subscribed_events
@@ -29,6 +29,6 @@ class Test_GetSubscribedEvents extends TestCase {
 			],
 		];
 
-		$this->assertSame( $events, CloudflareSubscriber::get_subscribed_events() );
+		$this->assertSame( $events, Subscriber::get_subscribed_events() );
 	}
 }

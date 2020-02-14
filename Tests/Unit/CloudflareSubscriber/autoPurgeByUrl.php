@@ -5,7 +5,7 @@ namespace WPMedia\Cloudflare\Tests\Unit\CloudflareSubscriber;
 use Brain\Monkey\Functions;
 use Mockery;
 use WPMedia\Cloudflare\Cloudflare;
-use WPMedia\Cloudflare\CloudflareSubscriber;
+use WPMedia\Cloudflare\Subscriber;
 use WPMedia\Cloudflare\Tests\Unit\TestCase;
 use WP_Error;
 
@@ -26,7 +26,7 @@ class Test_AutoPurgeByUrl extends TestCase {
 		$cloudflare->shouldNotReceive( 'has_page_rule' );
 		$cloudflare->shouldNotReceive( 'purge_by_url' );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$cloudflare_subscriber->auto_purge_by_url( 1, [ '/hello-world' ], '' );
 	}
@@ -42,7 +42,7 @@ class Test_AutoPurgeByUrl extends TestCase {
 		$cloudflare->shouldNotReceive( 'has_page_rule' );
 		$cloudflare->shouldNotReceive( 'purge_by_url' );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$cloudflare_subscriber->auto_purge_by_url( 1, [ '/hello-world' ], '' );
 	}
@@ -60,7 +60,7 @@ class Test_AutoPurgeByUrl extends TestCase {
 		           ->andReturn( $wp_error );
 		$cloudflare->shouldNotReceive( 'purge_by_url' );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 		$cloudflare_subscriber->auto_purge_by_url( 1, [ '/hello-world' ], '' );
 	}
 
@@ -88,7 +88,7 @@ class Test_AutoPurgeByUrl extends TestCase {
 		           ], '' )
 		           ->andReturn( $wp_error );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 		$cloudflare_subscriber->auto_purge_by_url( 1, [ '/hello-world' ], '' );
 	}
 
@@ -114,7 +114,7 @@ class Test_AutoPurgeByUrl extends TestCase {
 		           ], '' )
 		           ->andReturn( true );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 		$cloudflare_subscriber->auto_purge_by_url( 1, [ '/hello-world' ], '' );
 	}
 

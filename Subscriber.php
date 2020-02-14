@@ -7,11 +7,11 @@ use WP_Rocket\Admin\Options_Data;
 use WP_Rocket\Admin\Options;
 
 /**
- * Cloudflare Subscriber
+ * Cloudflare Subscriber.
  *
  * @since  1.0
  */
-class CloudflareSubscriber implements Subscriber_Interface {
+class Subscriber implements Subscriber_Interface {
 
 	/**
 	 * Cloudflare instance.

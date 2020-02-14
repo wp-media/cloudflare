@@ -7,7 +7,7 @@ use WP_Rocket\Admin\Options_Data;
 use WP_Rocket\Event_Management\Event_Manager;
 use WPMedia\Cloudflare\Cloudflare;
 use WPMedia\Cloudflare\APIClient;
-use WPMedia\Cloudflare\CloudflareSubscriber;
+use WPMedia\Cloudflare\Subscriber;
 use WPMedia\PHPUnit\TestCaseTrait;
 
 class Factory {
@@ -95,7 +95,7 @@ class Factory {
 		$this->container['cloudflare_api'] = new APIClient( 'cloudflare/1.0' );
 		$this->container['cloudflare']     = new Cloudflare( $this->container['options'], $this->container['cloudflare_api'] );
 
-		$this->container['cloudflare_subscriber'] = new CloudflareSubscriber(
+		$this->container['cloudflare_subscriber'] = new Subscriber(
 			$this->container['cloudflare'],
 			$this->container['options'],
 			$this->container['options_api']

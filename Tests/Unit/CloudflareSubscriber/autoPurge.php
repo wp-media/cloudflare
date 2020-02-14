@@ -5,7 +5,7 @@ namespace WPMedia\Cloudflare\Tests\Unit\CloudflareSubscriber;
 use Brain\Monkey\Functions;
 use Mockery;
 use WPMedia\Cloudflare\Cloudflare;
-use WPMedia\Cloudflare\CloudflareSubscriber;
+use WPMedia\Cloudflare\Subscriber;
 use WPMedia\Cloudflare\Tests\Unit\TestCase;
 use WP_Error;
 
@@ -26,7 +26,7 @@ class Test_AutoPurge extends TestCase {
 		$cloudflare->shouldNotReceive( 'has_page_rule' );
 		$cloudflare->shouldNotReceive( 'purge_cloudflare' );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 		$cloudflare_subscriber->auto_purge();
 	}
 
@@ -41,7 +41,7 @@ class Test_AutoPurge extends TestCase {
 		$cloudflare->shouldNotReceive( 'has_page_rule' );
 		$cloudflare->shouldNotReceive( 'purge_cloudflare' );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 		$cloudflare_subscriber->auto_purge();
 	}
 
@@ -57,7 +57,7 @@ class Test_AutoPurge extends TestCase {
 		$cloudflare->shouldReceive( 'has_page_rule' )->andReturn( $wp_error );
 		$cloudflare->shouldNotReceive( 'purge_cloudflare' );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 		$cloudflare_subscriber->auto_purge();
 	}
 
@@ -76,7 +76,7 @@ class Test_AutoPurge extends TestCase {
 		$cloudflare->shouldReceive( 'has_page_rule' )->andReturn( true );
 		$cloudflare->shouldReceive( 'purge_cloudflare' )->andReturn( $wp_error );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 		$cloudflare_subscriber->auto_purge();
 	}
 
@@ -93,7 +93,7 @@ class Test_AutoPurge extends TestCase {
 		$cloudflare->shouldReceive( 'has_page_rule' )->andReturn( true );
 		$cloudflare->shouldReceive( 'purge_cloudflare' )->andReturn( true );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 		$cloudflare_subscriber->auto_purge();
 	}
 

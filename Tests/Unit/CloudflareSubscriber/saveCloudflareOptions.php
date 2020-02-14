@@ -5,7 +5,7 @@ namespace WPMedia\Cloudflare\Tests\Unit\CloudflareSubscriber;
 use Brain\Monkey\Functions;
 use Mockery;
 use WPMedia\Cloudflare\Cloudflare;
-use WPMedia\Cloudflare\CloudflareSubscriber;
+use WPMedia\Cloudflare\Subscriber;
 use WPMedia\Cloudflare\Tests\Unit\TestCase;
 use WP_Error;
 
@@ -27,7 +27,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 
 		$cloudflare = Mockery::mock( Cloudflare::class );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$old_value = [ 'do_cloudflare' => 1 ];
 		$value     = [ 'do_cloudflare' => 0 ];
@@ -45,7 +45,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 
 		$cloudflare = Mockery::mock( Cloudflare::class );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$old_value = [ 'do_cloudflare' => 1 ];
 		$value     = [ 'do_cloudflare' => 1 ];
@@ -72,7 +72,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		Functions\expect( 'set_transient' )->once();
 		Functions\when( 'is_wp_error' )->justReturn( true );
 		Functions\expect( 'add_settings_error' )->once();
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$old_value = [
 			'do_cloudflare'      => 1,
@@ -104,7 +104,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		Functions\expect( 'set_transient' )->once();
 		Functions\when( 'is_wp_error' )->justReturn( false );
 		Functions\expect( 'add_settings_error' )->never();
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$old_value = [
 			'do_cloudflare'      => 1,
@@ -148,7 +148,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 
 		Functions\when( 'get_current_user_id' )->justReturn( 1 );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$old_value = [
 			'do_cloudflare'      => 1,
@@ -184,7 +184,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 
 		Functions\when( 'get_current_user_id' )->justReturn( 1 );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$old_value = [
 			'do_cloudflare'      => 1,
@@ -243,7 +243,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 
 		Functions\when( 'get_current_user_id' )->justReturn( 1 );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$old_value = [
 			'do_cloudflare'            => 1,
@@ -301,7 +301,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 
 		Functions\when( 'get_current_user_id' )->justReturn( 1 );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$old_value = [
 			'do_cloudflare'            => 1,

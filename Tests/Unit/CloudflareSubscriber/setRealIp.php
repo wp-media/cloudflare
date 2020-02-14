@@ -5,7 +5,7 @@ namespace WPMedia\Cloudflare\Tests\Unit\CloudflareSubscriber;
 use Brain\Monkey\Functions;
 use Mockery;
 use WPMedia\Cloudflare\Cloudflare;
-use WPMedia\Cloudflare\CloudflareSubscriber;
+use WPMedia\Cloudflare\Subscriber;
 use WPMedia\Cloudflare\Tests\Unit\TestCase;
 
 /**
@@ -24,7 +24,7 @@ class Test_SetRealIp extends TestCase {
 		$cloudflare = Mockery::mock( Cloudflare::class );
 		$cloudflare->shouldNotReceive( 'get_cloudflare_ips' );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$cloudflare_subscriber->set_real_ip();
 	}
@@ -45,7 +45,7 @@ class Test_SetRealIp extends TestCase {
 		Functions\when( 'rocket_ipv6_in_range' )->justReturn( false );
 		Functions\when( 'rocket_ipv4_in_range' )->justReturn( false );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 		$cloudflare_subscriber->set_real_ip();
 
 		$this->assertNotEquals(
@@ -70,7 +70,7 @@ class Test_SetRealIp extends TestCase {
 		Functions\when( 'rocket_ipv6_in_range' )->justReturn( false );
 		Functions\when( 'rocket_ipv4_in_range' )->justReturn( true );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 		$cloudflare_subscriber->set_real_ip();
 
 		$this->assertSame(
@@ -95,7 +95,7 @@ class Test_SetRealIp extends TestCase {
 		Functions\when( 'rocket_ipv6_in_range' )->justReturn( true );
 		Functions\when( 'rocket_ipv4_in_range' )->justReturn( false );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 		$cloudflare_subscriber->set_real_ip();
 
 		$this->assertSame(

@@ -4,7 +4,7 @@ namespace WPMedia\Cloudflare\Tests\Unit\CloudflareSubscriber;
 use Brain\Monkey\Functions;
 use Mockery;
 use WPMedia\Cloudflare\Cloudflare;
-use WPMedia\Cloudflare\CloudflareSubscriber;
+use WPMedia\Cloudflare\Subscriber;
 use WPMedia\Cloudflare\Tests\Unit\TestCase;
 
 /**
@@ -27,7 +27,7 @@ class Test_PurgeCache extends TestCase {
 		Functions\when( 'wp_verify_nonce' )->justReturn( true );
 		Functions\when( 'sanitize_key' )->justReturn( '' );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 		$cloudflare_subscriber->purge_cache_no_die();
 	}
 
@@ -45,7 +45,7 @@ class Test_PurgeCache extends TestCase {
 		Functions\when( 'sanitize_key' )->justReturn( '' );
 		Functions\when( 'current_user_can' )->justReturn( false );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 		$cloudflare_subscriber->purge_cache_no_die();
 	}
 
@@ -79,7 +79,7 @@ class Test_PurgeCache extends TestCase {
 			->once()
 			->with('1_cloudflare_purge_result', $cf_purge_result );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$cloudflare_subscriber->purge_cache_no_die();
 	}
@@ -108,7 +108,7 @@ class Test_PurgeCache extends TestCase {
 			->once()
 			->with('1_cloudflare_purge_result', $cf_purge_result );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$cloudflare_subscriber->purge_cache_no_die();
 	}

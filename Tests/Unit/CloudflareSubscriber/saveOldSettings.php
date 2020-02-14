@@ -5,7 +5,7 @@ namespace WPMedia\Cloudflare\Tests\Unit\CloudflareSubscriber;
 use Brain\Monkey\Functions;
 use Mockery;
 use WPMedia\Cloudflare\Cloudflare;
-use WPMedia\Cloudflare\CloudflareSubscriber;
+use WPMedia\Cloudflare\Subscriber;
 use WPMedia\Cloudflare\Tests\Unit\TestCase;
 
 /**
@@ -26,7 +26,7 @@ class Test_SaveOldSettings extends TestCase {
 		$cloudflare = Mockery::mock( Cloudflare::class );
 		$cloudflare->shouldNotReceive( 'get_settings' );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$old_value = [
 			'do_cloudflare'            => 1,
@@ -61,7 +61,7 @@ class Test_SaveOldSettings extends TestCase {
 		];
 		$cloudflare->shouldReceive( 'get_settings' )->andReturn( $cf_settings_array );
 
-		$cloudflare_subscriber = new CloudflareSubscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
+		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$old_value = [
 			'do_cloudflare'            => 1,
