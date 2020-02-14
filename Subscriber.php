@@ -242,7 +242,7 @@ class Subscriber implements Subscriber_Interface {
 		}
 		$this->purge_cache_no_die();
 		wp_safe_redirect( esc_url_raw( wp_get_referer() ) );
-		die();
+		defined( 'WPMEDIA_IS_TESTING' )	? wp_die() : exit;
 	}
 
 	/**
