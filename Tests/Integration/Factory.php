@@ -7,7 +7,7 @@ use WP_Rocket\Admin\Options_Data;
 use WP_Rocket\Event_Management\Event_Manager;
 use WPMedia\Cloudflare\Cloudflare;
 use WPMedia\Cloudflare\APIClient;
-use WPMedia\Cloudflare\CloudflareSubscriber;
+use WPMedia\Cloudflare\Subscriber;
 use WPMedia\PHPUnit\TestCaseTrait;
 
 class Factory {
@@ -41,7 +41,7 @@ class Factory {
 	}
 
 	private function setUpApiCredentials() {
-		self::$api_credentials_config_file = 'cloudflare.php';
+		self::$api_credentials_config_file = dirname( __DIR__ ) . '/env/local/cloudflare.php';
 		self::$email                       = self::getApiCredential( 'ROCKET_CLOUDFLARE_EMAIL' );
 		self::$api_key                     = self::getApiCredential( 'ROCKET_CLOUDFLARE_API_KEY' );
 		self::$zone_id                     = self::getApiCredential( 'ROCKET_CLOUDFLARE_ZONE_ID' );
@@ -95,7 +95,7 @@ class Factory {
 		$this->container['cloudflare_api'] = new APIClient( 'cloudflare/1.0' );
 		$this->container['cloudflare']     = new Cloudflare( $this->container['options'], $this->container['cloudflare_api'] );
 
-		$this->container['cloudflare_subscriber'] = new CloudflareSubscriber(
+		$this->container['cloudflare_subscriber'] = new Subscriber(
 			$this->container['cloudflare'],
 			$this->container['options'],
 			$this->container['options_api']
@@ -133,13 +133,12 @@ class Factory {
 			return '';
 		}
 
-		$config_file = dirname( __DIR__ ) . '/env/local/cloudflare.php';
-		if ( ! is_readable( $config_file ) ) {
+		if ( ! is_readable( self::$api_credentials_config_file ) ) {
 			return '';
 		}
 
 		// This file is local to the developer's machine and not stored in the repo.
-		require_once $config_file;
+		require_once self::$api_credentials_config_file;
 
 		return rocket_get_constant( $name, '' );
 	}
