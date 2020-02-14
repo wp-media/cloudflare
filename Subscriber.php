@@ -241,15 +241,17 @@ class Subscriber implements Subscriber_Interface {
 		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( $_GET['_wpnonce'] ), 'rocket_purge_cloudflare' ) ) {
 			wp_nonce_ays( '' );
 		}
+
 		$this->purge_cache_no_die();
+
 		wp_safe_redirect( esc_url_raw( wp_get_referer() ) );
-		defined( 'WPMEDIA_IS_TESTING' )	? wp_die() : exit;
+		defined( 'WPMEDIA_IS_TESTING' ) ? wp_die() : exit;
 	}
 
 	/**
 	 * Set Real IP from CloudFlare.
 	 *
-	 * @since 1.0
+	 * @since  1.0
 	 * @source cloudflare.php - https://wordpress.org/plugins/cloudflare/
 	 */
 	public function set_real_ip() {
