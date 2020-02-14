@@ -1,6 +1,6 @@
 <?php
 
-namespace WPMedia\Cloudflare\Tests\Integration\CloudflareSubscriber;
+namespace WPMedia\Cloudflare\Tests\Integration\Subscriber;
 
 use Brain\Monkey\Functions;
 use WPMedia\Cloudflare\Tests\Integration\TestCase;
@@ -9,7 +9,7 @@ use function WPMedia\Cloudflare\Tests\Integration\getFactory;
 /**
  * @covers WPMedia\Cloudflare\CloudflareSubscriber::auto_purge
  * @group  Cloudflare
- * @group  CloudflareSubscriber
+ * @group  Subscriber
  */
 class Test_AutoPurge extends TestCase {
 	private static $options;

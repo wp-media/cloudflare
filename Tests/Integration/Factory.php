@@ -41,7 +41,7 @@ class Factory {
 	}
 
 	private function setUpApiCredentials() {
-		self::$api_credentials_config_file = 'cloudflare.php';
+		self::$api_credentials_config_file = dirname( __DIR__ ) . '/env/local/cloudflare.php';
 		self::$email                       = self::getApiCredential( 'ROCKET_CLOUDFLARE_EMAIL' );
 		self::$api_key                     = self::getApiCredential( 'ROCKET_CLOUDFLARE_API_KEY' );
 		self::$zone_id                     = self::getApiCredential( 'ROCKET_CLOUDFLARE_ZONE_ID' );
@@ -133,13 +133,12 @@ class Factory {
 			return '';
 		}
 
-		$config_file = dirname( __DIR__ ) . '/env/local/cloudflare.php';
-		if ( ! is_readable( $config_file ) ) {
+		if ( ! is_readable( self::$api_credentials_config_file ) ) {
 			return '';
 		}
 
 		// This file is local to the developer's machine and not stored in the repo.
-		require_once $config_file;
+		require_once self::$api_credentials_config_file;
 
 		return rocket_get_constant( $name, '' );
 	}

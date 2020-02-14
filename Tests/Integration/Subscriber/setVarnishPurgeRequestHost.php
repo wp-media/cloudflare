@@ -1,6 +1,6 @@
 <?php
 
-namespace WPMedia\Cloudflare\Tests\Integration\CloudflareSubscriber;
+namespace WPMedia\Cloudflare\Tests\Integration\Subscriber;
 
 use WPMedia\Cloudflare\Tests\Integration\TestCase;
 use function WPMedia\Cloudflare\Tests\Integration\getFactory;
@@ -8,7 +8,7 @@ use function WPMedia\Cloudflare\Tests\Integration\getFactory;
 /**
  * @covers WPMedia\Cloudflare\CloudflareSubscriber::set_varnish_purge_request_host
  * @group  Cloudflare
- * @group  CloudflareSubscriber
+ * @group  Subscriber
  */
 class Test_SetVarnishPurgeRequestHost extends TestCase {
 
