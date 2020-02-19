@@ -1,12 +1,11 @@
 <?php
 
-namespace WPMedia\Cloudflare\Tests\Unit\CloudflareSubscriber;
+namespace WPMedia\Cloudflare\Tests\Unit\Subscriber;
 
-use WPMedia\Cloudflare\Tests\Unit\TestCase;
 use WPMedia\Cloudflare\Subscriber;
 
 /**
- * @covers WPMedia\Cloudflare\CloudflareSubscriber::get_subscribed_events
+ * @covers WPMedia\Cloudflare\Subscriber::get_subscribed_events
  * @group  Cloudflare
  * @group  CloudflareSubscriber
  */

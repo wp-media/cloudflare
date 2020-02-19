@@ -50,27 +50,6 @@ class Test_PurgeCache extends TestCase {
 		do_action( 'admin_post_rocket_purge_cloudflare' );
 	}
 
-	public function testShouldBailoutWhenCFAddonOff() {
-		$this->setNonce();
-		Functions\expect( 'wp_nonce_ays' )->never();
-
-		// Turn off cloudflare.
-		$this->setOptions( [ 'do_cloudflare' => 0 ] );
-
-		Functions\expect( 'current_user_can' )->with( 'rocket_purge_cloudflare_cache' )->never();
-
-		$this->setRedirect();
-
-		// Run it.
-		do_action( 'admin_post_rocket_purge_cloudflare' );
-
-		// Just to make sure the transient did not get set.
-		$user_id = get_current_user_id();
-		$this->assertFalse( get_transient( "{$user_id}_cloudflare_purge_result" ) );
-
-		$this->cleanUp();
-	}
-
 	public function testShouldBailoutWhenUserCantPurgeCF() {
 		$user_id = $this->factory->user->create( [ 'role' => 'contributor' ] );
 		wp_set_current_user( $user_id );
@@ -142,10 +121,5 @@ class Test_PurgeCache extends TestCase {
 		remove_filter( 'wp_redirect', '__return_empty_string' );
 		unset( $_REQUEST['_wp_http_referer'], $_SERVER['REQUEST_URI'], $_GET['_wpnonce'] );
 		delete_transient( "{$user_id}_cloudflare_purge_result" );
-	}
-
-	private function setOptions( $options ) {
-		update_option( 'wp_rocket_settings', $options );
-		self::$options->set_values( $options );
 	}
 }

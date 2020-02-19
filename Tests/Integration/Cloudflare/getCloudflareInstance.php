@@ -12,17 +12,6 @@ use WPMedia\Cloudflare\Cloudflare;
  */
 class Test_GetCloudflareInstance extends TestCase {
 
-	public function testWithCloudflareDisabled() {
-		$this->setInvalidApiCredentials( false );
-
-		delete_transient( 'rocket_cloudflare_is_api_keys_valid' );
-
-		new Cloudflare( self::$options, self::$api );
-		$is_api_keys_valid_cf = get_transient( 'rocket_cloudflare_is_api_keys_valid' );
-
-		$this->assertFalse( $is_api_keys_valid_cf );
-	}
-
 	public function testShouldSetCloudflareApiKeyTransientWhenCFCredentialsAreNull() {
 		$this->setInvalidApiCredentials();
 

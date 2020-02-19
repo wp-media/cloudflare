@@ -22,17 +22,6 @@ class Test_AutoPurge extends TestCase {
 		self::$options = getFactory()->getContainer( 'options' );
 	}
 
-	public function testShouldBailoutWhenCFAddonOff() {
-		$data = [ 'do_cloudflare' => 0 ];
-		update_option( 'wp_rocket_settings', $data );
-		self::$options->set_values( $data );
-
-		Functions\expect( 'current_user_can' )->with( 'rocket_purge_cloudflare_cache' )->never();
-		Functions\expect( 'is_wp_error' )->never();
-
-		do_action( 'after_rocket_clean_domain' );
-	}
-
 	public function testShouldBailoutWhenUserCantPurgeCF() {
 		$user = $this->factory->user->create( [ 'role' => 'contributor' ] );
 		wp_set_current_user( $user );
