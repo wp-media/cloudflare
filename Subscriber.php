@@ -255,6 +255,10 @@ class Subscriber implements Subscriber_Interface {
 	 * @source cloudflare.php - https://wordpress.org/plugins/cloudflare/
 	 */
 	public function set_real_ip() {
+		if ( ! $this->options->get( 'do_cloudflare' ) ) {
+			return false;
+		}
+
 		// only run this logic if the REMOTE_ADDR is populated, to avoid causing notices in CLI mode.
 		if ( ! isset( $_SERVER['HTTP_CF_CONNECTING_IP'], $_SERVER['REMOTE_ADDR'] ) ) {
 			return;
