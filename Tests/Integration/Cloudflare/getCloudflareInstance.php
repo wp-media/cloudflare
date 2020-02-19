@@ -14,22 +14,24 @@ class Test_GetCloudflareInstance extends TestCase {
 
 	public function testShouldSetCloudflareApiKeyTransientWhenCFCredentialsAreNull() {
 		$this->setInvalidApiCredentials();
+		delete_transient( 'rocket_cloudflare_is_api_keys_valid' );
 
 		new Cloudflare( self::$options, self::$api );
+
 		$is_api_keys_valid_cf = get_transient( 'rocket_cloudflare_is_api_keys_valid' );
 
 		$this->assertTrue( is_wp_error( $is_api_keys_valid_cf ) );
 	}
 
 	public function testShouldSetCloudflareTransientWhenCFCredentialsAreWrong() {
-		$data = [
-			'cloudflare_email'   => 'test@example.com',
-			'cloudflare_api_key' => 'someAuthKey',
-			'cloudflare_zone_id' => 'zone1',
-			'do_cloudflare'      => true,
-		];
-		update_option( 'wp_rocket_settings', $data );
-		self::$options->set_values( $data );
+		$this->setOptions(
+			[
+				'cloudflare_email'   => 'test@example.com',
+				'cloudflare_api_key' => 'someAuthKey',
+				'cloudflare_zone_id' => 'zone1',
+				'do_cloudflare'      => true,
+			]
+		);
 
 		new Cloudflare( self::$options, self::$api );
 		$is_api_keys_valid_cf = get_transient( 'rocket_cloudflare_is_api_keys_valid' );
@@ -38,14 +40,14 @@ class Test_GetCloudflareInstance extends TestCase {
 	}
 
 	public function testShouldValidateCredentialsButEmptyZoneId() {
-		$data = [
-			'cloudflare_email'   => 'test@example.com',
-			'cloudflare_api_key' => 'someAuthKey',
-			'cloudflare_zone_id' => null,
-			'do_cloudflare'      => true,
-		];
-		update_option( 'wp_rocket_settings', $data );
-		self::$options->set_values( $data );
+		$this->setOptions(
+			[
+				'cloudflare_email'   => 'test@example.com',
+				'cloudflare_api_key' => 'someAuthKey',
+				'cloudflare_zone_id' => null,
+				'do_cloudflare'      => true,
+			]
+		);
 
 		new Cloudflare( self::$options, self::$api );
 		$is_api_keys_valid_cf = get_transient( 'rocket_cloudflare_is_api_keys_valid' );
@@ -55,14 +57,14 @@ class Test_GetCloudflareInstance extends TestCase {
 	}
 
 	public function testShouldValidateCredentialsButWrongZoneId() {
-		$data = [
-			'cloudflare_email'   => self::$email,
-			'cloudflare_api_key' => self::$api_key,
-			'cloudflare_zone_id' => 'zone_id',
-			'do_cloudflare'      => true,
-		];
-		update_option( 'wp_rocket_settings', $data );
-		self::$options->set_values( $data );
+		$this->setOptions(
+			[
+				'cloudflare_email'   => self::$email,
+				'cloudflare_api_key' => self::$api_key,
+				'cloudflare_zone_id' => 'zone_id',
+				'do_cloudflare'      => true,
+			]
+		);
 
 		new Cloudflare( self::$options, self::$api );
 		$is_api_keys_valid_cf = get_transient( 'rocket_cloudflare_is_api_keys_valid' );
@@ -72,14 +74,14 @@ class Test_GetCloudflareInstance extends TestCase {
 	}
 
 	public function testShouldValidateCredentialsButFailsAtDomainMatch() {
-		$data = [
-			'cloudflare_email'   => self::$email,
-			'cloudflare_api_key' => self::$api_key,
-			'cloudflare_zone_id' => self::$zone_id,
-			'do_cloudflare'      => true,
-		];
-		update_option( 'wp_rocket_settings', $data );
-		self::$options->set_values( $data );
+		$this->setOptions(
+			[
+				'cloudflare_email'   => self::$email,
+				'cloudflare_api_key' => self::$api_key,
+				'cloudflare_zone_id' => self::$zone_id,
+				'do_cloudflare'      => true,
+			]
+		);
 
 		$callback = function() {
 			return 'https://example.org';
@@ -96,14 +98,14 @@ class Test_GetCloudflareInstance extends TestCase {
 	}
 
 	public function testShouldValidateCredentials() {
-		$data = [
-			'cloudflare_email'   => self::$email,
-			'cloudflare_api_key' => self::$api_key,
-			'cloudflare_zone_id' => self::$zone_id,
-			'do_cloudflare'      => true,
-		];
-		update_option( 'wp_rocket_settings', $data );
-		self::$options->set_values( $data );
+		$this->setOptions(
+			[
+				'cloudflare_email'   => self::$email,
+				'cloudflare_api_key' => self::$api_key,
+				'cloudflare_zone_id' => self::$zone_id,
+				'do_cloudflare'      => true,
+			]
+		);
 
 		$callback = function() {
 			return self::$site_url;
@@ -115,5 +117,10 @@ class Test_GetCloudflareInstance extends TestCase {
 
 		$this->assertTrue( $is_api_keys_valid_cf );
 		remove_filter( 'site_url', $callback );
+	}
+
+	private function setOptions( $data ) {
+		update_option( 'wp_rocket_settings', $data );
+		self::$options->set_values( $data );
 	}
 }
