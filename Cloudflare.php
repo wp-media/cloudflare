@@ -99,7 +99,7 @@ class Cloudflare {
 			return new WP_Error(
 				'cloudflare_credentials_empty',
 				sprintf(
-				/* translators: %1$s = opening link; %2$s = closing link */
+					/* translators: %1$s = opening link; %2$s = closing link */
 					__( 'Cloudflare email and/or API key are not set. Read the %1$sdocumentation%2$s for further guidance.', 'rocket' ),
 					// translators: Documentation exists in EN, FR; use localized URL if applicable.
 					'<a href="' . esc_url( __( 'https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&utm_medium=wp_rocket#add-on', 'rocket' ) ) . '" rel="noopener noreferrer" target="_blank">',

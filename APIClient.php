@@ -401,7 +401,7 @@ class APIClient {
 	/**
 	 * Gets the request headers.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
 	 *
 	 * @param string $url Request route.
 	 *
@@ -422,7 +422,7 @@ class APIClient {
 	/**
 	 * Checks if this request needs API credentials.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
 	 *
 	 * @param string $url Request route.
 	 *

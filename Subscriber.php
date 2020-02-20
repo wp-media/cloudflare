@@ -291,7 +291,7 @@ class Subscriber implements Subscriber_Interface {
 
 		delete_transient( $user_id . '_cloudflare_purge_result' );
 
-		\rocket_notice_html(
+		rocket_notice_html(
 			[
 				'status'  => $notice['result'],
 				'message' => $notice['message'],
