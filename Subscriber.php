@@ -477,7 +477,7 @@ class Subscriber implements Subscriber_Interface {
 			}
 		}
 
-		if ( ! empty( $cloudflare_update_result ) ) {
+		if ( [] !== $cloudflare_update_result ) {
 			set_transient( get_current_user_id() . '_cloudflare_update_settings', $cloudflare_update_result );
 		}
 	}
