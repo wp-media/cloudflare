@@ -313,12 +313,14 @@ class APIClient {
 			$response->success = false;
 		}
 
-		if ( true !== $response->success ) {
-			$response->error       = $error;
-			$response->http_code   = $http_code;
-			$response->method      = $method;
-			$response->information = $information;
+		if ( true === $response->success ) {
+			return $response;
 		}
+
+		$response->error       = $error;
+		$response->http_code   = $http_code;
+		$response->method      = $method;
+		$response->information = $information;
 
 		return $response;
 	}
