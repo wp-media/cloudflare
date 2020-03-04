@@ -374,10 +374,10 @@ class APIClient {
 		);
 
 		$packet = [
-			curl_exec( $ch ), // $http_result
-			curl_error( $ch ), // $error
-			curl_getinfo( $ch ), // $information
-			curl_getinfo( $ch, CURLINFO_HTTP_CODE ), // $http_code
+			curl_exec( $ch ),
+			curl_error( $ch ),
+			curl_getinfo( $ch ),
+			curl_getinfo( $ch, CURLINFO_HTTP_CODE ),
 		];
 
 		curl_close( $ch );
@@ -458,6 +458,6 @@ class APIClient {
 	 * @return bool true when API credentials are needed; else false.
 	 */
 	private function are_credentials_needed( $url ) {
-		return ( substr( $url, - 4 ) !== '/ips' );
+		return ( substr( $url, -4 ) !== '/ips' );
 	}
 }
