@@ -284,6 +284,7 @@ class APIClient {
 	 * API call method for sending requests using GET, POST, PUT, DELETE OR PATCH.
 	 *
 	 * @since  1.0
+	 * @since  1.0.1 Adds error handling for non-Cloudflare errors.
 	 *
 	 * @author James Bell <james@james-bell.co.uk> - credit for original code adapted for version 1.0.
 	 * @author WP Media
@@ -315,6 +316,17 @@ class APIClient {
 
 		if ( true === $response->success ) {
 			return $response;
+		}
+
+		if ( ! isset( $response->errors ) || empty( $response->errors ) ) {
+			$response->errors = [];
+		}
+
+		if ( ! empty( $error ) ) {
+			$errors             = new stdClass();
+			$errors->code       = $http_code;
+			$errors->message    = $error;
+			$response->errors[] = $errors;
 		}
 
 		$response->error       = $error;
@@ -351,26 +363,41 @@ class APIClient {
 	 *
 	 * @return array curl response packet.
 	 */
-	private function do_remote_request( $path, array $data, $method ) {
+	protected function do_remote_request( $path, array $data, $method ) {
 		$ch = curl_init();
 
 		$this->set_curl_options(
 			$ch,
-			self::CLOUDFLARE_API . $path,
+			$this->get_request_route( $path ),
 			$data,
 			$method
 		);
 
 		$packet = [
-			curl_exec( $ch ),
-			curl_error( $ch ),
-			curl_getinfo( $ch ),
-			curl_getinfo( $ch, CURLINFO_HTTP_CODE ),
+			curl_exec( $ch ), // $http_result
+			curl_error( $ch ), // $error
+			curl_getinfo( $ch ), // $information
+			curl_getinfo( $ch, CURLINFO_HTTP_CODE ), // $http_code
 		];
 
 		curl_close( $ch );
 
 		return $packet;
+	}
+
+	/**
+	 * Gets the request route.
+	 *
+	 * Note: This method allows us to mock the request route to validate non-Cloudflare errors.
+	 *
+	 * @since 1.0.1
+	 *
+	 * @param string $path Path of the endpoint.
+	 *
+	 * @return string request route.
+	 */
+	protected function get_request_route( $path ) {
+		return static::CLOUDFLARE_API . $path;
 	}
 
 	/**
@@ -383,7 +410,7 @@ class APIClient {
 	 * @param array    $data   Data to be sent along with the request.
 	 * @param string   $method Type of method that should be used ('GET', 'DELETE', 'PATCH').
 	 */
-	private function set_curl_options( $ch, $url, array $data, $method ) {
+	protected function set_curl_options( $ch, $url, array $data, $method ) {
 		curl_setopt_array( $ch, $this->curl_options );
 
 		if ( 'get' === $method ) {
@@ -431,6 +458,6 @@ class APIClient {
 	 * @return bool true when API credentials are needed; else false.
 	 */
 	private function are_credentials_needed( $url ) {
-		return ( substr( $url, -4 ) !== '/ips' );
+		return ( substr( $url, - 4 ) !== '/ips' );
 	}
 }
