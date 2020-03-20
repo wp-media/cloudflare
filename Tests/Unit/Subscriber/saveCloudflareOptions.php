@@ -88,6 +88,8 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		Functions\expect( 'current_user_can' )->once()->andReturn( true );
 		Functions\when( 'is_wp_error' )->justReturn( true );
 
+		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
+
 		$wp_error->shouldReceive( 'get_error_message' )->andReturn( 'Error!' );
 		$cloudflare->shouldReceive( 'set_devmode' )->andReturn( $wp_error );
 
@@ -114,6 +116,8 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		$mocks                    = $this->getConstructorMocks();
 		$cloudflare               = $mocks['cloudflare'];
 		$cloudflare_update_result = [];
+
+		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
 
 		// Set up the set_devmode mocks.
 		$cloudflare->shouldReceive( 'set_devmode' )->andReturn( 'on' );
@@ -143,6 +147,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		$wp_error   = $mocks['wp_error'];
 
 		Functions\expect( 'current_user_can' )->once()->andReturn( true );
+		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
 		Functions\when( 'is_wp_error' )->justReturn( true );
 		$wp_error->shouldReceive( 'get_error_message' )->andReturn( 'Error!' );
 
@@ -193,6 +198,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		$cloudflare = $mocks['cloudflare'];
 
 		Functions\expect( 'current_user_can' )->once()->andReturn( true );
+		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
 		Functions\when( 'is_wp_error' )->justReturn( false );
 
 		$cloudflare->shouldReceive( 'set_cache_level' )->andReturn( 'aggressive' );
