@@ -88,7 +88,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		$wp_error   = $mocks['wp_error'];
 
 		Functions\expect( 'current_user_can' )->once()->andReturn( true );
-		Functions\when( 'is_wp_error' )->with( $wp_error )->justReturn( true );
+		Functions\expect( 'is_wp_error' )->with( $wp_error )->justReturn( true );
 
 		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
 		Functions\expect( 'is_wp_error' )->with( true )->andReturn( false );
@@ -151,7 +151,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		$wp_error   = $mocks['wp_error'];
 
 		Functions\expect( 'current_user_can' )->once()->andReturn( true );
-		Functions\when( 'is_wp_error' )->with( $wp_error )->justReturn( true );
+		Functions\expect( 'is_wp_error' )->with( $wp_error )->justReturn( true );
 
 		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
 		Functions\expect( 'is_wp_error' )->with( true )->andReturn( false );
@@ -208,7 +208,6 @@ class Tes_SaveCloudflareOptions extends TestCase {
 
 		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
 		Functions\expect( 'is_wp_error' )->with( true )->andReturn( false );
-		Functions\when( 'is_wp_error' )->justReturn( false );
 
 		$cloudflare->shouldReceive( 'set_cache_level' )->andReturn( 'aggressive' );
 		$cloudflare->shouldReceive( 'set_minify' )->andReturn( 'on' );
