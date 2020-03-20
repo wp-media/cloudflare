@@ -360,6 +360,7 @@ class Subscriber implements Subscriber_Interface {
 			return;
 		}
 
+		$credentials_changed = false;
 		if (
 			( isset( $old_value['cloudflare_email'], $value['cloudflare_email'] ) && $old_value['cloudflare_email'] !== $value['cloudflare_email'] )
 			||
@@ -374,6 +375,7 @@ class Subscriber implements Subscriber_Interface {
 				$cloudflare_error_message = $is_api_keys_valid_cloudflare->get_error_message();
 				add_settings_error( 'general', 'cloudflare_api_key_invalid', __( 'WP Rocket: ', 'rocket' ) . '</strong>' . $cloudflare_error_message . '<strong>', 'error' );
 			}
+			$credentials_changed = true;
 		}
 
 		// Update CloudFlare Development Mode.
@@ -385,7 +387,7 @@ class Subscriber implements Subscriber_Interface {
 			set_transient( 'rocket_cloudflare_is_api_keys_valid', $is_api_keys_valid_cf, 2 * WEEK_IN_SECONDS );
 		}
 
-		if ( is_wp_error( $is_api_keys_valid_cf ) ) {
+		if ( is_wp_error( $is_api_keys_valid_cf ) && ! $credentials_changed ) {
 			$cloudflare_update_result[] = [
 				'result'  => 'error',
 				// translators: %s is the message returned by the CloudFlare API.
