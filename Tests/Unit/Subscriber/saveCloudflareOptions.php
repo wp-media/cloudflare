@@ -32,7 +32,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 
 		Functions\expect( 'current_user_can' )->once()->andReturn( true );
 		Functions\when( 'is_wp_error' )->justReturn( true );
-
+		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( $wp_error );
 		$wp_error->shouldReceive( 'get_error_message' )->andReturn( 'Error!' );
 		$cloudflare->shouldReceive( 'is_api_keys_valid' )->andReturn( $wp_error );
 
@@ -65,6 +65,8 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		Functions\expect( 'set_transient' )->once();
 		Functions\when( 'is_wp_error' )->justReturn( false );
 		Functions\expect( 'add_settings_error' )->never();
+
+		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
 		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$old_value = [
