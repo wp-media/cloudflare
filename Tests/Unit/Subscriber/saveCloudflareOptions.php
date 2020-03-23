@@ -64,8 +64,8 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		Functions\expect( 'delete_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' );
 		Functions\expect( 'set_transient' )->once();
 		Functions\expect('is_wp_error')
-			->twice()
-			->andReturn( false, false );
+			->once()
+			->andReturn( false );
 		Functions\expect( 'add_settings_error' )->never();
 
 		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
