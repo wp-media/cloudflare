@@ -92,7 +92,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		Functions\expect( 'current_user_can' )->once()->andReturn( true );
 		Functions\expect('is_wp_error')
 			->twice()
-			->andReturn( true, false );
+			->andReturn( false, true );
 
 		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
 
@@ -124,11 +124,10 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		$cloudflare_update_result = [];
 
 		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
-		Functions\expect( 'is_wp_error' )->with( true )->andReturn( false );
+		Functions\expect('is_wp_error')->andReturn( false );
 
 		// Set up the set_devmode mocks.
 		$cloudflare->shouldReceive( 'set_devmode' )->andReturn( 'on' );
-		Functions\expect( 'is_wp_error' )->once()->with( 'on' )->andReturn( false );
 		$cloudflare_update_result[] = [
 			'result'  => 'success',
 			'message' => '<strong>WP Rocket: </strong>Cloudflare development mode on',
@@ -155,8 +154,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 
 		Functions\expect( 'current_user_can' )->once()->andReturn( true );
 		Functions\expect('is_wp_error')
-			->twice()
-			->andReturn( true, false );
+			->andReturn( false, true, true, true, true );
 
 		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
 
@@ -212,8 +210,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 
 		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
 		Functions\expect('is_wp_error')
-			->twice()
-			->andReturn( false, false );
+			->andReturn( false, false, false, false, false );
 
 		$cloudflare->shouldReceive( 'set_cache_level' )->andReturn( 'aggressive' );
 		$cloudflare->shouldReceive( 'set_minify' )->andReturn( 'on' );
