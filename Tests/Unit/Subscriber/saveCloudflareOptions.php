@@ -63,7 +63,9 @@ class Tes_SaveCloudflareOptions extends TestCase {
 
 		Functions\expect( 'delete_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' );
 		Functions\expect( 'set_transient' )->once();
-		Functions\when( 'is_wp_error' )->justReturn( false );
+		Functions\expect('is_wp_error')
+			->twice()
+			->andReturn( false, false );
 		Functions\expect( 'add_settings_error' )->never();
 
 		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
@@ -88,10 +90,11 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		$wp_error   = $mocks['wp_error'];
 
 		Functions\expect( 'current_user_can' )->once()->andReturn( true );
-		Functions\expect( 'is_wp_error' )->with( $wp_error )->justReturn( true );
+		Functions\expect('is_wp_error')
+			->twice()
+			->andReturn( true, false );
 
 		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
-		Functions\expect( 'is_wp_error' )->with( true )->andReturn( false );
 
 		$wp_error->shouldReceive( 'get_error_message' )->andReturn( 'Error!' );
 		$cloudflare->shouldReceive( 'set_devmode' )->andReturn( $wp_error );
@@ -151,10 +154,11 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		$wp_error   = $mocks['wp_error'];
 
 		Functions\expect( 'current_user_can' )->once()->andReturn( true );
-		Functions\expect( 'is_wp_error' )->with( $wp_error )->justReturn( true );
+		Functions\expect('is_wp_error')
+			->twice()
+			->andReturn( true, false );
 
 		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
-		Functions\expect( 'is_wp_error' )->with( true )->andReturn( false );
 
 		$wp_error->shouldReceive( 'get_error_message' )->andReturn( 'Error!' );
 
@@ -207,7 +211,9 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		Functions\expect( 'current_user_can' )->once()->andReturn( true );
 
 		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
-		Functions\expect( 'is_wp_error' )->with( true )->andReturn( false );
+		Functions\expect('is_wp_error')
+			->twice()
+			->andReturn( false, false );
 
 		$cloudflare->shouldReceive( 'set_cache_level' )->andReturn( 'aggressive' );
 		$cloudflare->shouldReceive( 'set_minify' )->andReturn( 'on' );
