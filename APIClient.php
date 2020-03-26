@@ -106,7 +106,7 @@ class APIClient {
 	 * @return stdClass Cloudflare response packet.
 	 */
 	public function list_pagerules() {
-		return $this->get( "zones/{$this->zone_id}/pagerules", [ 'status' => 'active' ] );
+		return $this->get( "zones/{$this->zone_id}/pagerules?status=active" );
 	}
 
 	/**
