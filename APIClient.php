@@ -56,7 +56,7 @@ class APIClient {
 	 * @param string $useragent The user agent for this plugin or package. For example, "wp-rocket/3.5".
 	 */
 	public function __construct( $useragent ) {
-		$this->args = [
+		$this->args    = [
 			'timeout'   => 30, // Increase from default of 5 to give extra time for the plugin to process story for exporting.
 			'sslverify' => true,
 			'body'      => [],
