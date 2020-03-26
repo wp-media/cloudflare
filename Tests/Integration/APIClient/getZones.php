@@ -2,6 +2,7 @@
 
 namespace WPMedia\Cloudflare\Tests\Integration\APIClient;
 
+use Exception;
 use WPMedia\Cloudflare\AuthenticationException;
 
 /**
@@ -22,12 +23,10 @@ class Test_GetZones extends TestCase {
 	public function testShouldFailWhenInvalid() {
 		self::$api->set_api_credentials( self::$email, self::$api_key, 'ZONE_ID' );
 
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'Incorrect Cloudflare Zone ID. Read the <a href="https://docs.wp-rocket.me/article/18-using-wp-rocket-with-cloudflare/?utm_source=wp_plugin&#038;utm_medium=wp_rocket#add-on" rel="noopener noreferrer" target="_blank">documentation</a> for further guidance.' );
+
 		$response = self::$api->get_zones();
-		$this->assertFalse( $response->success );
-		$this->assertCount( 2, $response->errors );
-		$zone_error = $response->errors[0];
-		$this->assertSame( 7003, $zone_error->code );
-		$this->assertSame( 'Could not route to /zones/ZONE_ID, perhaps your object identifier is invalid?', $zone_error->message );
 	}
 
 	public function testShouldSucceedWhenZoneExists() {
