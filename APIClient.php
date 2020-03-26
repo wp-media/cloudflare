@@ -374,7 +374,7 @@ class APIClient {
 	 * @return array curl response packet.
 	 */
 	private function do_remote_request( $path, array $data, $method ) {
-		$this->args['method']  = isset( $method ) ? strtoupper( $method ) : 'GET';
+		$this->args['method'] = isset( $method ) ? strtoupper( $method ) : 'GET';
 
 		if ( '/ips' !== $path ) {
 			$this->args['headers'] = $this->headers;
@@ -384,7 +384,7 @@ class APIClient {
 			$this->args['body'] = wp_json_encode( $data );
 		}
 
-		$response = wp_remote_request( self::CLOUDFLARE_API . $path, $this->args );
+		$response = wp_remote_request( self::CLOUDFLARE_API . $path, ( ! empty( $this->args ) ? $this->args : [] ) );
 
 		return $response;
 	}
