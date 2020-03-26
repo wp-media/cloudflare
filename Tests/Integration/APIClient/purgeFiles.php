@@ -2,6 +2,7 @@
 
 namespace WPMedia\Cloudflare\Tests\Integration\APIClient;
 
+use Exception;
 use WPMedia\Cloudflare\AuthenticationException;
 
 /**
@@ -22,9 +23,11 @@ class Test_PurgeFiles extends TestCase {
 	public function testShouldFailWhenUrlInvalid() {
 		self::$api->set_api_credentials( self::$email, self::$api_key, self::$zone_id );
 
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'Unable to purge /invalid/URL, which is an invalid URL.' );
+
 		$response = self::$api->purge_files( [ '/invalid/URL' ] );
 		$this->assertFalse( $response->success );
-		$this->assertSame( 'Unable to purge /invalid/URL, which is an invalid URL.', $response->errors[0]->message );
 	}
 
 	public function testShouldSucceedWhenUrlsGiven() {
