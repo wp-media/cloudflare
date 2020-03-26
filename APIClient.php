@@ -382,10 +382,10 @@ class APIClient {
 		}
 
 		if ( ! empty( $data ) ) {
-			$this->args['body'] = wp_json_encode( $data );
+			$this->args['body'] = $data;
 		}
 
-		$response = wp_remote_request( self::CLOUDFLARE_API . $path, ( ! empty( $this->args ) ? $this->args : [] ) );
+		$response = wp_remote_request( self::CLOUDFLARE_API . $path, $this->args );
 
 		return $response;
 	}
