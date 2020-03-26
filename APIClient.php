@@ -59,6 +59,7 @@ class APIClient {
 		$this->args = [
 			'timeout'   => 30, // Increase from default of 5 to give extra time for the plugin to process story for exporting.
 			'sslverify' => true,
+			'body'      => [],
 		];
 		$this->headers = [
 			'X-Auth-Email' => '',

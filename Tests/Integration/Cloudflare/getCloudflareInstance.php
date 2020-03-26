@@ -92,7 +92,7 @@ class Test_GetCloudflareInstance extends TestCase {
 		$is_api_keys_valid_cf = get_transient( 'rocket_cloudflare_is_api_keys_valid' );
 
 		$this->assertTrue( is_wp_error( $is_api_keys_valid_cf ) );
-		$this->assertSame( 'cloudflare_wrong_zone_id', $is_api_keys_valid_cf->get_error_code() );
+		$this->assertSame( 'cloudflare_invalid_auth', $is_api_keys_valid_cf->get_error_code() );
 
 		remove_filter( 'site_url', $callback );
 	}
