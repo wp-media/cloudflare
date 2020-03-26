@@ -51,26 +51,6 @@ class Test_HasPageRule extends TestCase {
 		);
 	}
 
-	public function testHasRuleWithNoSuccess() {
-		$mocks = $this->getConstructorMocks();
-		$api   = $mocks['api'];
-
-		Functions\when( 'get_transient' )->justReturn( true );
-		Functions\expect( 'set_transient' )->never();
-		Functions\when( 'is_wp_error' )->justReturn( false );
-		$api->shouldReceive( 'set_api_credentials' )->once()->andReturn();
-
-		Functions\when( 'wp_sprintf_l' )->justReturn( '' );
-		$cloudflare   = new Cloudflare( $mocks['options'], $api );
-		$cf_page_rule = json_decode( '{"success":false,"errors":[{"code":7003,"message":"Could not route to \/zones\/ZONE_ID, perhaps your object identifier is invalid?"},{"code":7000,"message":"No route for that URI"}],"messages":[],"result":null}' );
-		$api->shouldReceive( 'list_pagerules' )->once()->with()->andReturn( $cf_page_rule );
-
-		$this->assertInstanceOf(
-			'WP_Error',
-			$cloudflare->has_page_rule( 'cache_everything' )
-		);
-	}
-
 	public function testHasRuleWithSuccessButNoPageRule() {
 		$mocks = $this->getConstructorMocks();
 		$api   = $mocks['api'];
