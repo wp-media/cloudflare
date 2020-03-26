@@ -381,8 +381,10 @@ class APIClient {
 			$this->args['headers'] = $this->headers;
 		}
 
+		$this->args['body'] = [];
+
 		if ( ! empty( $data ) ) {
-			$this->args['body'] = $data;
+			$this->args['body'] = wp_json_encode( $data );
 		}
 
 		$response = wp_remote_request( self::CLOUDFLARE_API . $path, $this->args );
