@@ -2,6 +2,7 @@
 
 namespace WPMedia\Cloudflare\Tests\Integration\APIClient;
 
+use Exception;
 use WPMedia\Cloudflare\AuthenticationException;
 
 /**
@@ -22,10 +23,10 @@ class Test_ChangeCacheLevel extends TestCase {
 	public function testShouldFailWhenInvalidLevelGiven() {
 		self::$api->set_api_credentials( self::$email, self::$api_key, self::$zone_id );
 
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'Invalid value for zone setting cache_level' );
+
 		$response = self::$api->change_cache_level( 'invalid' );
-		$this->assertFalse( $response->success );
-		$error = $response->errors[0];
-		$this->assertSame( 'Invalid value for zone setting cache_level', $error->message );
 	}
 
 	public function testShouldChangeCacheLevelWhenLevelGiven() {

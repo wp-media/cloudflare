@@ -2,6 +2,7 @@
 
 namespace WPMedia\Cloudflare\Tests\Unit\Cloudflare;
 
+use Exception;
 use Brain\Monkey\Functions;
 use WPMedia\Cloudflare\Cloudflare;
 
@@ -67,7 +68,7 @@ class Test_IsApiKeyValid extends TestCase {
 		// Set rocket_cloudflare_is_api_keys_valid transient to WP_error for constructor.
 		Functions\when( 'get_transient' )->justReturn( $mocks['wp_error'] );
 
-		$api->shouldReceive( 'set_api_credentials' )->andThrow( new \Exception() );
+		$api->shouldReceive( 'set_api_credentials' )->andThrow( new Exception() );
 		$cloudflare = new Cloudflare( $mocks['options'], $api );
 
 		$this->assertInstanceOf(
@@ -88,7 +89,7 @@ class Test_IsApiKeyValid extends TestCase {
 
 		$api->shouldReceive( 'set_api_credentials' );
 		$zone = json_decode( '{"success":false,"errors":[{"code":7003,"message":"Could not route to \/zones\/ZONE_ID, perhaps your object identifier is invalid?"},{"code":7000,"message":"No route for that URI"}],"messages":[],"result":null}' );
-		$api->shouldReceive( 'get_zones' )->andReturn( $zone );
+		$api->shouldReceive( 'get_zones' )->andThrow( new Exception() );
 		$cloudflare = new Cloudflare( $mocks['options'], $api );
 
 		$this->assertInstanceOf(

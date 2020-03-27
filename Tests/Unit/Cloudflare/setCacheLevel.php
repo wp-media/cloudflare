@@ -50,27 +50,6 @@ class Test_SetCacheLevel extends TestCase {
 		);
 	}
 
-	public function testSetCacheLevelWithNoSuccess() {
-		$mocks = $this->getConstructorMocks();
-		$api   = $mocks['api'];
-
-		// The Cloudflare constructor run with transient set as WP_Error.
-		Functions\when( 'get_transient' )->justReturn( true );
-		Functions\expect( 'set_transient' )->never();
-		Functions\when( 'is_wp_error' )->justReturn( false );
-		$api->shouldReceive( 'set_api_credentials' )->once()->andReturn();
-
-		Functions\when( 'wp_sprintf_l' )->justReturn( '' );
-		$cloudflare = new Cloudflare( $mocks['options'], $api );
-		$cf_reply   = json_decode( '{"success":false,"errors":[{"code":1007,"message":"Invalid value for zone setting cache_level"}],"messages":[],"result":null}' );
-		$api->shouldReceive( 'change_cache_level' )->once()->with( 'aggressive' )->andThrow( $cf_reply );
-
-		$this->assertInstanceOf(
-			'WP_Error',
-			$cloudflare->set_cache_level( 'aggressive' )
-		);
-	}
-
 	public function testSetCacheLevelWithSuccess() {
 		$mocks = $this->getConstructorMocks();
 		$api   = $mocks['api'];

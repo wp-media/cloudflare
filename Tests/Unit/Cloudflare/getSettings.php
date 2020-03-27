@@ -47,26 +47,6 @@ class Test_GetSettings extends TestCase {
 		);
 	}
 
-	public function testGetSettingsWithNoSuccess() {
-		$mocks = $this->getConstructorMocks();
-		$api   = $mocks['api'];
-
-		Functions\when( 'get_transient' )->justReturn( true );
-		Functions\expect( 'set_transient' )->never();
-		Functions\when( 'is_wp_error' )->justReturn( false );
-		$api->shouldReceive( 'set_api_credentials' );
-
-		Functions\when( 'wp_sprintf_l' )->justReturn( '' );
-		$cloudflare = new Cloudflare( $mocks['options'], $api );
-		$cf_reply   = json_decode( '{"success":false,"errors":[{"code":1007,"message":"Invalid value for zone setting minify"}],"messages":[],"result":null}' );
-		$api->shouldReceive( 'get_settings' )->once()->with()->andReturn( $cf_reply );
-
-		$this->assertInstanceOf(
-			'WP_Error',
-			$cloudflare->get_settings()
-		);
-	}
-
 	public function testGetSettingsWithSuccess() {
 		$mocks = $this->getConstructorMocks();
 		$api   = $mocks['api'];
