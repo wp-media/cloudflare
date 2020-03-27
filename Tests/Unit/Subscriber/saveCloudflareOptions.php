@@ -39,7 +39,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		Functions\when( 'get_current_user_id' )->justReturn( 1 );
 
 		Functions\expect( 'delete_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' );
-		Functions\expect( 'set_transient' )->once();
+		Functions\expect( 'set_transient' )->twice();
 		Functions\expect( 'add_settings_error' )->once();
 		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
@@ -64,7 +64,7 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		$cloudflare->shouldReceive( 'is_api_keys_valid' )->andReturn( true );
 
 		Functions\expect( 'delete_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' );
-		Functions\expect( 'set_transient' )->once();
+		Functions\expect( 'set_transient' )->twice();
 		Functions\expect('is_wp_error')
 			->once()
 			->andReturn( false );
