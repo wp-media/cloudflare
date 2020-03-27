@@ -32,12 +32,14 @@ class Tes_SaveCloudflareOptions extends TestCase {
 
 		Functions\expect( 'current_user_can' )->once()->andReturn( true );
 		Functions\when( 'is_wp_error' )->justReturn( true );
-
+		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( $wp_error );
 		$wp_error->shouldReceive( 'get_error_message' )->andReturn( 'Error!' );
 		$cloudflare->shouldReceive( 'is_api_keys_valid' )->andReturn( $wp_error );
 
+		Functions\when( 'get_current_user_id' )->justReturn( 1 );
+
 		Functions\expect( 'delete_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' );
-		Functions\expect( 'set_transient' )->once();
+		Functions\expect( 'set_transient' )->twice();
 		Functions\expect( 'add_settings_error' )->once();
 		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
@@ -62,9 +64,15 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		$cloudflare->shouldReceive( 'is_api_keys_valid' )->andReturn( true );
 
 		Functions\expect( 'delete_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' );
-		Functions\expect( 'set_transient' )->once();
-		Functions\when( 'is_wp_error' )->justReturn( false );
+		Functions\expect( 'set_transient' )->twice();
+		Functions\expect('is_wp_error')
+			->once()
+			->andReturn( false );
 		Functions\expect( 'add_settings_error' )->never();
+
+		Functions\when( 'get_current_user_id' )->justReturn( 1 );
+
+		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
 		$cloudflare_subscriber = new Subscriber( $cloudflare, $mocks['options_data'], $mocks['options'] );
 
 		$old_value = [
@@ -86,7 +94,11 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		$wp_error   = $mocks['wp_error'];
 
 		Functions\expect( 'current_user_can' )->once()->andReturn( true );
-		Functions\when( 'is_wp_error' )->justReturn( true );
+		Functions\expect('is_wp_error')
+			->twice()
+			->andReturn( false, true );
+
+		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
 
 		$wp_error->shouldReceive( 'get_error_message' )->andReturn( 'Error!' );
 		$cloudflare->shouldReceive( 'set_devmode' )->andReturn( $wp_error );
@@ -115,9 +127,11 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		$cloudflare               = $mocks['cloudflare'];
 		$cloudflare_update_result = [];
 
+		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
+		Functions\expect('is_wp_error')->andReturn( false );
+
 		// Set up the set_devmode mocks.
 		$cloudflare->shouldReceive( 'set_devmode' )->andReturn( 'on' );
-		Functions\expect( 'is_wp_error' )->once()->with( 'on' )->andReturn( false );
 		$cloudflare_update_result[] = [
 			'result'  => 'success',
 			'message' => '<strong>WP Rocket: </strong>Cloudflare development mode on',
@@ -143,7 +157,11 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		$wp_error   = $mocks['wp_error'];
 
 		Functions\expect( 'current_user_can' )->once()->andReturn( true );
-		Functions\when( 'is_wp_error' )->justReturn( true );
+		Functions\expect('is_wp_error')
+			->andReturn( false, true, true, true, true );
+
+		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
+
 		$wp_error->shouldReceive( 'get_error_message' )->andReturn( 'Error!' );
 
 		$cloudflare->shouldReceive( 'set_cache_level' )->andReturn( $wp_error );
@@ -193,7 +211,10 @@ class Tes_SaveCloudflareOptions extends TestCase {
 		$cloudflare = $mocks['cloudflare'];
 
 		Functions\expect( 'current_user_can' )->once()->andReturn( true );
-		Functions\when( 'is_wp_error' )->justReturn( false );
+
+		Functions\expect( 'get_transient' )->once()->with( 'rocket_cloudflare_is_api_keys_valid' )->andReturn( true );
+		Functions\expect('is_wp_error')
+			->andReturn( false, false, false, false, false );
 
 		$cloudflare->shouldReceive( 'set_cache_level' )->andReturn( 'aggressive' );
 		$cloudflare->shouldReceive( 'set_minify' )->andReturn( 'on' );
