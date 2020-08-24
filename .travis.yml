@@ -13,7 +13,6 @@ branches:
     - develop
 cache:
   directories:
-    - vendor
     - $HOME/.composer/cache
 matrix:
   fast_finish: true
