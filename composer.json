@@ -10,7 +10,7 @@
 			"homepage": "https://wp-media.me"
 		}
 	],
-	"type": "package",
+	"type": "library",
 	"config": {
 		"sort-packages": true
 	},
@@ -19,15 +19,17 @@
 		"source": "https://github.com/wp-media/cloudflare"
 	},
 	"require-dev": {
-		"php": "^5.6 || ^7",
+		"php": "^7 || ^8",
 		"brain/monkey": "^2.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
 		"phpcompatibility/phpcompatibility-wp": "^2.0",
-		"phpunit/phpunit": "^5.7 || ^7",
+		"phpstan/phpstan": "^0.12.81",
+		"phpunit/phpunit": "^7",
+		"szepeviktor/phpstan-wordpress": "^0.7.4",
 		"wp-coding-standards/wpcs": "^2",
 		"wp-media/event-manager": "^3.1",
 		"wp-media/options": "^3.0",
-		"wp-media/phpunit": "^1.0"
+		"wp-media/phpunit": "1.1.6"
 	},
 	"autoload": {
 		"psr-4": { "WPMedia\\Cloudflare\\": "." },
@@ -44,8 +46,8 @@
 			"@test-integration"
 		],
 		"install-codestandards": "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run",
-		"phpcs": "phpcs --basepath=.",
-		"phpcs-changed": "./bin/phpcs-changed.sh",
-		"phpcs:fix": "phpcbf"
+		"phpcs": "\"vendor/bin/phpcs\" .",
+        "phpcs:fix": "\"vendor/bin/phpcbf\" ",
+		"phpstan": "\"vendor/bin/phpstan\" analyse"
 	}
 }
