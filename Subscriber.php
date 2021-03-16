@@ -81,7 +81,7 @@ class Subscriber implements Subscriber_Interface {
 	 *
 	 * @param string|array $varnish_ip Varnish IP.
 	 *
-	 * @return array
+	 * @return string|array
 	 */
 	public function set_varnish_localhost( $varnish_ip ) {
 		if ( ! $this->should_filter_varnish() ) {
@@ -135,6 +135,8 @@ class Subscriber implements Subscriber_Interface {
 	 * Automatically set Cloudflare development mode value to off after 3 hours to reflect Cloudflare behaviour.
 	 *
 	 * @since 1.0
+	 *
+	 * @return void
 	 */
 	public function deactivate_devmode() {
 		$this->options->set( 'cloudflare_devmode', 'off' );
@@ -145,6 +147,8 @@ class Subscriber implements Subscriber_Interface {
 	 * Purge Cloudflare cache automatically if Cache Everything is set as a Page Rule.
 	 *
 	 * @since 1.0
+	 *
+	 * @return void
 	 */
 	public function auto_purge() {
 		if ( ! current_user_can( 'rocket_purge_cloudflare_cache' ) ) {
@@ -166,9 +170,11 @@ class Subscriber implements Subscriber_Interface {
 	 *
 	 * @since 1.0
 	 *
-	 * @param WP_Post $post       The post object.
-	 * @param array   $purge_urls URLs cache files to remove.
-	 * @param string  $lang       The post language.
+	 * @param \WP_Post $post       The post object.
+	 * @param array    $purge_urls URLs cache files to remove.
+	 * @param string   $lang       The post language.
+	 *
+	 * @return void
 	 */
 	public function auto_purge_by_url( $post, $purge_urls, $lang ) {
 		if ( ! current_user_can( 'rocket_purge_cloudflare_cache' ) ) {
@@ -199,6 +205,8 @@ class Subscriber implements Subscriber_Interface {
 	 * Purge CloudFlare cache.
 	 *
 	 * @since 1.0
+	 *
+	 * @return void
 	 */
 	public function purge_cache_no_die() {
 		if ( ! current_user_can( 'rocket_purge_cloudflare_cache' ) ) {
@@ -228,6 +236,8 @@ class Subscriber implements Subscriber_Interface {
 	 * Purge CloudFlare cache.
 	 *
 	 * @since 1.0
+	 *
+	 * @return void
 	 */
 	public function purge_cache() {
 		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( $_GET['_wpnonce'] ), 'rocket_purge_cloudflare' ) ) {
@@ -236,7 +246,13 @@ class Subscriber implements Subscriber_Interface {
 
 		$this->purge_cache_no_die();
 
-		wp_safe_redirect( esc_url_raw( wp_get_referer() ) );
+		$referer = wp_get_referer();
+
+		if ( false === $referer ) {
+			$referer = '';
+		}
+
+		wp_safe_redirect( esc_url_raw( $referer ) );
 		defined( 'WPMEDIA_IS_TESTING' ) ? wp_die() : exit;
 	}
 
@@ -245,6 +261,8 @@ class Subscriber implements Subscriber_Interface {
 	 *
 	 * @since  1.0
 	 * @source cloudflare.php - https://wordpress.org/plugins/cloudflare/
+	 *
+	 * @return void
 	 */
 	public function set_real_ip() {
 		// only run this logic if the REMOTE_ADDR is populated, to avoid causing notices in CLI mode.
@@ -252,11 +270,20 @@ class Subscriber implements Subscriber_Interface {
 			return;
 		}
 
+		$cf_ip_ranges  = [];
 		$cf_ips_values = $this->cloudflare->get_cloudflare_ips();
-		$cf_ip_ranges  = $cf_ips_values->result->ipv6_cidrs;
 		$ip            = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
 		$ipv6          = get_rocket_ipv6_full( $ip );
-		if ( false === strpos( $ip, ':' ) ) {
+
+		if ( isset( $cf_ips_values->result ) ) {
+			$cf_ip_ranges = $cf_ips_values->result->ipv6_cidrs;
+		}
+
+		if (
+			false === strpos( $ip, ':' )
+			&&
+			isset( $cf_ips_values->result )
+			) {
 			// IPV4: Update the REMOTE_ADDR value if the current REMOTE_ADDR value is in the specified range.
 			$cf_ip_ranges = $cf_ips_values->result->ipv4_cidrs;
 		}
@@ -277,6 +304,8 @@ class Subscriber implements Subscriber_Interface {
 	 * This notice is displayed after purging the CloudFlare cache.
 	 *
 	 * @since 1.0
+	 *
+	 * @return void
 	 */
 	public function maybe_display_purge_notice() {
 		if ( ! current_user_can( 'rocket_purge_cloudflare_cache' ) ) {
@@ -303,11 +332,16 @@ class Subscriber implements Subscriber_Interface {
 	 * This notice is displayed after modifying the CloudFlare settings.
 	 *
 	 * @since 1.0
+	 *
+	 * @return void
 	 */
 	public function maybe_print_update_settings_notice() {
 		$screen = get_current_screen();
 
-		if ( ! current_user_can( 'rocket_manage_options' ) || 'settings_page_wprocket' !== $screen->id ) {
+		if (
+			! current_user_can( 'rocket_manage_options' )
+			||
+			isset( $screen->id ) && 'settings_page_wprocket' !== $screen->id ) {
 			return;
 		}
 
@@ -354,6 +388,8 @@ class Subscriber implements Subscriber_Interface {
 	 * @author Soponar Cristina
 	 *
 	 * @param string $devmode New value for Cloudflare dev mode.
+	 *
+	 * @return array
 	 */
 	private function save_cloudflare_devmode( $devmode ) {
 		$cloudflare_dev_mode_return = $this->cloudflare->set_devmode( $devmode );
@@ -364,6 +400,7 @@ class Subscriber implements Subscriber_Interface {
 				'message' => '<strong>' . __( 'WP Rocket: ', 'rocket' ) . '</strong>' . sprintf( __( 'Cloudflare development mode error: %s', 'rocket' ), $cloudflare_dev_mode_return->get_error_message() ),
 			];
 		}
+
 		return [
 			'result'  => 'success',
 			// translators: %s is the message returned by the CloudFlare API.
@@ -378,6 +415,8 @@ class Subscriber implements Subscriber_Interface {
 	 * @author Soponar Cristina
 	 *
 	 * @param string $cache_level New value for Cloudflare cache_level.
+	 *
+	 * @return array
 	 */
 	private function save_cache_level( $cache_level ) {
 		// Set Cache Level to Aggressive.
@@ -409,6 +448,8 @@ class Subscriber implements Subscriber_Interface {
 	 * @author Soponar Cristina
 	 *
 	 * @param string $minify New value for Cloudflare minify.
+	 *
+	 * @return array
 	 */
 	private function save_minify( $minify ) {
 		$cf_minify_return = $this->cloudflare->set_minify( $minify );
@@ -434,6 +475,8 @@ class Subscriber implements Subscriber_Interface {
 	 * @author Soponar Cristina
 	 *
 	 * @param string $rocket_loader New value for Cloudflare rocket loader.
+	 *
+	 * @return array
 	 */
 	private function save_rocket_loader( $rocket_loader ) {
 		$cf_rocket_loader_return = $this->cloudflare->set_rocket_loader( $rocket_loader );
@@ -459,6 +502,8 @@ class Subscriber implements Subscriber_Interface {
 	 * @author Soponar Cristina
 	 *
 	 * @param int $browser_cache_ttl New value for Cloudflare browser cache ttl.
+	 *
+	 * @return array
 	 */
 	private function save_browser_cache_ttl( $browser_cache_ttl ) {
 		$cf_browser_cache_return = $this->cloudflare->set_browser_cache_ttl( $browser_cache_ttl );
@@ -483,8 +528,10 @@ class Subscriber implements Subscriber_Interface {
 	 * @since 3.5.2
 	 * @author Soponar Cristina
 	 *
-	 * @param array $auto_settings New value for Cloudflare auto_settings.
-	 * @param array $old_settings  Cloudflare cloudflare_old_settings.
+	 * @param int    $auto_settings New value for Cloudflare auto_settings.
+	 * @param string $old_settings  Cloudflare cloudflare_old_settings.
+	 *
+	 * @return array
 	 */
 	private function save_cloudflare_auto_settings( $auto_settings, $old_settings ) {
 		$cf_old_settings          = explode( ',', $old_settings );
@@ -503,7 +550,7 @@ class Subscriber implements Subscriber_Interface {
 		$cloudflare_update_result[] = $this->save_rocket_loader( $cf_rocket_loader );
 
 		// Set Browser cache to 1 year.
-		$cf_browser_cache_ttl       = isset( $cf_old_settings[3] ) && 0 === $auto_settings ? $cf_old_settings[3] : '31536000';
+		$cf_browser_cache_ttl       = isset( $cf_old_settings[3] ) && 0 === $auto_settings ? (int) $cf_old_settings[3] : 31536000;
 		$cloudflare_update_result[] = $this->save_browser_cache_ttl( $cf_browser_cache_ttl );
 
 		return $cloudflare_update_result;
@@ -516,6 +563,8 @@ class Subscriber implements Subscriber_Interface {
 	 *
 	 * @param array $old_value An array of previous values for the settings.
 	 * @param array $value     An array of submitted values for the settings.
+	 *
+	 * @return void
 	 */
 	public function save_cloudflare_options( $old_value, $value ) {
 		if ( ! current_user_can( 'rocket_manage_options' ) ) {
@@ -532,7 +581,7 @@ class Subscriber implements Subscriber_Interface {
 			( isset( $old_value['cloudflare_zone_id'], $value['cloudflare_zone_id'] ) && $old_value['cloudflare_zone_id'] !== $value['cloudflare_zone_id'] )
 		) {
 			delete_transient( 'rocket_cloudflare_is_api_keys_valid' );
-			$is_api_keys_valid_cloudflare = $this->cloudflare->is_api_keys_valid( $value['cloudflare_email'], $value['cloudflare_api_key'], $value['cloudflare_zone_id'], true );
+			$is_api_keys_valid_cloudflare = $this->cloudflare->is_api_keys_valid( $value['cloudflare_email'], $value['cloudflare_api_key'], $value['cloudflare_zone_id'] );
 			set_transient( 'rocket_cloudflare_is_api_keys_valid', $is_api_keys_valid_cloudflare, 2 * WEEK_IN_SECONDS );
 			$submit_cloudflare_view = true;
 		}

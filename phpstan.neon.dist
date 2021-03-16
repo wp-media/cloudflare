@@ -1,0 +1,18 @@
+includes:
+    - phar://phpstan.phar/conf/bleedingEdge.neon
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+parameters:
+    level: 8
+    checkMissingIterableValueType: false
+    inferPrivatePropertyTypeFromConstructor: true
+    paths:
+        - %currentWorkingDirectory%/APIClient.php
+        - %currentWorkingDirectory%/AuthenticationException.php
+        - %currentWorkingDirectory%/Cloudflare.php
+        - %currentWorkingDirectory%/Subscriber.php
+        - %currentWorkingDirectory%/UnauthorizedException.php
+    scanFiles:
+        - %currentWorkingDirectory%/Tests/Fixtures/functions.php
+    ignoreErrors:
+        # Uses func_get_args()
+        - '#^Function apply_filters(_ref_array)? invoked with [34567] parameters, 2 required\.$#'

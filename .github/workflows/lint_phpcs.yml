@@ -3,7 +3,7 @@ name: PHPCS linting
 on:
   pull_request:
     branches:
-      - master
+      - trunk
       - develop
 
 jobs:
