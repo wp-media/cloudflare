@@ -16,14 +16,14 @@ class APIClient {
 	/**
 	 * Email address for API authentication.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $email;
 
 	/**
 	 * API key for API authentication.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $api_key;
 
@@ -77,6 +77,8 @@ class APIClient {
 	 * @param string $email   The email associated with the Cloudflare account.
 	 * @param string $api_key The API key for the associated Cloudflare account.
 	 * @param string $zone_id The zone ID.
+	 *
+	 * @return void
 	 */
 	public function set_api_credentials( $email, $api_key, $zone_id ) {
 		$this->email   = $email;
@@ -92,7 +94,7 @@ class APIClient {
 	 *
 	 * @since 1.0
 	 *
-	 * @return stdClass Cloudflare response packet.
+	 * @return object Cloudflare response packet.
 	 */
 	public function get_zones() {
 		return $this->get( "zones/{$this->zone_id}" );
@@ -103,7 +105,7 @@ class APIClient {
 	 *
 	 * @since 1.0
 	 *
-	 * @return stdClass Cloudflare response packet.
+	 * @return object Cloudflare response packet.
 	 */
 	public function list_pagerules() {
 		return $this->get( "zones/{$this->zone_id}/pagerules?status=active" );
@@ -114,7 +116,7 @@ class APIClient {
 	 *
 	 * @since 1.0
 	 *
-	 * @return stdClass Cloudflare response packet.
+	 * @return object Cloudflare response packet.
 	 */
 	public function purge() {
 		return $this->delete( "zones/{$this->zone_id}/purge_cache", [ 'purge_everything' => true ] );
@@ -125,9 +127,9 @@ class APIClient {
 	 *
 	 * @since 1.0
 	 *
-	 * @param array|null $urls An array of URLs that should be removed from cache.
+	 * @param array $urls An array of URLs that should be removed from cache.
 	 *
-	 * @return stdClass Cloudflare response packet.
+	 * @return object Cloudflare response packet.
 	 */
 	public function purge_files( array $urls ) {
 		return $this->delete( "zones/{$this->zone_id}/purge_cache", [ 'files' => $urls ] );
@@ -138,9 +140,9 @@ class APIClient {
 	 *
 	 * @since 1.0
 	 *
-	 * @param string $value New setting's value.
+	 * @param int $value New setting's value.
 	 *
-	 * @return stdClass Cloudflare response packet.
+	 * @return object Cloudflare response packet.
 	 */
 	public function change_browser_cache_ttl( $value ) {
 		return $this->change_setting( 'browser_cache_ttl', $value );
@@ -153,7 +155,7 @@ class APIClient {
 	 *
 	 * @param string $value New setting's value.
 	 *
-	 * @return stdClass Cloudflare response packet.
+	 * @return object Cloudflare response packet.
 	 */
 	public function change_rocket_loader( $value ) {
 		return $this->change_setting( 'rocket_loader', $value );
@@ -164,9 +166,9 @@ class APIClient {
 	 *
 	 * @since 1.0
 	 *
-	 * @param string $value New setting's value.
+	 * @param array $value New setting's value.
 	 *
-	 * @return stdClass Cloudflare response packet.
+	 * @return object Cloudflare response packet.
 	 */
 	public function change_minify( $value ) {
 		return $this->change_setting( 'minify', $value );
@@ -179,7 +181,7 @@ class APIClient {
 	 *
 	 * @param string $value New setting's value.
 	 *
-	 * @return stdClass Cloudflare response packet.
+	 * @return object Cloudflare response packet.
 	 */
 	public function change_cache_level( $value ) {
 		return $this->change_setting( 'cache_level', $value );
@@ -192,7 +194,7 @@ class APIClient {
 	 *
 	 * @param string $value New setting's value.
 	 *
-	 * @return stdClass Cloudflare response packet.
+	 * @return object Cloudflare response packet.
 	 */
 	public function change_development_mode( $value ) {
 		return $this->change_setting( 'development_mode', $value );
@@ -204,9 +206,9 @@ class APIClient {
 	 * @since 1.0
 	 *
 	 * @param string $setting Name of the setting to change.
-	 * @param string $value   New setting's value.
+	 * @param mixed  $value   New setting's value.
 	 *
-	 * @return stdClass Cloudflare response packet.
+	 * @return object Cloudflare response packet.
 	 */
 	protected function change_setting( $setting, $value ) {
 		return $this->patch( "zones/{$this->zone_id}/settings/{$setting}", [ 'value' => $value ] );
@@ -217,7 +219,7 @@ class APIClient {
 	 *
 	 * @since 1.0
 	 *
-	 * @return stdClass Cloudflare response packet.
+	 * @return object Cloudflare response packet.
 	 */
 	public function get_settings() {
 		return $this->get( "zones/{$this->zone_id}/settings" );
@@ -228,7 +230,7 @@ class APIClient {
 	 *
 	 * @since 1.0
 	 *
-	 * @return stdClass Cloudflare response packet.
+	 * @return object Cloudflare response packet.
 	 */
 	public function get_ips() {
 		return $this->get( '/ips' );
@@ -242,7 +244,7 @@ class APIClient {
 	 * @param string $path Path of the endpoint.
 	 * @param array  $data Data to be sent along with the request.
 	 *
-	 * @return stdClass Cloudflare response packet.
+	 * @return object Cloudflare response packet.
 	 */
 	protected function get( $path, array $data = [] ) {
 		return $this->request( $path, $data, 'get' );
@@ -256,7 +258,7 @@ class APIClient {
 	 * @param string $path Path of the endpoint.
 	 * @param array  $data Data to be sent along with the request.
 	 *
-	 * @return stdClass Cloudflare response packet.
+	 * @return object Cloudflare response packet.
 	 */
 	protected function delete( $path, array $data = [] ) {
 		return $this->request( $path, $data, 'delete' );
@@ -270,7 +272,7 @@ class APIClient {
 	 * @param string $path Path of the endpoint.
 	 * @param array  $data Data to be sent along with the request.
 	 *
-	 * @return stdClass Cloudflare response packet.
+	 * @return object Cloudflare response packet.
 	 */
 	protected function patch( $path, array $data = [] ) {
 		return $this->request( $path, $data, 'patch' );
@@ -288,7 +290,7 @@ class APIClient {
 	 * @param array  $data   Data to be sent along with the request.
 	 * @param string $method Type of method that should be used ('GET', 'DELETE', 'PATCH').
 	 *
-	 * @return stdClass response object.
+	 * @return object response object.
 	 * @throws AuthenticationException When email or api key are not set.
 	 * @throws UnauthorizedException When Cloudflare's API returns a 401 or 403.
 	 */
@@ -372,10 +374,10 @@ class APIClient {
 	 * @param array  $data   Data to be sent along with the request.
 	 * @param string $method Type of method that should be used ('GET', 'DELETE', 'PATCH').
 	 *
-	 * @return array curl response packet.
+	 * @return array|\WP_Error
 	 */
-	private function do_remote_request( $path, array $data, $method ) {
-		$this->args['method'] = isset( $method ) ? strtoupper( $method ) : 'GET';
+	private function do_remote_request( $path, array $data, $method = 'GET' ) {
+		$this->args['method'] = strtoupper( $method );
 
 		if ( '/ips' !== $path ) {
 			$this->args['headers'] = $this->headers;
@@ -387,8 +389,6 @@ class APIClient {
 			$this->args['body'] = wp_json_encode( $data );
 		}
 
-		$response = wp_remote_request( self::CLOUDFLARE_API . $path, $this->args );
-
-		return $response;
+		return wp_remote_request( self::CLOUDFLARE_API . $path, $this->args );
 	}
 }
